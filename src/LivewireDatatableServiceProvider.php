@@ -15,14 +15,14 @@ class LivewireDatatableServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'livewire-datatable');
 
         $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/livewire-datatable'),
-        ], 'views');
+            __DIR__.'/../resources/views' => $this->app->resourcePath('views/vendor/livewire-datatable'),
+        ], 'livewire-datatable-views');
 
         $this->loadJsonTranslationsFrom(__DIR__.'/../lang');
 
         $this->publishes([
-            __DIR__.'/../lang' => resource_path('lang/vendor/livewire-datatable'),
-        ], 'lang');
+            __DIR__.'/../lang' => $this->app->resourcePath('lang/vendor/livewire-datatable'),
+        ], 'livewire-datatable-lang');
 
         Livewire::component('livewire-datatable', Datatable::class);
     }
