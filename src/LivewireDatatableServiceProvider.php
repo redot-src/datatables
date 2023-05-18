@@ -21,7 +21,7 @@ class LivewireDatatableServiceProvider extends ServiceProvider
         $this->loadJsonTranslationsFrom(__DIR__.'/../lang');
 
         $this->publishes([
-            __DIR__.'/../lang' => $this->app->resourcePath('lang/vendor/livewire-datatable'),
+            __DIR__.'/../lang' => $this->app->langPath('lang/vendor/livewire-datatable'),
         ], 'livewire-datatable-lang');
 
         Livewire::component('livewire-datatable', Datatable::class);
