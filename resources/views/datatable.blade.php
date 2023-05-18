@@ -1,6 +1,6 @@
 @php $colspan = count($columns) + ($actions ? 1 : 0); @endphp
 
-<div class="card">
+<div class="card livewire-datatable">
     <div class="card-header d-flex justify-content-end gap-2">
         <select class="form-select w-auto" wire:model="perPage">
             @foreach ($perPageOptions as $option)
