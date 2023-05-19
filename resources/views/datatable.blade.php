@@ -52,7 +52,7 @@
                 @forelse ($rows as $row)
                     <tr>
                         @foreach ($columns as $column)
-                            <td>{!! $column->value($row) !!}</td>
+                            <td>{!! $column->value($row) ?: '-' !!}</td>
                         @endforeach
 
                         @if ($actions)
