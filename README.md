@@ -1,6 +1,8 @@
 # Livewire Datatable
 
-Livewire Datatable is a package that allows you to create a table with sorting, searching, and pagination without having to write a lot of code. It is built on top of [Livewire](https://laravel-livewire.com/) and uses [Bootstrap 5](https://getbootstrap.com/) for styling.
+Livewire Datatable is a package that allows you to create a table with sorting, searching, and pagination without having to write a lot of code. It is built on top of [Livewire](https://laravel-livewire.com/) and uses [Tabler](https://tabler.io/) for the UI.
+
+**Note:** This package doesn't include any CSS or JS files. You need to install [Tabler](https://tabler.io/) yourself, or publish the views and modify them to use your own CSS and JS files.
 
 ## Installation
 
