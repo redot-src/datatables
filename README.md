@@ -12,6 +12,20 @@ You can install the package via composer:
 composer require redot/livewire-datatable
 ```
 
+## Configuration
+
+If you wish, you can publish the views and modify them to use your own CSS and JS files:
+
+```bash
+php artisan vendor:publish --tag=livewire-datatable-views
+```
+
+You can also publish the language files:
+
+```bash
+php artisan vendor:publish --tag=livewire-datatable-lang
+```
+
 ## Usage
 
 Let's say you have a `User` model and you want to display a table of users. First, you need to create a Livewire component that extends the `Redot\LivewireDatatable\Datatable` class:
