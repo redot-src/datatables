@@ -107,11 +107,13 @@ abstract class Datatable extends Component
             return;
         }
 
-        foreach ($this->columns() as $column) {
-            if ($column->searchable === true && $column->field !== null) {
-                $query->orWhere($column->field, 'like', '%'.$this->search.'%');
+        $query->where(function ($query) {
+            foreach ($this->columns() as $column) {
+                if ($column->searchable === true && $column->field !== null) {
+                    $query->orWhere($column->field, 'like', '%'.$this->search.'%');
+                }
             }
-        }
+        });
     }
 
     /**
