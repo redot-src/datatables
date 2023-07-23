@@ -110,7 +110,14 @@ abstract class Datatable extends Component
         $query->where(function ($query) {
             foreach ($this->columns() as $column) {
                 if ($column->searchable === true && $column->field !== null) {
-                    $query->orWhere($column->field, 'like', '%'.$this->search.'%');
+                    if (! is_callable($column->where)) {
+                        $query->orWhere($column->field, 'like', '%'.$this->search.'%');
+
+                        continue;
+                    }
+
+                    $callable = $column->where;
+                    $callable($query, $this->search);
                 }
             }
         });

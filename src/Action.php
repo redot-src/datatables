@@ -18,7 +18,7 @@ class Action
     /**
      * Action condition.
      */
-    public Closure|null $condition = null;
+    public ?Closure $condition = null;
 
     /**
      * Make new action.

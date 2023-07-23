@@ -12,7 +12,7 @@ class Column
     /**
      * Column field.
      */
-    public string|null $field;
+    public ?string $field;
 
     /**
      * Column label.
@@ -40,14 +40,19 @@ class Column
     public bool $sortable = false;
 
     /**
+     * Column where clause.
+     */
+    public ?Closure $where = null;
+
+    /**
      * Column resolve callback.
      */
-    public Closure|null $resolver = null;
+    public ?Closure $resolver = null;
 
     /**
      * Column format callback.
      */
-    public Closure|null $formatter = null;
+    public ?Closure $formatter = null;
 
     /**
      * Column constructor.
@@ -102,6 +107,16 @@ class Column
     public function sortable(bool $sortable = true): static
     {
         $this->sortable = $sortable;
+
+        return $this;
+    }
+
+    /**
+     * Set column where clause.
+     */
+    public function searchUsing(Closure $where): static
+    {
+        $this->where = $where;
 
         return $this;
     }
