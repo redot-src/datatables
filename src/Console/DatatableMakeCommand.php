@@ -89,8 +89,8 @@ class DatatableMakeCommand extends GeneratorCommand
     {
         $model = $this->ask('What is the model name? (e.g. App\Models\User)');
 
-        if (! str_starts_with($model, '\\') && ! str_contains($model, '\\')) {
-            $model = $this->rootNamespace().'Models\\'.$model;
+        if (! class_exists($model)) {
+            $model = $this->rootNamespace() . 'Models\\' . $model;
         }
 
         if (! class_exists($model)) {
@@ -99,6 +99,7 @@ class DatatableMakeCommand extends GeneratorCommand
             return $this->replaceModel($stub);
         }
 
+        $model = trim($model, '\\');
         $stub = str_replace(['{{ model }}', '{{model}}'], '\\' . $model, $stub);
 
         return $this;
