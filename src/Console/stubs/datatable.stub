@@ -1,0 +1,44 @@
+<?php
+
+namespace {{ namespace }}
+
+use Illuminate\Database\Eloquent\Builder;
+use Redot\LivewireDatatable\Action;
+use Redot\LivewireDatatable\Column;
+use Redot\LivewireDatatable\Datatable;
+
+class {{ class }} extends DataTable
+{
+    /**
+     * Create button.
+     */
+    public string|bool $create = false;
+
+    /**
+     * Query builder.
+     */
+    public function query(): Builder
+    {
+        return {{ model }}::query();
+    }
+
+    /**
+     * Data table columns.
+     */
+    public function columns(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    /**
+     * Data table actions.
+     */
+    public function actions(): array
+    {
+        return [
+            //
+        ];
+    }
+}
