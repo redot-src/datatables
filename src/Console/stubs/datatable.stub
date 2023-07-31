@@ -1,6 +1,6 @@
 <?php
 
-namespace {{ namespace }}
+namespace {{ namespace }};
 
 use Illuminate\Database\Eloquent\Builder;
 use Redot\LivewireDatatable\Action;

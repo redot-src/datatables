@@ -3,7 +3,6 @@
 namespace Redot\LivewireDatatable\Console;
 
 use Illuminate\Console\GeneratorCommand;
-use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
 
 class DatatableMakeCommand extends GeneratorCommand
@@ -58,7 +57,6 @@ class DatatableMakeCommand extends GeneratorCommand
     protected function getOptions()
     {
         return [
-            ['model', 'm', InputOption::VALUE_REQUIRED, 'The model that the datatable applies to'],
             ['force', 'f', InputOption::VALUE_NONE, 'Create the class even if the datatable already exists'],
         ];
     }
@@ -89,13 +87,19 @@ class DatatableMakeCommand extends GeneratorCommand
      */
     protected function replaceModel(&$stub)
     {
-        $model = $this->option('model');
+        $model = $this->ask('What is the model name? (e.g. App\Models\User)');
 
-        if (! Str::startsWith($model, [$this->laravel->getNamespace(), 'App\\'])) {
-            $model = '\\'.$this->laravel->getNamespace().'Models\\'.$model;
+        if (! str_starts_with($model, '\\') && ! str_contains($model, '\\')) {
+            $model = $this->rootNamespace().'Models\\'.$model;
         }
 
-        $stub = str_replace(['{{ model }}', '{{model}}'], $model, $stub);
+        if (! class_exists($model)) {
+            $this->error('Model does not exist!');
+
+            return $this->replaceModel($stub);
+        }
+
+        $stub = str_replace(['{{ model }}', '{{model}}'], '\\' . $model, $stub);
 
         return $this;
     }
