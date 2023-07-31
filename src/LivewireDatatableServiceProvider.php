@@ -24,6 +24,10 @@ class LivewireDatatableServiceProvider extends ServiceProvider
             __DIR__.'/../lang' => $this->app->langPath('lang/vendor/livewire-datatable'),
         ], 'livewire-datatable-lang');
 
+        $this->commands([
+            Console\DatatableMakeCommand::class,
+        ]);
+
         Livewire::component('livewire-datatable', Datatable::class);
     }
 
