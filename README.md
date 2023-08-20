@@ -12,6 +12,12 @@ You can install the package via composer:
 composer require redot/livewire-datatable
 ```
 
+Now you can run the following command to scaffold a new Datatable:
+
+```bash
+php artisan datatable:make UserTable
+```
+
 ## Configuration
 
 If you wish, you can publish the views and modify them to use your own CSS and JS files:
