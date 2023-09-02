@@ -43,7 +43,7 @@ namespace App\Http\Livewire;
 
 use Redot\LivewireDatatable\Datatable;
 
-class UserTable extends Datatable
+class UsersTable extends Datatable
 {
     // ...
 }
@@ -54,7 +54,7 @@ Next, you need to define the columns that you want to display in the table. You 
 ```php
 use Redot\LivewireDatatable\Column;
 
-class UserTable extends Datatable
+class UsersTable extends Datatable
 {
     public function columns(): array
     {
@@ -87,7 +87,7 @@ Next, you need to define the query that will be used to fetch the data. You can 
 ```php
 use App\Models\User;
 
-class UserTable extends Datatable
+class UsersTable extends Datatable
 {
     // ...
 
@@ -103,7 +103,7 @@ class UserTable extends Datatable
 ```php
 use Redot\LivewireDatatable\Action;
 
-class UserTable extends Datatable
+class UsersTable extends Datatable
 {
     // ...
 
@@ -124,7 +124,7 @@ Finally, you need to render the table in your view:
 
 ```html
 <div>
-    <livewire:user-table />
+    <livewire:users-table />
 </div>
 ```
 
