@@ -2,7 +2,7 @@
 
 <div class="card livewire-datatable">
     <div class="card-header d-flex justify-content-end gap-2">
-        <select class="form-select w-auto" wire:model="perPage">
+        <select class="form-select w-auto" wire:model.live="perPage">
             @foreach ($perPageOptions as $option)
                 <option value="{{ $option }}">{{ $option }}</option>
             @endforeach
@@ -10,7 +10,7 @@
 
         @if ($searchable)
             <div class="input-icon">
-                <input type="text" wire:model="search" class="form-control" placeholder="{{ __('Search...') }}" />
+                <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search...') }}" />
                 <span class="input-icon-addon">
                     @include('livewire-datatable::icons.search')
                 </span>
