@@ -15,7 +15,7 @@ composer require redot/livewire-datatable
 Now you can run the following command to scaffold a new Datatable:
 
 ```bash
-php artisan datatable:make UserTable
+php artisan make:datatable UsersTable
 ```
 
 ## Configuration
