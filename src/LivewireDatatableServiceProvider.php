@@ -25,7 +25,7 @@ class LivewireDatatableServiceProvider extends ServiceProvider
         ], 'livewire-datatable-lang');
 
         $this->commands([
-            Console\DatatableMakeCommand::class,
+            Console\MakeDatatableCommand::class,
         ]);
 
         Livewire::component('livewire-datatable', Datatable::class);

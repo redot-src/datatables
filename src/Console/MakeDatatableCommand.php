@@ -5,7 +5,7 @@ namespace Redot\LivewireDatatable\Console;
 use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;
 
-class DatatableMakeCommand extends GeneratorCommand
+class MakeDatatableCommand extends GeneratorCommand
 {
     /**
      * The console command name.
@@ -19,7 +19,7 @@ class DatatableMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $description = 'Create a new datatable class';
+    protected $description = 'Make a new datatable class';
 
     /**
      * The type of class being generated.
@@ -90,7 +90,7 @@ class DatatableMakeCommand extends GeneratorCommand
         $model = $this->ask('What is the model name? (e.g. App\Models\User)');
 
         if (! class_exists($model)) {
-            $model = $this->rootNamespace() . 'Models\\' . $model;
+            $model = $this->rootNamespace().'Models\\'.$model;
         }
 
         if (! class_exists($model)) {
@@ -100,7 +100,7 @@ class DatatableMakeCommand extends GeneratorCommand
         }
 
         $model = trim($model, '\\');
-        $stub = str_replace(['{{ model }}', '{{model}}'], '\\' . $model, $stub);
+        $stub = str_replace(['{{ model }}', '{{model}}'], '\\'.$model, $stub);
 
         return $this;
     }
