@@ -12,7 +12,7 @@ class DatatableMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $name = 'datatable:make';
+    protected $name = 'make:datatable';
 
     /**
      * The console command description.
@@ -46,7 +46,7 @@ class DatatableMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace.'\Http\Livewire';
+        return $rootNamespace.'\Livewire';
     }
 
     /**
