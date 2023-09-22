@@ -1,6 +1,6 @@
 @php $colspan = count($columns) + ($actions ? 1 : 0); @endphp
 
-<div class="card livewire-datatable" @style(['max-height' => $maxHeight])>
+<div class="card livewire-datatable" @style(['max-height: ' . $maxHeight])>
     <div class="card-header d-flex justify-content-end gap-2">
         <select class="form-select w-auto" wire:model.live="perPage">
             @foreach ($perPageOptions as $option)
