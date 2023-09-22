@@ -30,7 +30,7 @@
             <thead @class(['sticky-top' => $fixedHeader])>
                 <tr>
                     @foreach ($columns as $column)
-                        <th style="width: {{ $column->width }}" @class([$column->class, 'sortable' => $column->sortable])>
+                        <th style="width: {{ $column->width }}; min-width: {{ $column->width }}; max-width: {{ $column->width }}" @class([$column->class, 'sortable' => $column->sortable])>
                             @if ($column->sortable)
                                 <a href="#" class="text-decoration-none text-muted" wire:click.prevent="sort('{{ $column->field }}')">
                                     {{ $column->label }}
@@ -54,7 +54,9 @@
                 @forelse ($rows as $row)
                     <tr>
                         @foreach ($columns as $column)
-                            <td>{!! $column->value($row) ?: '-' !!}</td>
+                            <td class="text-truncate" style="width: {{ $column->width }}; min-width: {{ $column->width }}; max-width: {{ $column->width }}">
+                                {!! $column->value($row) ?: '-' !!}
+                            </td>
                         @endforeach
 
                         @if ($actions)
