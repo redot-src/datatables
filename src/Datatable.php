@@ -16,6 +16,16 @@ abstract class Datatable extends Component
     public string|bool $create = false;
 
     /**
+     * Fixed header.
+     */
+    public bool $fixedHeader = false;
+
+    /**
+     * Datatable max-height.
+     */
+    public string $maxHeight = '100%';
+
+    /**
      * Search term.
      */
     public string $search = '';

@@ -1,6 +1,6 @@
 @php $colspan = count($columns) + ($actions ? 1 : 0); @endphp
 
-<div class="card livewire-datatable">
+<div class="card livewire-datatable" @style(['max-height' => $maxHeight])>
     <div class="card-header d-flex justify-content-end gap-2">
         <select class="form-select w-auto" wire:model.live="perPage">
             @foreach ($perPageOptions as $option)
@@ -27,7 +27,7 @@
 
     <div class="table-responsive">
         <table class="table table-vcenter card-table text-nowrap">
-            <thead>
+            <thead @class(['sticky-top' => $fixedHeader])>
                 <tr>
                     @foreach ($columns as $column)
                         <th style="width: {{ $column->width }}" @class([$column->class, 'sortable' => $column->sortable])>
