@@ -45,7 +45,7 @@
                     @endforeach
 
                     @if ($actions)
-                        <th style="width: 1%">{{ __('Actions') }}</th>
+                        <th style="width: 1%; position: sticky; inset-inline-end: 0">{{ __('Actions') }}</th>
                     @endif
                 </tr>
             </thead>
@@ -60,7 +60,7 @@
                         @endforeach
 
                         @if ($actions)
-                            <td>
+                            <td style="position: sticky; inset-inline-end: 0; background: var(--tblr-card-bg)">
                                 <div class="d-flex gap-1">
                                     @foreach ($actions as $action)
                                         {!! $action->render($row) !!}
