@@ -45,7 +45,7 @@
                     @endforeach
 
                     @if ($actions)
-                        <th style="width: 1%; position: sticky; inset-inline-end: 0; box-shadow: inset 1px 0 var(--tblr-card-border-color)">{{ __('Actions') }}</th>
+                        <th style="width: 1%; position: sticky; inset-inline-end: 0; box-shadow: inset 1px 0 var(--tblr-card-border-color); text-align: center">{{ __('Actions') }}</th>
                     @endif
                 </tr>
             </thead>
