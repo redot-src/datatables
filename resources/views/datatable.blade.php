@@ -60,7 +60,7 @@
                         @endforeach
 
                         @if ($actions)
-                            <td style="position: sticky; inset-inline-end: 0; background: var(--tblr-card-bg)">
+                            <td style="position: sticky; inset-inline-end: 0; background: var(--tblr-card-bg); box-shadow: inset 1px 0 var(--tblr-card-border-color)">
                                 <div class="d-flex gap-1">
                                     @foreach ($actions as $action)
                                         {!! $action->render($row) !!}
