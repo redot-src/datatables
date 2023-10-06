@@ -1,6 +1,6 @@
 @props(['url'])
 
-<form action="{{ $url }}" method="POST">
+<form action="{{ $url }}" method="POST" class="m-0">
     @csrf
     @method('DELETE')
 
