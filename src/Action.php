@@ -16,11 +16,6 @@ class Action
     public Closure $callback;
 
     /**
-     * Action permission.
-     */
-    public ?Closure $permission = null;
-
-    /**
      * Action condition.
      */
     public ?Closure $condition = null;
@@ -78,24 +73,6 @@ class Action
         $this->condition = $callback;
 
         return $this;
-    }
-
-    /**
-     * Permission condition.
-     */
-    public function can(string $permission): static
-    {
-        $this->permission = fn () => Gate::allows($permission);
-
-        return $this;
-    }
-
-    /**
-     * Check if action is allowed.
-     */
-    public function allowed(): bool
-    {
-        return ! $this->permission || call_user_func($this->permission);
     }
 
     /**
