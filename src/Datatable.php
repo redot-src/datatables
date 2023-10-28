@@ -164,7 +164,7 @@ abstract class Datatable extends Component
     public function params(): array
     {
         $params['columns'] = $this->columns();
-        $params['actions'] = array_filter($this->actions(), fn ($action) => $action->$allowed);
+        $params['actions'] = array_filter($this->actions(), fn ($action) => $action->allowed);
 
         $query = $this->query();
 
