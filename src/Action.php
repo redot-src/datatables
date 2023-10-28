@@ -3,7 +3,6 @@
 namespace Redot\LivewireDatatable;
 
 use Closure;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Traits\Macroable;
 
 class Action
@@ -19,6 +18,11 @@ class Action
      * Action condition.
      */
     public ?Closure $condition = null;
+
+    /**
+     * Action allowed.
+     */
+    public bool $allowed = true;
 
     /**
      * Make new action.
@@ -71,6 +75,16 @@ class Action
     public function when(Closure $callback): static
     {
         $this->condition = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Action allowed.
+     */
+    public function allowed(bool $allowed): static
+    {
+        $this->allowed = $allowed;
 
         return $this;
     }
