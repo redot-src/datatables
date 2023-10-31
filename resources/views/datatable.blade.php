@@ -35,7 +35,7 @@
                                 <a href="#" class="text-decoration-none text-muted" wire:click.prevent="sort('{{ $column->field }}')">
                                     {{ $column->label }}
 
-                                    @php $icon = $sortField === $column->field ? ($sortDirection === 'asc' ? 'up' : 'down') : 'up'; @endphp
+                                    @php $icon = $sortField === $column->field ? ($sortDirection === 'asc' ? 'up' : 'down') : 'up-down'; @endphp
                                     @include("livewire-datatable::icons.chevron-$icon")
                                 </a>
                             @else
