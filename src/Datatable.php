@@ -3,6 +3,7 @@
 namespace Redot\LivewireDatatable;
 
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -28,21 +29,25 @@ abstract class Datatable extends Component
     /**
      * Search term.
      */
+    #[Url]
     public string $search = '';
 
     /**
      * Sort field.
      */
+    #[Url]
     public string $sortField = '';
 
     /**
      * Sort direction.
      */
+    #[Url]
     public string $sortDirection = 'asc';
 
     /**
      * Per page.
      */
+    #[Url]
     public int $perPage = 10;
 
     /**
