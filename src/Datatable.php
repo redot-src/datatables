@@ -27,6 +27,16 @@ abstract class Datatable extends Component
     public string $maxHeight = '100%';
 
     /**
+     * With trashed records.
+     */
+    public bool $withTrashed = false;
+
+    /**
+     * Only trashed records.
+     */
+    public bool $onlyTrashed = false;
+
+    /**
      * Search term.
      */
     #[Url]
@@ -114,6 +124,20 @@ abstract class Datatable extends Component
     }
 
     /**
+     * Apply trashed to the query.
+     */
+    public function applyTrashed(Builder $query): void
+    {
+        if ($this->withTrashed) {
+            $query->withTrashed();
+        }
+
+        if ($this->onlyTrashed) {
+            $query->onlyTrashed();
+        }
+    }
+
+    /**
      * Apply search and sort to the query.
      */
     public function applySearch(Builder $query): void
@@ -173,6 +197,7 @@ abstract class Datatable extends Component
 
         $query = $this->query();
 
+        $this->applyTrashed($query);
         $this->applySearch($query);
         $this->applySort($query);
 
