@@ -80,7 +80,9 @@
         </table>
     </div>
 
-    <div class="card-footer">
-        <div class="my-1">{{ $rows->links() }}</div>
-    </div>
+    @if ($rows->count())
+        <div class="card-footer">
+            <div class="my-1">{{ $rows->links() }}</div>
+        </div>
+    @endif
 </div>
