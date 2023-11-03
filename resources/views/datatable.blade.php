@@ -54,7 +54,7 @@
                 @forelse ($rows as $row)
                     <tr>
                         @foreach ($columns as $column)
-                            <td class="text-truncate" style="width: {{ $column->width }}; min-width: {{ $column->width }}; max-width: {{ $column->width }}">
+                            <td class="text-truncate {{ $column->class }}" style="width: {{ $column->width }}; min-width: {{ $column->width }}; max-width: {{ $column->width }}">
                                 {!! $column->value($row) ?: '-' !!}
                             </td>
                         @endforeach
