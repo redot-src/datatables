@@ -80,7 +80,7 @@
         </table>
     </div>
 
-    @if ($rows->count())
+    @if ($rows->count() > $perPage)
         <div class="card-footer">
             <div class="my-1">{{ $rows->links() }}</div>
         </div>
