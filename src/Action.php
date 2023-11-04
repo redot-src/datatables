@@ -32,16 +32,16 @@ class Action
         return new static();
     }
 
-    public static function button(string $route = '', string $title = '', string $icon = '', string $method = 'GET', array $attributes = []): static
+    public static function button(string $route = '', string $method = 'GET', string $title = '', string $icon = '', array $attrs = []): static
     {
         return static::make()
             ->do(fn ($row) => view('livewire-datatable::action', [
                 'url' => route($route, $row),
+                'method' => $method,
                 'title' => $title,
                 'icon' => $icon,
-                'method' => $method,
-                'attributes' => $attributes,
-            ]));
+                'attrs' => $attrs,
+            ])->render());
     }
 
     /**
@@ -51,12 +51,10 @@ class Action
     {
         return static::button(
             route: $route,
+            method: 'GET',
             title: __('View'),
             icon: config('livewire-datatable.icons.view'),
-            method: 'GET',
-            attributes: [
-                'datatable-action' => 'view',
-            ],
+            attrs: ['datatable-action' => 'view'],
         );
     }
 
@@ -67,12 +65,10 @@ class Action
     {
         return static::button(
             route: $route,
+            method: 'GET',
             title: __('Edit'),
             icon: config('livewire-datatable.icons.edit'),
-            method: 'GET',
-            attributes: [
-                'datatable-action' => 'edit',
-            ],
+            attrs: ['datatable-action' => 'edit'],
         );
     }
 
@@ -83,12 +79,10 @@ class Action
     {
         return static::button(
             route: $route,
+            method: 'DELETE',
             title: __('Delete'),
             icon: config('livewire-datatable.icons.delete'),
-            method: 'DELETE',
-            attributes: [
-                'datatable-action' => 'delete',
-            ],
+            attrs: ['datatable-action' => 'delete'],
         );
     }
 

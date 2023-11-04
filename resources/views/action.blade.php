@@ -3,10 +3,20 @@
     'title' => '',
     'icon' => '',
     'method' => 'GET',
-    'attributes' => [],
+    'attrs' => [],
 ])
 
-<form action="{{ $url }}" method="{{ $method }}" class="m-0" {{ $attributes }}>
+@php
+    $method = strtoupper($method);
+
+    if (is_array($attrs)) {
+        $attrs = collect($attrs)->map(function ($value, $key) {
+            return $key . '="' . $value . '"';
+        })->implode(' ');
+    }
+@endphp
+
+<form action="{{ $url }}" method="{{ $method === 'GET' ? $method : 'POST' }}" class="m-0" {!! $attrs !!}>
     @csrf
     @method($method)
 
