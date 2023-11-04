@@ -13,12 +13,16 @@ class LivewireDatatableServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'livewire-datatable');
+        $this->mergeConfigFrom(__DIR__.'/../config/livewire-datatable.php', 'livewire-datatable');
+        $this->loadJsonTranslationsFrom(__DIR__.'/../lang');
 
         $this->publishes([
             __DIR__.'/../resources/views' => $this->app->resourcePath('views/vendor/livewire-datatable'),
         ], 'livewire-datatable-views');
 
-        $this->loadJsonTranslationsFrom(__DIR__.'/../lang');
+        $this->publishes([
+            __DIR__.'/../config/livewire-datatable.php' => $this->app->configPath('livewire-datatable.php'),
+        ], 'livewire-datatable-config');
 
         $this->publishes([
             __DIR__.'/../lang' => $this->app->langPath('lang/vendor/livewire-datatable'),

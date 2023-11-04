@@ -88,7 +88,7 @@ abstract class Datatable extends Component
      */
     public function paginationView(): string
     {
-        return 'livewire-datatable::pagination.default';
+        return config('livewire-datatable.pagination_view');
     }
 
     /**
@@ -96,7 +96,7 @@ abstract class Datatable extends Component
      */
     public function paginationSimpleView(): string
     {
-        return 'livewire-datatable::pagination.simple';
+        return config('livewire-datatable.pagination_simple_view');
     }
 
     /**

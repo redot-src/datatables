@@ -12,14 +12,14 @@
             <div class="input-icon">
                 <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search...') }}" />
                 <span class="input-icon-addon">
-                    @include('livewire-datatable::icons.search')
+                    {!! config('livewire-datatable.icons.search') !!}
                 </span>
             </div>
         @endif
 
         @if ($create)
             <a class="btn btn-primary" href="{{ route($create) }}">
-                @include('livewire-datatable::icons.plus')
+                {!! config('livewire-datatable.icons.create') !!}
                 <span class="d-none d-md-block ms-2">{{ __('Create') }}</span>
             </a>
         @endif
@@ -35,8 +35,8 @@
                                 <a href="#" class="text-decoration-none text-muted" wire:click.prevent="sort('{{ $column->field }}')">
                                     {{ $column->label }}
 
-                                    @php $icon = $sortField === $column->field ? ($sortDirection === 'asc' ? 'up' : 'down') : 'up-down'; @endphp
-                                    @include("livewire-datatable::icons.chevron-$icon")
+                                    @php $icon = $sortField === $column->field ? $sortDirection : 'none'; @endphp
+                                    {!! config('livewire-datatable.icons.sort-' . $icon) !!}
                                 </a>
                             @else
                                 {{ $column->label }}

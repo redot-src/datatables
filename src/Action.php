@@ -32,13 +32,32 @@ class Action
         return new static();
     }
 
+    public static function button(string $route = '', string $title = '', string $icon = '', string $method = 'GET', array $attributes = []): static
+    {
+        return static::make()
+            ->do(fn ($row) => view('livewire-datatable::action', [
+                'url' => route($route, $row),
+                'title' => $title,
+                'icon' => $icon,
+                'method' => $method,
+                'attributes' => $attributes,
+            ]));
+    }
+
     /**
      * Make view action.
      */
     public static function view(string $route): static
     {
-        return static::make()
-            ->do(fn ($row) => view('livewire-datatable::actions.view', ['url' => route($route, $row)]));
+        return static::button(
+            route: $route,
+            title: __('View'),
+            icon: config('livewire-datatable.icons.view'),
+            method: 'GET',
+            attributes: [
+                'datatable-action' => 'view',
+            ],
+        );
     }
 
     /**
@@ -46,8 +65,15 @@ class Action
      */
     public static function edit(string $route): static
     {
-        return static::make()
-            ->do(fn ($row) => view('livewire-datatable::actions.edit', ['url' => route($route, $row)]));
+        return static::button(
+            route: $route,
+            title: __('Edit'),
+            icon: config('livewire-datatable.icons.edit'),
+            method: 'GET',
+            attributes: [
+                'datatable-action' => 'edit',
+            ],
+        );
     }
 
     /**
@@ -55,8 +81,15 @@ class Action
      */
     public static function delete(string $route): static
     {
-        return static::make()
-            ->do(fn ($row) => view('livewire-datatable::actions.delete', ['url' => route($route, $row)]));
+        return static::button(
+            route: $route,
+            title: __('Delete'),
+            icon: config('livewire-datatable.icons.delete'),
+            method: 'DELETE',
+            attributes: [
+                'datatable-action' => 'delete',
+            ],
+        );
     }
 
     /**
