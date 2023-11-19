@@ -18,7 +18,7 @@
         @endif
 
         @if ($create)
-            <a class="btn btn-primary" href="{{ route($create) }}">
+            <a class="btn btn-primary" href="{{ $create }}">
                 {!! config('livewire-datatable.icons.create') !!}
                 <span class="d-none d-md-block ms-2">{{ __('Create') }}</span>
             </a>

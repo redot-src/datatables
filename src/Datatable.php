@@ -17,6 +17,11 @@ abstract class Datatable extends Component
     public string|bool $create = false;
 
     /**
+     * Create button route.
+     */
+    public string|bool $applyRouteToCreate = true;
+
+    /**
      * Fixed header.
      */
     public bool $fixedHeader = false;
@@ -214,6 +219,10 @@ abstract class Datatable extends Component
      */
     public function render()
     {
+        if ($this->create !== false && $this->applyRouteToCreate === true) {
+            $this->create = route($this->create);
+        }
+
         return view('livewire-datatable::datatable', $this->params());
     }
 }
