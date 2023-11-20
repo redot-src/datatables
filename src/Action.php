@@ -36,7 +36,7 @@ class Action
     {
         return static::make()
             ->do(fn ($row) => view('livewire-datatable::action', [
-                'url' => route($route, $row),
+                'url' => route($route, array_merge(request()->route()->parameters(), [$row])),
                 'method' => $method,
                 'title' => $title,
                 'icon' => $icon,

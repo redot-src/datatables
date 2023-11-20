@@ -85,3 +85,27 @@ if (! function_exists('__')) {
         return $factory->get($key, $replace, $locale);
     }
 }
+
+if (! function_exists('request')) {
+    /**
+     * Get an instance of the current request or an input item from the request.
+     *
+     * @param  array|string|null  $key
+     * @param  mixed  $default
+     * @return \Illuminate\Http\Request|string|array|null
+     */
+    function request($key = null, $default = null)
+    {
+        $factory = \Illuminate\Support\Facades\App::make(\Illuminate\Http\Request::class);
+
+        if (is_null($key)) {
+            return $factory;
+        }
+
+        if (is_array($key)) {
+            return $factory->only($key);
+        }
+
+        return $factory->input($key, $default);
+    }
+}
