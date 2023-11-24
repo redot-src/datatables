@@ -105,6 +105,14 @@ abstract class Datatable extends Component
     }
 
     /**
+     * Datatable template.
+     */
+    public function template(): string
+    {
+        return config('livewire-datatable.template', 'livewire-datatable::datatable');
+    }
+
+    /**
      * Reset page number when searching.
      */
     public function updatingSearch(): void
@@ -223,6 +231,6 @@ abstract class Datatable extends Component
             $this->create = route($this->create);
         }
 
-        return view('livewire-datatable::datatable', $this->params());
+        return view($this->template(), $this->params());
     }
 }

@@ -12,6 +12,7 @@ return [
 
     'pagination_view' => 'livewire-datatable::pagination.default',
     'pagination_simple_view' => 'livewire-datatable::pagination.simple',
+    'template' => 'livewire-datatable::datatable',
 
     'icons' => [
         'search' => '<i class="fa fa-search"></i>',
