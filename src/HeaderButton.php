@@ -31,10 +31,10 @@ class HeaderButton
     /**
      * Make button action.
      */
-    public static function button(string $route = '', string $title = '', string $icon = '', string $class = 'btn', array $attrs = []): static
+    public static function button(string $route = '', string $title = '', string $icon = '', array $attrs = []): static
     {
         return static::make()
-            ->do(function () use ($route, $title, $icon, $class, $attrs) {
+            ->do(function () use ($route, $title, $icon, $attrs) {
                 $template = config('livewire-datatable.templates.header-button');
 
                 try {
@@ -47,7 +47,6 @@ class HeaderButton
                     'href' => $href,
                     'title' => $title,
                     'icon' => $icon,
-                    'class' => $class,
                     'attrs' => $attrs,
                 ])->render();
             });
@@ -59,7 +58,6 @@ class HeaderButton
             route: $route,
             title: __('Create'),
             icon: config('livewire-datatable.icons.create'),
-            class: 'btn btn-primary',
             attrs: ['datatable-action' => 'create'],
         );
     }

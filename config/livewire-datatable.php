@@ -26,6 +26,7 @@ return [
 
     'icons' => [
         'search' => '<i class="fa fa-search"></i>',
+        'actions' => '<i class="fa fa-cog"></i>',
         'sort-none' => '<i class="fa fa-sort"></i>',
         'sort-asc' => '<i class="fa fa-sort-up"></i>',
         'sort-desc' => '<i class="fa fa-sort-down"></i>',
