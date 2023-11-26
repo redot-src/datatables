@@ -2,7 +2,7 @@
     'href' => '#',
     'icon' => '',
     'title' => '',
-    'class' => 'btn',
+    'class' => 'btn btn-primary',
     'attrs' => [],
 ])
 
@@ -10,8 +10,14 @@
     $attrs = collect($attrs)->map(fn($v, $k) => $k . '="' . $v . '"')->implode(' ');
 @endphp
 
-<a href="{{ $href }}" @class([$class, 'btn-icon' => $icon]) title="{{ $title }}"
-    @if ($icon) data-bs-toggle="tooltip" data-bs-placement="bottom" @endif {{ $attributes }}
-    {!! $attrs !!}>
-    {!! $icon ?: $title !!}
+<a href="{{ $href }}" class="{{ $class }}" {{ $attributes }} {!! $attrs !!}>
+    @if ($icon && str_starts_with($icon, '<'))
+        {!! $icon !!}
+    @elseif ($icon)
+        <i class="{{ $icon }} me-2"></i>
+    @endif
+
+    @if ($title)
+        {!! $title !!}
+    @endif
 </a>
