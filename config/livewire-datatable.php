@@ -30,9 +30,9 @@ return [
         'sort-none' => 'fa fa-sort',
         'sort-asc' => 'fa fa-sort-up',
         'sort-desc' => 'fa fa-sort-down',
-        'create' => 'fa fa-plus',
-        'edit' => 'fa fa-edit',
-        'view' => 'fa fa-eye',
-        'delete' => 'fa fa-trash',
+        'create' => 'fa fa-square-plus text-success',
+        'edit' => 'fa fa-edit text-warning',
+        'view' => 'fa fa-eye text-primary',
+        'delete' => 'fa fa-trash text-danger',
     ],
 ];
