@@ -4,26 +4,28 @@
 @endphp
 
 <div class="card livewire-datatable" @style(['max-height: ' . $maxHeight]) id="{{ $id }}">
-    <div class="card-header d-flex flex-wrap justify-content-between gap-2">
-        <div>
-            @if ($title)
-                <h3 class="card-title">{{ $title }}</h3>
-            @endif
+    @if ($headerable)
+        <div class="card-header d-flex flex-wrap justify-content-between gap-2">
+            <div>
+                @if ($title)
+                    <h3 class="card-title">{{ $title }}</h3>
+                @endif
 
-            @if ($subtitle)
-                <h5 class="card-subtitle text-muted">{{ $subtitle }}</h5>
+                @if ($subtitle)
+                    <h5 class="card-subtitle text-muted">{{ $subtitle }}</h5>
+                @endif
+            </div>
+
+            @if ($searchable)
+                <div class="input-icon">
+                    <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search...') }}" />
+                    <span class="input-icon-addon">
+                        {!! config('livewire-datatable.icons.search') !!}
+                    </span>
+                </div>
             @endif
         </div>
-
-        @if ($searchable)
-            <div class="input-icon">
-                <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search...') }}" />
-                <span class="input-icon-addon">
-                    {!! config('livewire-datatable.icons.search') !!}
-                </span>
-            </div>
-        @endif
-    </div>
+    @endif
 
     <div class="table-responsive">
         <table class="table table-vcenter card-table text-nowrap">
