@@ -18,9 +18,9 @@
 
         @if ($icon)
             <i class="{{ $icon }} icon"></i>
+        @else
+            {{ $title }}
         @endif
-
-        {{ $title }}
     </a>
 @else
     <form action="{{ $href }}" method="POST" class="m-0" {!! $attrs !!}>
@@ -32,9 +32,9 @@
 
             @if ($icon)
                 <i class="{{ $icon }} icon"></i>
+            @else
+                {{ $title }}
             @endif
-
-            {{ $title }}
         </button>
     </form>
 @endif
