@@ -106,6 +106,16 @@
             @endforeach
         </select>
 
+        <div class="text-muted">
+            {{ __('Showing') }}
+            <span class="fw-bold">{{ $rows->firstItem() }}</span>
+            {{ __('to') }}
+            <span class="fw-bold">{{ $rows->lastItem() }}</span>
+            {{ __('of') }}
+            <span class="fw-bold">{{ $rows->total() }}</span>
+            {{ __('results') }}
+        </div>
+
         <div class="my-1">{{ $rows->links() }}</div>
     </div>
 </div>
