@@ -16,6 +16,7 @@ return [
     'templates' => [
         'datatable' => 'livewire-datatable::datatable',
         'row-action' => 'livewire-datatable::row-action',
+        'header-button' => 'livewire-datatable::header-button',
 
         'pagination' => [
             'default' => 'livewire-datatable::pagination.default',

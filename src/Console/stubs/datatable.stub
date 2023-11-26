@@ -6,9 +6,20 @@ use Illuminate\Database\Eloquent\Builder;
 use Redot\LivewireDatatable\Action;
 use Redot\LivewireDatatable\Column;
 use Redot\LivewireDatatable\Datatable;
+use Redot\LivewireDatatable\HeaderButton;
 
 class {{ class }} extends DataTable
 {
+    /**
+     * Datatable title.
+     */
+    public string $title = '';
+
+    /**
+     * Datatable subtitle.
+     */
+    public string $subtitle = '';
+
     /**
      * Query builder.
      */
@@ -19,6 +30,8 @@ class {{ class }} extends DataTable
 
     /**
      * Data table columns.
+     *
+     * @return Column[]
      */
     public function columns(): array
     {
@@ -29,11 +42,23 @@ class {{ class }} extends DataTable
 
     /**
      * Data table actions.
+     *
+     * @return Action[]
      */
     public function actions(): array
     {
         return [
             //
         ];
+    }
+
+    /**
+     * Data table header buttons.
+     *
+     * @return HeaderButton[]
+     */
+    public function headerButtons(): array
+    {
+        return [];
     }
 }

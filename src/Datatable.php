@@ -77,13 +77,27 @@ abstract class Datatable extends Component
 
     /**
      * Data table columns.
+     *
+     * @return Column[]
      */
     abstract public function columns(): array;
 
     /**
      * Data table actions.
+     *
+     * @return Action[]
      */
     public function actions(): array
+    {
+        return [];
+    }
+
+    /**
+     * Data table header buttons.
+     *
+     * @return HeaderButton[]
+     */
+    public function headerButtons(): array
     {
         return [];
     }
@@ -207,6 +221,7 @@ abstract class Datatable extends Component
     {
         $params['columns'] = $this->columns();
         $params['actions'] = array_filter($this->actions(), fn ($action) => $action->allowed);
+        $params['headerButtons'] = array_filter($this->headerButtons(), fn ($button) => $button->allowed);
 
         $query = $this->query();
 
@@ -219,8 +234,8 @@ abstract class Datatable extends Component
         $searchables = array_filter($this->columns(), fn ($column) => $column->searchable === true);
         $params['searchable'] = count($searchables) > 0;
 
-        // If there is a title, subtitle or searchable columns, we need a header
-        $params['headerable'] = $this->title || $this->subtitle || $params['searchable'];
+        // If there is a title, subtitle, search or header buttons, then the header is visible.
+        $params['headerable'] = $this->title || $this->subtitle || $params['searchable'] || count($params['headerButtons']) > 0;
 
         return $params;
     }

@@ -16,14 +16,20 @@
                 @endif
             </div>
 
-            @if ($searchable)
-                <div class="input-icon">
-                    <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search...') }}" />
-                    <span class="input-icon-addon">
-                        {!! config('livewire-datatable.icons.search') !!}
-                    </span>
-                </div>
-            @endif
+            <div class="d-flex flex-wrap gap-2">
+                @foreach ($headerButtons as $button)
+                    {!! $button->render() !!}
+                @endforeach
+
+                @if ($searchable)
+                    <div class="input-icon">
+                        <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search...') }}" />
+                        <span class="input-icon-addon">
+                            {!! config('livewire-datatable.icons.search') !!}
+                        </span>
+                    </div>
+                @endif
+            </div>
         </div>
     @endif
 

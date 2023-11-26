@@ -3,7 +3,6 @@
 namespace Redot\LivewireDatatable;
 
 use Illuminate\Support\ServiceProvider;
-use Livewire\Livewire;
 
 class LivewireDatatableServiceProvider extends ServiceProvider
 {
