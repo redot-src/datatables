@@ -14,10 +14,10 @@
     @if ($icon && str_starts_with($icon, '<'))
         {!! $icon !!}
     @elseif ($icon)
-        <i class="{{ $icon }} me-2"></i>
+        <i class="{{ $icon }}"></i>
     @endif
 
     @if ($title)
-        {!! $title !!}
+        <span class="ms-2">{{ $title }}</span>
     @endif
 </a>
