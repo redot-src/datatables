@@ -36,10 +36,10 @@ class Action
     /**
      * Make button action.
      */
-    public static function button(string $route = '', string $method = 'GET', string $title = '', string $icon = '', string $class = 'btn', array $attrs = []): static
+    public static function button(string $route = '', string $method = 'GET', string $title = '', string $icon = '', array $attrs = []): static
     {
         return static::make()
-            ->do(function ($row) use ($route, $method, $title, $icon, $class, $attrs) {
+            ->do(function ($row) use ($route, $method, $title, $icon, $attrs) {
                 $template = config('livewire-datatable.templates.row-action');
 
                 try {
@@ -53,7 +53,6 @@ class Action
                     'method' => $method,
                     'title' => $title,
                     'icon' => $icon,
-                    'class' => $class,
                     'attrs' => $attrs,
                 ])->render();
             });

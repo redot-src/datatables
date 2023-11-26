@@ -3,7 +3,6 @@
     'method' => 'GET',
     'icon' => '',
     'title' => '',
-    'class' => 'btn',
     'attrs' => [],
 ])
 
@@ -13,7 +12,7 @@
 @endphp
 
 @if ($method === 'GET')
-    <a href="{{ $href }}" @class([$class, 'btn-icon' => $icon]) title="{{ $title }}"
+    <a href="{{ $href }}" @class(['btn', 'btn-icon' => $icon]) title="{{ $title }}"
         @if ($icon) data-bs-toggle="tooltip" data-bs-placement="bottom" @endif {{ $attributes }}
         {!! $attrs !!}>
         {!! $icon ?: $title !!}
@@ -23,7 +22,7 @@
         @csrf
         @method($method)
 
-        <button type="submit" @class([$class, 'btn-icon' => $icon]) title="{{ $title }}"
+        <button type="submit" @class(['btn', 'btn-icon' => $icon]) title="{{ $title }}"
             @if ($icon) data-bs-toggle="tooltip" data-bs-placement="bottom" @endif {{ $attributes }}>
             {!! $icon ?: $title !!}
         </button>
