@@ -71,7 +71,7 @@
     </div>
 
     <div class="card-footer d-flex gap-5 align-items-center justify-content-between">
-        <select class="form-select" wire:model.live="perPage" x-on:change="window.scrollTo(0, document.getElementById('{{ $id }}').offsetTop)">
+        <select class="form-select w-auto" wire:model.live="perPage">
             @foreach ($perPageOptions as $option)
                 <option value="{{ $option }}">{{ $option }}</option>
             @endforeach

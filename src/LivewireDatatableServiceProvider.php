@@ -14,7 +14,6 @@ class LivewireDatatableServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'livewire-datatable');
         $this->mergeConfigFrom(__DIR__.'/../config/livewire-datatable.php', 'livewire-datatable');
-        $this->loadJsonTranslationsFrom(__DIR__.'/../lang');
 
         $this->publishes([
             __DIR__.'/../resources/views' => $this->app->resourcePath('views/vendor/livewire-datatable'),
@@ -24,15 +23,9 @@ class LivewireDatatableServiceProvider extends ServiceProvider
             __DIR__.'/../config/livewire-datatable.php' => $this->app->configPath('livewire-datatable.php'),
         ], 'livewire-datatable-config');
 
-        $this->publishes([
-            __DIR__.'/../lang' => $this->app->langPath('lang/vendor/livewire-datatable'),
-        ], 'livewire-datatable-lang');
-
         $this->commands([
             Console\MakeDatatableCommand::class,
         ]);
-
-        Livewire::component('livewire-datatable', Datatable::class);
     }
 
     /**
