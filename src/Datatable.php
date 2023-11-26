@@ -12,16 +12,6 @@ abstract class Datatable extends Component
     use WithPagination;
 
     /**
-     * Create button.
-     */
-    public string|bool $create = false;
-
-    /**
-     * Create button route.
-     */
-    public string|bool $applyRouteToCreate = true;
-
-    /**
      * Fixed header.
      */
     public bool $fixedHeader = false;
@@ -93,7 +83,7 @@ abstract class Datatable extends Component
      */
     public function paginationView(): string
     {
-        return config('livewire-datatable.pagination_view');
+        return config('livewire-datatable.pagination_view', 'livewire-datatable::pagination.default');
     }
 
     /**
@@ -101,7 +91,7 @@ abstract class Datatable extends Component
      */
     public function paginationSimpleView(): string
     {
-        return config('livewire-datatable.pagination_simple_view');
+        return config('livewire-datatable.pagination_simple_view', 'livewire-datatable::pagination.simple');
     }
 
     /**
@@ -227,10 +217,6 @@ abstract class Datatable extends Component
      */
     public function render()
     {
-        if ($this->create !== false && $this->applyRouteToCreate === true) {
-            $this->create = route($this->create);
-        }
-
         return view($this->template(), $this->params());
     }
 }

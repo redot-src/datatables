@@ -10,11 +10,6 @@ use Redot\LivewireDatatable\Datatable;
 class {{ class }} extends DataTable
 {
     /**
-     * Create button.
-     */
-    public string|bool $create = false;
-
-    /**
      * Query builder.
      */
     public function query(): Builder
