@@ -10,9 +10,7 @@
 @endphp
 
 <a href="{{ $href }}" class="dropdown-item" {{ $attributes }} {!! $attrs !!}>
-    @if ($icon && str_starts_with($icon, '<'))
-        {!! $icon !!}
-    @elseif ($icon)
+    @if ($icon)
         <i @class([$icon, 'icon', 'dropdown-item-icon'])></i>
     @endif
 

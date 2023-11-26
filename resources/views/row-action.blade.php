@@ -15,7 +15,12 @@
     <a href="{{ $href }}" @class(['btn', 'btn-icon' => $icon]) title="{{ $title }}"
         @if ($icon) data-bs-toggle="tooltip" data-bs-placement="bottom" @endif {{ $attributes }}
         {!! $attrs !!}>
-        {!! $icon ?: $title !!}
+
+        @if ($icon)
+            <i class="{{ $icon }} icon"></i>
+        @endif
+
+        {{ $title }}
     </a>
 @else
     <form action="{{ $href }}" method="POST" class="m-0" {!! $attrs !!}>
@@ -24,7 +29,12 @@
 
         <button type="submit" @class(['btn', 'btn-icon' => $icon]) title="{{ $title }}"
             @if ($icon) data-bs-toggle="tooltip" data-bs-placement="bottom" @endif {{ $attributes }}>
-            {!! $icon ?: $title !!}
+
+            @if ($icon)
+                <i class="{{ $icon }} icon"></i>
+            @endif
+
+            {{ $title }}
         </button>
     </form>
 @endif

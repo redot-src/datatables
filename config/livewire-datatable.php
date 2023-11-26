@@ -25,14 +25,14 @@ return [
     ],
 
     'icons' => [
-        'search' => '<i class="fa fa-search"></i>',
-        'actions' => '<i class="fa fa-cog text-muted"></i>',
-        'sort-none' => '<i class="fa fa-sort"></i>',
-        'sort-asc' => '<i class="fa fa-sort-up"></i>',
-        'sort-desc' => '<i class="fa fa-sort-down"></i>',
-        'create' => '<i class="fa fa-plus dropdown-item-icon"></i>',
-        'edit' => '<i class="fa fa-edit"></i>',
-        'view' => '<i class="fa fa-eye"></i>',
-        'delete' => '<i class="fa fa-trash"></i>',
+        'search' => 'fa fa-search',
+        'actions' => 'fa fa-cog text-muted',
+        'sort-none' => 'fa fa-sort',
+        'sort-asc' => 'fa fa-sort-up',
+        'sort-desc' => 'fa fa-sort-down',
+        'create' => 'fa fa-plus',
+        'edit' => 'fa fa-edit',
+        'view' => 'fa fa-eye',
+        'delete' => 'fa fa-trash',
     ],
 ];

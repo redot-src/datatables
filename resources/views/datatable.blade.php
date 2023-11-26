@@ -21,15 +21,15 @@
                     <div class="input-icon">
                         <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search...') }}" />
                         <span class="input-icon-addon">
-                            {!! config('livewire-datatable.icons.search') !!}
+                            <i class="{{ config('livewire-datatable.icons.search') }}"></i>
                         </span>
                     </div>
                 @endif
 
                 @if (count($headerButtons) > 0)
                     <div class="dropdown">
-                        <a href="#" class="btn dropdown-toggle  align-text-top" data-bs-toggle="dropdown">
-                            {!! config('livewire-datatable.icons.actions') !!}
+                        <a href="#" class="btn dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="{{ config('livewire-datatable.icons.actions') }}"></i>
                             <span class="ms-2">{{ __('Actions') }}</span>
                         </a>
 
@@ -55,7 +55,7 @@
                                     {{ $column->label }}
 
                                     @php $icon = $sortField === $column->field ? $sortDirection : 'none'; @endphp
-                                    {!! config('livewire-datatable.icons.sort-' . $icon) !!}
+                                    <i class="ms-1 {{ config('livewire-datatable.icons.sort-' . $icon) }}"></i>
                                 </a>
                             @else
                                 {{ $column->label }}
