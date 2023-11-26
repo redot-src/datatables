@@ -109,9 +109,9 @@
 
             <div class="text-muted">
                 {{ __('Showing') }}
-                <span class="fw-bold">{{ $rows->firstItem() }}</span>
+                <span class="fw-bold">{{ $rows->firstItem() ?: 0 }}</span>
                 {{ __('to') }}
-                <span class="fw-bold">{{ $rows->lastItem() }}</span>
+                <span class="fw-bold">{{ $rows->lastItem() ?: 0 }}</span>
                 {{ __('of') }}
                 <span class="fw-bold">{{ $rows->total() }}</span>
                 {{ __('results') }}
