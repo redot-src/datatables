@@ -4,7 +4,17 @@
 @endphp
 
 <div class="card livewire-datatable" @style(['max-height: ' . $maxHeight]) id="{{ $id }}">
-    <div class="card-header d-flex justify-content-end gap-2">
+    <div class="card-header d-flex flex-wrap justify-content-between gap-2">
+        <div>
+            @if ($title)
+                <h3 class="card-title">{{ $title }}</h3>
+            @endif
+
+            @if ($subtitle)
+                <h5 class="card-subtitle text-muted">{{ $subtitle }}</h5>
+            @endif
+        </div>
+
         @if ($searchable)
             <div class="input-icon">
                 <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search...') }}" />

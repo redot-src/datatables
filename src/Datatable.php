@@ -12,6 +12,16 @@ abstract class Datatable extends Component
     use WithPagination;
 
     /**
+     * Datatable title.
+     */
+    public string $title = '';
+
+    /**
+     * Datatable subtitle.
+     */
+    public string $subtitle = '';
+
+    /**
      * Fixed header.
      */
     public bool $fixedHeader = false;
@@ -208,6 +218,9 @@ abstract class Datatable extends Component
 
         $searchables = array_filter($this->columns(), fn ($column) => $column->searchable === true);
         $params['searchable'] = count($searchables) > 0;
+
+        // If there is a title, subtitle or searchable columns, we need a header
+        $params['headerable'] = $this->title || $this->subtitle || $params['searchable'];
 
         return $params;
     }
