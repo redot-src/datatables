@@ -5,7 +5,7 @@
 
 <div class="card livewire-datatable" @style(['max-height: ' . $maxHeight]) id="{{ $id }}">
     @if ($headerable)
-        <div class="card-header d-flex flex-wrap justify-content-between gap-2">
+        <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
             <div>
                 @if ($title)
                     <h3 class="card-title">{{ $title }}</h3>
@@ -16,7 +16,7 @@
                 @endif
             </div>
 
-            <div class="d-flex flex-wrap gap-2">
+            <div class="d-flex gap-2">
                 @if ($searchable)
                     <div class="input-icon">
                         <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search...') }}" />
@@ -27,8 +27,8 @@
                 @endif
 
                 @if (count($headerButtons) > 0)
-                    <div class="dropdown">
-                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-expanded="false">
+                    <span class="dropdown">
+                        <button class="btn dropdown-toggle  align-text-top" type="button" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-expanded="false">
                             {!! config('livewire-datatable.icons.actions') !!}
                             <span class="ms-2">{{ __('Actions') }}</span>
                         </button>
@@ -38,7 +38,7 @@
                                 <li>{!! $button->render() !!}</li>
                             @endforeach
                         </ul>
-                    </div>
+                    </span>
                 @endif
             </div>
         </div>

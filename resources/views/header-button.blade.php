@@ -13,10 +13,10 @@
     @if ($icon && str_starts_with($icon, '<'))
         {!! $icon !!}
     @elseif ($icon)
-        <i @class([$icon, 'dropdown-item-icon'])></i>
+        <i @class([$icon, 'icon', 'dropdown-item-icon'])></i>
     @endif
 
     @if ($title)
-        {{ $title }}
+        <span>{{ $title }}</span>
     @endif
 </a>
