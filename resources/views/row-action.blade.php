@@ -12,13 +12,14 @@
 @endphp
 
 @if ($method === 'GET')
-    <a href="{{ $href }}" class="dropdown-item" {{ $attributes }} {!! $attrs !!}>
-        @if ($icon)
-            <i @class([$icon, 'icon', 'dropdown-item-icon'])></i>
-        @endif
+    <a href="{{ $href }}" @class(['btn', 'btn-icon' => $icon]) title="{{ $title }}"
+        @if ($icon) data-bs-toggle="tooltip" data-bs-placement="bottom" @endif {{ $attributes }}
+        {!! $attrs !!}>
 
-        @if ($title)
-            <span>{{ $title }}</span>
+        @if ($icon)
+            <i class="{{ $icon }}"></i>
+        @else
+            {{ $title }}
         @endif
     </a>
 @else
@@ -26,7 +27,9 @@
         @csrf
         @method($method)
 
-        <button type="submit" class="dropdown-item" {{ $attributes }}>
+        <button type="submit" @class(['btn', 'btn-icon' => $icon]) title="{{ $title }}"
+            @if ($icon) data-bs-toggle="tooltip" data-bs-placement="bottom" @endif {{ $attributes }}>
+
             @if ($icon)
                 <i class="{{ $icon }}"></i>
             @else

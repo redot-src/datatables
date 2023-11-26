@@ -80,16 +80,10 @@
 
                         @if ($actions)
                             <td style="position: sticky; inset-inline-end: 0; background: var(--tblr-card-bg); box-shadow: inset 1px 0 var(--tblr-card-border-color)">
-                                <div class="dropdown">
-                                    <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="{{ config('livewire-datatable.icons.actions') }}"></i>
-                                    </button>
-
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        @foreach ($actions as $action)
-                                            <li>{!! $action->render($row) !!}</li>
-                                        @endforeach
-                                    </ul>
+                                <div class="d-flex gap-1">
+                                    @foreach ($actions as $action)
+                                        {!! $action->render($row) !!}
+                                    @endforeach
                                 </div>
                             </td>
                         @endif
