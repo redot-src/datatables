@@ -31,7 +31,7 @@ class HeaderButton
     /**
      * Make button action.
      */
-    public static function button(string $route = '', string $title = '', string $icon = '', string $class = '', array $attrs = []): static
+    public static function button(string $route = '', string $title = '', string $icon = '', string $class = 'btn', array $attrs = []): static
     {
         return static::make()
             ->do(function ($row) use ($route, $title, $icon, $class, $attrs) {

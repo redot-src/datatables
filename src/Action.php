@@ -36,7 +36,7 @@ class Action
     /**
      * Make button action.
      */
-    public static function button(string $route = '', string $method = 'GET', string $title = '', string $icon = '', string $class = '', array $attrs = []): static
+    public static function button(string $route = '', string $method = 'GET', string $title = '', string $icon = '', string $class = 'btn', array $attrs = []): static
     {
         return static::make()
             ->do(function ($row) use ($route, $method, $title, $icon, $class, $attrs) {
