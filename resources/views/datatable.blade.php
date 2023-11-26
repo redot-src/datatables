@@ -87,7 +87,7 @@
 
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         @foreach ($actions as $action)
-                                            <li>{!! $action->render() !!}</li>
+                                            <li>{!! $action->render($row) !!}</li>
                                         @endforeach
                                     </ul>
                                 </div>
