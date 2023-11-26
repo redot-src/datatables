@@ -27,18 +27,18 @@
                 @endif
 
                 @if (count($headerButtons) > 0)
-                    <span class="dropdown">
-                        <button class="btn dropdown-toggle  align-text-top" type="button" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-expanded="false">
+                    <div class="dropdown">
+                        <a href="#" class="btn dropdown-toggle  align-text-top" data-bs-toggle="dropdown">
                             {!! config('livewire-datatable.icons.actions') !!}
                             <span class="ms-2">{{ __('Actions') }}</span>
-                        </button>
+                        </a>
 
                         <ul class="dropdown-menu dropdown-menu-end">
                             @foreach ($headerButtons as $button)
                                 <li>{!! $button->render() !!}</li>
                             @endforeach
                         </ul>
-                    </span>
+                    </div>
                 @endif
             </div>
         </div>
