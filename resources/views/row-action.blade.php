@@ -17,7 +17,7 @@
         {!! $attrs !!}>
 
         @if ($icon)
-            <i class="{{ $icon }}"></i>
+            <i class="{{ $icon }} text-muted"></i>
         @else
             {{ $title }}
         @endif
@@ -31,7 +31,7 @@
             @if ($icon) data-bs-toggle="tooltip" data-bs-placement="bottom" @endif {{ $attributes }}>
 
             @if ($icon)
-                <i class="{{ $icon }}"></i>
+                <i class="{{ $icon }} text-muted"></i>
             @else
                 {{ $title }}
             @endif
