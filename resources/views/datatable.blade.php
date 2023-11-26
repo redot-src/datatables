@@ -1,13 +1,10 @@
-@php $colspan = count($columns) + ($actions ? 1 : 0); @endphp
+@php
+    $id = uniqid('datatable-');
+    $colspan = count($columns) + ($actions ? 1 : 0);
+@endphp
 
-<div class="card livewire-datatable" @style(['max-height: ' . $maxHeight])>
+<div class="card livewire-datatable" @style(['max-height: ' . $maxHeight]) id="{{ $id }}">
     <div class="card-header d-flex justify-content-end gap-2">
-        <select class="form-select w-auto" wire:model.live="perPage">
-            @foreach ($perPageOptions as $option)
-                <option value="{{ $option }}">{{ $option }}</option>
-            @endforeach
-        </select>
-
         @if ($searchable)
             <div class="input-icon">
                 <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search...') }}" />
@@ -73,9 +70,13 @@
         </table>
     </div>
 
-    @if ($rows->hasPages())
-        <div class="card-footer">
-            <div class="my-1">{{ $rows->links() }}</div>
-        </div>
-    @endif
+    <div class="card-footer d-flex gap-5 align-items-center justify-content-between">
+        <select class="form-select" wire:model.live="perPage" x-on:change="window.scrollTo(0, document.getElementById('{{ $id }}').offsetTop)">
+            @foreach ($perPageOptions as $option)
+                <option value="{{ $option }}">{{ $option }}</option>
+            @endforeach
+        </select>
+
+        <div class="my-1">{{ $rows->links() }}</div>
+    </div>
 </div>

@@ -10,9 +10,18 @@ return [
     |
     */
 
-    'pagination_view' => 'livewire-datatable::pagination.default',
-    'pagination_simple_view' => 'livewire-datatable::pagination.simple',
-    'template' => 'livewire-datatable::datatable',
+    /**
+     * Datatable templates.
+     */
+    'templates' => [
+        'datatable' => 'livewire-datatable::datatable',
+        'row-action' => 'livewire-datatable::row-action',
+
+        'pagination' => [
+            'default' => 'livewire-datatable::pagination.default',
+            'simple' => 'livewire-datatable::pagination.simple',
+        ],
+    ],
 
     'icons' => [
         'search' => '<i class="fa fa-search"></i>',

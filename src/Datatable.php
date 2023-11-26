@@ -83,7 +83,7 @@ abstract class Datatable extends Component
      */
     public function paginationView(): string
     {
-        return config('livewire-datatable.pagination_view', 'livewire-datatable::pagination.default');
+        return config('livewire-datatable.templates.pagination.default');
     }
 
     /**
@@ -91,7 +91,7 @@ abstract class Datatable extends Component
      */
     public function paginationSimpleView(): string
     {
-        return config('livewire-datatable.pagination_simple_view', 'livewire-datatable::pagination.simple');
+        return config('livewire-datatable.templates.pagination.simple');
     }
 
     /**
@@ -99,7 +99,7 @@ abstract class Datatable extends Component
      */
     public function template(): string
     {
-        return config('livewire-datatable.template', 'livewire-datatable::datatable');
+        return config('livewire-datatable.templates.datatable');
     }
 
     /**

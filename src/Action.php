@@ -3,6 +3,7 @@
 namespace Redot\LivewireDatatable;
 
 use Closure;
+use Exception;
 use Illuminate\Support\Traits\Macroable;
 
 class Action
@@ -35,13 +36,23 @@ class Action
     public static function button(string $route = '', string $method = 'GET', string $title = '', string $icon = '', array $attrs = []): static
     {
         return static::make()
-            ->do(fn ($row) => view('livewire-datatable::action', [
-                'url' => route($route, array_merge(request()->route()->parameters(), [$row])),
-                'method' => $method,
-                'title' => $title,
-                'icon' => $icon,
-                'attrs' => $attrs,
-            ])->render());
+            ->do(function ($row) use ($route, $method, $title, $icon, $attrs) {
+                $template = config('livewire-datatable.templates.row-action');
+
+                try {
+                    $url = route($route, array_merge(request()->route()->parameters(), [$row]));
+                } catch (Exception $e) {
+                    $url = $route;
+                }
+
+                return view($template, [
+                    'url' => $url,
+                    'method' => $method,
+                    'title' => $title,
+                    'icon' => $icon,
+                    'attrs' => $attrs,
+                ])->render();
+            });
     }
 
     /**
