@@ -19,7 +19,7 @@
             <div class="d-flex gap-2">
                 @if ($searchable)
                     <div class="input-icon">
-                        <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search...') }}" />
+                        <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search') }}..." />
                         <span class="input-icon-addon">
                             <i class="{{ config('livewire-datatable.icons.search') }}"></i>
                         </span>
@@ -100,20 +100,22 @@
     </div>
 
     <div class="card-footer d-flex gap-5 align-items-center justify-content-between">
-        <select class="form-select w-auto" wire:model.live="perPage">
-            @foreach ($perPageOptions as $option)
-                <option value="{{ $option }}">{{ $option }}</option>
-            @endforeach
-        </select>
+        <div class="d-flex gap-2 align-items-center">
+            <select class="form-select w-auto" wire:model.live="perPage">
+                @foreach ($perPageOptions as $option)
+                    <option value="{{ $option }}">{{ $option }}</option>
+                @endforeach
+            </select>
 
-        <div class="text-muted">
-            {{ __('Showing') }}
-            <span class="fw-bold">{{ $rows->firstItem() }}</span>
-            {{ __('to') }}
-            <span class="fw-bold">{{ $rows->lastItem() }}</span>
-            {{ __('of') }}
-            <span class="fw-bold">{{ $rows->total() }}</span>
-            {{ __('results') }}
+            <div class="text-muted">
+                {{ __('Showing') }}
+                <span class="fw-bold">{{ $rows->firstItem() }}</span>
+                {{ __('to') }}
+                <span class="fw-bold">{{ $rows->lastItem() }}</span>
+                {{ __('of') }}
+                <span class="fw-bold">{{ $rows->total() }}</span>
+                {{ __('results') }}
+            </div>
         </div>
 
         <div class="my-1">{{ $rows->links() }}</div>
