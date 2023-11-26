@@ -7,7 +7,6 @@
 ])
 
 @php
-    $method = strtoupper($method);
     $attrs = collect($attrs)->map(fn($v, $k) => $k . '="' . $v . '"')->implode(' ');
 @endphp
 
