@@ -29,6 +29,7 @@ return [
         'sort-none' => '<i class="fa fa-sort"></i>',
         'sort-asc' => '<i class="fa fa-sort-up"></i>',
         'sort-desc' => '<i class="fa fa-sort-down"></i>',
+        'create' => '<i class="fa fa-plus"></i>',
         'edit' => '<i class="fa fa-edit"></i>',
         'view' => '<i class="fa fa-eye"></i>',
         'delete' => '<i class="fa fa-trash"></i>',

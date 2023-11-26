@@ -53,6 +53,17 @@ class HeaderButton
             });
     }
 
+    public static function create(string $route)
+    {
+        return static::button(
+            route: $route,
+            title: __('Create'),
+            icon: config('livewire-datatable.icons.create'),
+            class: 'btn btn-primary',
+            attrs: ['datatable-action' => 'create'],
+        );
+    }
+
     /**
      * Set action callback.
      */
