@@ -40,13 +40,13 @@ class Action
                 $template = config('livewire-datatable.templates.row-action');
 
                 try {
-                    $url = route($route, array_merge(request()->route()->parameters(), [$row]));
+                    $href = route($route, array_merge(request()->route()->parameters(), [$row]));
                 } catch (Exception $e) {
-                    $url = $route;
+                    $href = $route;
                 }
 
                 return view($template, [
-                    'url' => $url,
+                    'href' => $href,
                     'method' => $method,
                     'title' => $title,
                     'icon' => $icon,
