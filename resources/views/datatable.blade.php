@@ -17,10 +17,6 @@
             </div>
 
             <div class="d-flex flex-wrap gap-2">
-                @foreach ($headerButtons as $button)
-                    {!! $button->render() !!}
-                @endforeach
-
                 @if ($searchable)
                     <div class="input-icon">
                         <input type="text" wire:model.live="search" class="form-control" placeholder="{{ __('Search...') }}" />
@@ -29,6 +25,10 @@
                         </span>
                     </div>
                 @endif
+
+                @foreach ($headerButtons as $button)
+                    {!! $button->render() !!}
+                @endforeach
             </div>
         </div>
     @endif
