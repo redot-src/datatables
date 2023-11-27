@@ -64,7 +64,7 @@
                     @endforeach
 
                     @if ($actions)
-                        <th datatable-actions>{{ __('Actions') }}</th>
+                        <th style="width: 1%" datatable-actions>{{ __('Actions') }}</th>
                     @endif
                 </tr>
             </thead>
