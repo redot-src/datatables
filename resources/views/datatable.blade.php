@@ -64,7 +64,7 @@
                     @endforeach
 
                     @if ($actions)
-                        <th style="width: 1%; position: sticky; inset-inline-end: 0; box-shadow: inset 1px 0 var(--tblr-card-border-color); text-align: center">{{ __('Actions') }}</th>
+                        <th datatable-actions>{{ __('Actions') }}</th>
                     @endif
                 </tr>
             </thead>
@@ -79,7 +79,7 @@
                         @endforeach
 
                         @if ($actions)
-                            <td style="position: sticky; inset-inline-end: 0; background: var(--tblr-card-bg); box-shadow: inset 1px 0 var(--tblr-card-border-color)">
+                            <td datatable-actions>
                                 <div class="d-flex gap-1">
                                     @foreach ($actions as $action)
                                         {!! $action->render($row) !!}
