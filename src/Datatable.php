@@ -51,13 +51,13 @@ abstract class Datatable extends Component
      * Sort field.
      */
     #[Url]
-    public string $sortField = '';
+    public string $sortField = 'id';
 
     /**
      * Sort direction.
      */
     #[Url]
-    public string $sortDirection = 'asc';
+    public string $sortDirection = 'desc';
 
     /**
      * Per page.

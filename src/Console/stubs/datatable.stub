@@ -59,6 +59,8 @@ class {{ class }} extends DataTable
      */
     public function headerButtons(): array
     {
-        return [];
+        return [
+            //
+        ];
     }
 }
