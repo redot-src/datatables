@@ -29,6 +29,18 @@ class {{ class }} extends DataTable
     }
 
     /**
+     * Data table header buttons.
+     *
+     * @return HeaderButton[]
+     */
+    public function headerButtons(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    /**
      * Data table columns.
      *
      * @return Column[]
@@ -46,18 +58,6 @@ class {{ class }} extends DataTable
      * @return Action[]
      */
     public function actions(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    /**
-     * Data table header buttons.
-     *
-     * @return HeaderButton[]
-     */
-    public function headerButtons(): array
     {
         return [
             //

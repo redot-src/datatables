@@ -76,6 +76,16 @@ abstract class Datatable extends Component
     abstract public function query(): Builder;
 
     /**
+     * Data table header buttons.
+     *
+     * @return HeaderButton[]
+     */
+    public function headerButtons(): array
+    {
+        return [];
+    }
+
+    /**
      * Data table columns.
      *
      * @return Column[]
@@ -88,16 +98,6 @@ abstract class Datatable extends Component
      * @return Action[]
      */
     public function actions(): array
-    {
-        return [];
-    }
-
-    /**
-     * Data table header buttons.
-     *
-     * @return HeaderButton[]
-     */
-    public function headerButtons(): array
     {
         return [];
     }

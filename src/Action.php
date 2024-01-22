@@ -36,14 +36,15 @@ class Action
     /**
      * Make button action.
      */
-    public static function button(string $route = '', string $method = 'GET', string $title = '', string $icon = '', array $attrs = []): static
+    public static function button(string $route = '', array $routeParams = [], string $method = 'GET', string $title = '', string $icon = '', array $attrs = []): static
     {
         return static::make()
-            ->do(function ($row) use ($route, $method, $title, $icon, $attrs) {
+            ->do(function ($row) use ($route, $routeParams, $method, $title, $icon, $attrs) {
                 $template = config('livewire-datatable.templates.row-action');
 
                 try {
-                    $href = route($route, array_merge(request()->route()->parameters(), [$row]));
+                    $routeParams = $routeParams ?: request()->route()->parameters();
+                    $href = route($route, array_merge($routeParams, [$row]));
                 } catch (Exception) {
                     $href = $route;
                 }
@@ -61,10 +62,11 @@ class Action
     /**
      * Make view action.
      */
-    public static function view(string $route): static
+    public static function view(string $route, array $routeParams = []): static
     {
         return static::button(
             route: $route,
+            routeParams: $routeParams,
             method: 'GET',
             title: __('View'),
             icon: config('livewire-datatable.icons.view'),
@@ -75,10 +77,11 @@ class Action
     /**
      * Make edit action.
      */
-    public static function edit(string $route): static
+    public static function edit(string $route, array $routeParams = []): static
     {
         return static::button(
             route: $route,
+            routeParams: $routeParams,
             method: 'GET',
             title: __('Edit'),
             icon: config('livewire-datatable.icons.edit'),
@@ -89,10 +92,11 @@ class Action
     /**
      * Make delete action.
      */
-    public static function delete(string $route): static
+    public static function delete(string $route, array $routeParams = []): static
     {
         return static::button(
             route: $route,
+            routeParams: $routeParams,
             method: 'DELETE',
             title: __('Delete'),
             icon: config('livewire-datatable.icons.delete'),
