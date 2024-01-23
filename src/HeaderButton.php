@@ -31,14 +31,14 @@ class HeaderButton
     /**
      * Make button action.
      */
-    public static function button(string $route = '', string $title = '', string $icon = '', array $attrs = []): static
+    public static function button(string $route = '', array $routeParams = [], string $title = '', string $icon = '', array $attrs = []): static
     {
         return static::make()
-            ->do(function () use ($route, $title, $icon, $attrs) {
+            ->do(function () use ($route, $routeParams, $title, $icon, $attrs) {
                 $template = config('livewire-datatable.templates.header-button');
 
                 try {
-                    $href = route($route, array_merge(request()->route()->parameters()));
+                    $href = route($route, $routeParams ?: request()->route()->parameters());
                 } catch (Exception) {
                     $href = $route;
                 }
@@ -52,10 +52,11 @@ class HeaderButton
             });
     }
 
-    public static function create(string $route)
+    public static function create(string $route, array $routeParams = []): static
     {
         return static::button(
             route: $route,
+            routeParams: $routeParams,
             title: __('Create'),
             icon: config('livewire-datatable.icons.create'),
             attrs: ['datatable-action' => 'create'],
