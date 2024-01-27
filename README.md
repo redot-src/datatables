@@ -4,8 +4,6 @@ Livewire Datatable is a package that allows you to create a table with sorting, 
 
 **Note:** This package doesn't include any CSS or JS files. You need to install [Tabler](https://tabler.io/) yourself, or publish the views and modify them to use your own CSS and JS files.
 
-**Another Note:** This packages designed to work with [Redot Dashboard](https://github.com/redot-src/laravel-dashboard), but it can be used as a standalone package.
-
 ## Installation
 
 You can install the package via composer:
