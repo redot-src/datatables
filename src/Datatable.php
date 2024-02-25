@@ -175,16 +175,33 @@ abstract class Datatable extends Component
 
         $query->where(function ($query) {
             foreach ($this->columns() as $column) {
-                if ($column->searchable === true && $column->field !== null) {
-                    if (! is_callable($column->where)) {
-                        $query->orWhere($column->field, 'like', '%'.$this->search.'%');
+                // Skip non-searchable columns.
+                if (! $column->searchable || $column->field === null) {
+                    continue;
+                }
 
-                        continue;
-                    }
-
+                // Apply custom where clause.
+                if (is_callable($column->where)) {
                     $callable = $column->where;
                     $callable($query, $this->search);
+
+                    continue;
                 }
+
+                // Apply relation where clause.
+                if (strpos($column->field, '.') !== false) {
+                    $relation = explode('.', $column->field);
+                    $field = array_pop($relation);
+
+                    $query->orWhereHas(implode('.', $relation), function ($query) use ($field) {
+                        $query->where($field, 'like', '%'.$this->search.'%');
+                    });
+
+                    continue;
+                }
+
+                // Apply default where clause.
+                $query->orWhere($column->field, 'like', '%'.$this->search.'%');
             }
         });
     }
