@@ -4,6 +4,8 @@ namespace Redot\LivewireDatatable;
 
 use Closure;
 use Illuminate\Support\Traits\Macroable;
+use Redot\LivewireDatatable\Exceptions\CannotSortNullColumnException;
+use Redot\LivewireDatatable\Exceptions\CannotSortRelationalColumnException;
 
 class Column
 {
@@ -102,21 +104,29 @@ class Column
     }
 
     /**
-     * Make column sortable.
-     */
-    public function sortable(bool $sortable = true): static
-    {
-        $this->sortable = $sortable;
-
-        return $this;
-    }
-
-    /**
      * Set column where clause.
      */
     public function searchUsing(Closure $where): static
     {
         $this->where = $where;
+
+        return $this;
+    }
+
+    /**
+     * Make column sortable.
+     */
+    public function sortable(bool $sortable = true): static
+    {
+        if ($sortable && $this->field === null) {
+            throw new CannotSortNullColumnException();
+        }
+
+        if ($sortable && strpos($this->field, '.') !== false) {
+            throw new CannotSortRelationalColumnException();
+        }
+
+        $this->sortable = $sortable;
 
         return $this;
     }
