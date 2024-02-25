@@ -74,7 +74,7 @@ if (! function_exists('__')) {
      *
      * @return \Illuminate\Contracts\Translation\Translator|string|array|null
      */
-    function __(string $key = null, array $replace = [], string $locale = null)
+    function __(?string $key = null, array $replace = [], ?string $locale = null)
     {
         $factory = \Illuminate\Support\Facades\App::make(\Illuminate\Contracts\Translation\Translator::class);
 

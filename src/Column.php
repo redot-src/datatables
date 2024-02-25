@@ -57,7 +57,7 @@ class Column
     /**
      * Column constructor.
      */
-    public function __construct(string $label, string $field = null)
+    public function __construct(string $label, ?string $field = null)
     {
         $this->label = $label;
         $this->field = $field;
@@ -66,7 +66,7 @@ class Column
     /**
      * Make new column.
      */
-    public static function make(string $label, string $field = null): static
+    public static function make(string $label, ?string $field = null): static
     {
         return new static($label, $field);
     }
