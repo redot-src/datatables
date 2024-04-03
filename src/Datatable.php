@@ -176,8 +176,12 @@ abstract class Datatable extends Component
         $query->where(function ($query) {
             foreach ($this->columns() as $column) {
                 if ($column->searchable === true && $column->field !== null) {
-                    if (! is_callable($column->where)) {
-                        $query->orWhere($column->field, 'like', '%'.$this->search.'%');
+                    if (!is_callable($column->where)) {
+                        if (strpos($column->field, '.') !== false) {
+                            $this->searchWithRelation($query, $column);
+                        } else {
+                            $query->orWhere($column->field, 'like', '%' . $this->search . '%');
+                        }
 
                         continue;
                     }
@@ -190,6 +194,18 @@ abstract class Datatable extends Component
     }
 
     /**
+     * Search with relation.
+     */
+    protected function searchWithRelation(Builder $query, Column $column): void
+    {
+        [$relation, $field] = explode('.', $column->field, 2);
+
+        $query->orWhereHas($relation, function ($query) use ($field) {
+            $query->where($field, 'like', '%' . $this->search . '%');
+        });
+    }
+
+    /**
      * Sort the query.
      */
     public function applySort(Builder $query): void
@@ -198,7 +214,23 @@ abstract class Datatable extends Component
             return;
         }
 
-        $query->orderBy($this->sortField, $this->sortDirection);
+        if (strpos($this->sortField, '.') !== false) {
+            $this->sortWithRelation($query);
+        } else {
+            $query->orderBy($this->sortField, $this->sortDirection);
+        }
+    }
+
+    /**
+     * Sort with relation.
+     */
+    protected function sortWithRelation(Builder $query): void
+    {
+        $relations = explode('.', $this->sortField);
+        $field = array_pop($relations);
+
+        $query->withAggregate($relations, $field);
+        $query->orderBy(implode('_', $relations) . '_' . $field, $this->sortDirection);
     }
 
     /**
