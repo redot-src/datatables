@@ -57,6 +57,7 @@ class MakeDatatableCommand extends GeneratorCommand
     protected function getOptions()
     {
         return [
+            ['model', 'm', InputOption::VALUE_OPTIONAL, 'The model that the datatable represents'],
             ['force', 'f', InputOption::VALUE_NONE, 'Create the class even if the datatable already exists'],
         ];
     }
@@ -87,7 +88,11 @@ class MakeDatatableCommand extends GeneratorCommand
      */
     protected function replaceModel(&$stub)
     {
-        $model = $this->ask('What is the model name? (e.g. App\Models\User)');
+        if ($this->option('model')) {
+            $model = $this->option('model');
+        } else {
+            $model = $this->ask('What is the model name? (e.g. App\Models\User)');
+        }
 
         if (! class_exists($model)) {
             $model = $this->rootNamespace().'Models\\'.$model;
@@ -95,6 +100,9 @@ class MakeDatatableCommand extends GeneratorCommand
 
         if (! class_exists($model)) {
             $this->error('Model does not exist!');
+
+            // Remove the model option to avoid infinite loop
+            $this->input->setOption('model', null);
 
             return $this->replaceModel($stub);
         }
