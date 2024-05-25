@@ -19,4 +19,18 @@ interface Datatable
      * @return Column[]
      */
     public function columns(): array;
+
+    /**
+     * Get the filters for the datatable.
+     *
+     * @return Filter[]
+     */
+    public function filters(): array;
+
+    /**
+     * Get the actions for the datatable.
+     *
+     * @return Action[]
+     */
+    public function actions(): array;
 }
