@@ -11,63 +11,63 @@ class TextColumn extends Column
      *
      * @var string
      */
-    protected string $type = 'text';
+    public string $type = 'text';
 
     /**
      * Text prefix for the column.
      *
      * @var string
      */
-    protected string $prefix = '';
+    public string $prefix = '';
 
     /**
      * Text suffix for the column.
      *
      * @var string
      */
-    protected string $suffix = '';
+    public string $suffix = '';
 
     /**
      * Determine if the text is email.
      *
      * @var bool
      */
-    protected bool $email = false;
+    public bool $email = false;
 
     /**
      * Determine if the text is phone number.
      *
      * @var bool
      */
-    protected bool $phone = false;
+    public bool $phone = false;
 
     /**
      * Determine if the text is URL.
      *
      * @var bool
      */
-    protected bool $url = false;
+    public bool $url = false;
 
     /**
      * Determine if the URL is external.
      *
      * @var bool
      */
-    protected bool $external = false;
+    public bool $external = false;
 
     /**
      * Truncate text based on character count.
      *
      * @var int|null
      */
-    protected int|null $truncate = null;
+    public int|null $truncate = null;
 
     /**
      * Truncate text based on word count.
      *
      * @var int|null
      */
-    protected int|null $wordCount = null;
+    public int|null $wordCount = null;
 
     /**
      * Set the column's prefix.

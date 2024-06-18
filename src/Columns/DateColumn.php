@@ -12,7 +12,7 @@ class DateColumn extends Column
      *
      * @var string
      */
-    protected string $type = 'date';
+    public string $type = 'date';
 
     /**
      * Datetime format.
@@ -47,7 +47,7 @@ class DateColumn extends Column
      *
      * @var string
      */
-    protected string $format = self::DATETIME_FORMAT;
+    public string $format = self::DATETIME_FORMAT;
 
     /**
      * Set the column's date format.

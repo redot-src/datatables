@@ -16,133 +16,133 @@ class Column implements ColumnContract
      *
      * @var string
      */
-    protected string|null $type = null;
+    public string|null $type = null;
 
     /**
      * The column's name.
      *
      * @var string
      */
-    protected string|null $name = null;
+    public string|null $name = null;
 
     /**
      * Determine if the column is a relationship.
      *
      * @var bool
      */
-    protected bool $relationship = false;
+    public bool $relationship = false;
 
     /**
      * The column's label.
      *
      * @var string
      */
-    protected string|null $label = null;
+    public string|null $label = null;
 
     /**
      * The column label class.
      *
      * @var string
      */
-    protected string $class = '';
+    public string $class = '';
 
     /**
      * The column css styles.
      *
      * @var array<string, string>
      */
-    protected array $css = [];
+    public array $css = [];
 
     /**
      * The column html attributes.
      *
      * @var array<string, string>
      */
-    protected array $attributes = [];
+    public array $attributes = [];
 
     /**
      * The column's width.
      *
      * @var string
      */
-    protected string $width = 'auto';
+    public string $width = 'auto';
 
     /**
      * Determine if the column is a fixed column.
      *
      * @var bool
      */
-    protected bool $fixed = false;
+    public bool $fixed = false;
 
     /**
      * Determine if the column content is HTML.
      *
      * @var bool
      */
-    protected bool $html = false;
+    public bool $html = false;
 
     /**
      * The column's default value.
      *
      * @var mixed
      */
-    protected mixed $default = null;
+    public mixed $default = null;
 
     /**
      * Determine if the column is sortable.
      *
      * @var bool
      */
-    protected bool $sortable = false;
+    public bool $sortable = false;
 
     /**
      * Determine if the column is searchable.
      *
      * @var bool
      */
-    protected bool $searchable = false;
+    public bool $searchable = false;
 
     /**
      * The searching method for the column.
      *
      * @var Closure|null
      */
-    protected Closure|null $searcher = null;
+    public Closure|null $searcher = null;
 
     /**
      * Determine if the column is visible.
      *
      * @var bool
      */
-    protected bool $visible = true;
+    public bool $visible = true;
 
     /**
      * Determine if the column is editable.
      *
      * @var bool
      */
-    protected bool $editable = false;
+    public bool $editable = false;
 
     /**
      * Determine if the column is exportable.
      *
      * @var bool
      */
-    protected bool $exportable = true;
+    public bool $exportable = true;
 
     /**
      * The getter method for the column.
      *
      * @var Closure|null
      */
-    protected Closure|null $getter = null;
+    public Closure|null $getter = null;
 
     /**
      * The setter method for the column.
      *
      * @var Closure|null
      */
-    protected Closure|null $setter = null;
+    public Closure|null $setter = null;
 
     /**
      * Create a new column instance.
@@ -453,5 +453,15 @@ class Column implements ColumnContract
         data_set($row, $this->name, $value);
 
         $row->save();
+    }
+
+    /**
+     * Get the type of the column.
+     *
+     * @return string|null
+     */
+    public function getType(): string|null
+    {
+        return $this->type;
     }
 }

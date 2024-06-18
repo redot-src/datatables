@@ -11,14 +11,14 @@ class NumericColumn extends Column
      *
      * @var string
      */
-    protected string $type = 'numeric';
+    public string $type = 'numeric';
 
     /**
      * The column's precision.
      *
      * @var int|null
      */
-    protected int|null $precision = null;
+    public int|null $precision = null;
 
     /**
      * Set the column's precision.
