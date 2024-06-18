@@ -5,6 +5,9 @@ namespace Redot\Datatables;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Traits\Macroable;
 use Livewire\Component;
+use Redot\Datatables\Contracts\Column;
+use Redot\Datatables\Contracts\Filter;
+use Redot\Datatables\Contracts\Action;
 use Redot\Datatables\Contracts\Datatable as DatatableContract;
 
 abstract class Datatable extends Component implements DatatableContract
