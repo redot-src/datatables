@@ -359,12 +359,13 @@ class Column implements ColumnContract
     public function get(Model $row): mixed
     {
         $value = $this->name ? data_get($row, $this->name) : $this->default;
+        $value = $this->defaultGetter($value, $row);
 
         if ($this->getter) {
             return call_user_func($this->getter, $value, $row);
         }
 
-        return $this->defaultGetter($value, $row);
+        return $value;
     }
 
     /**
