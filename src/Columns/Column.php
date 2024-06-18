@@ -47,6 +47,20 @@ class Column implements ColumnContract
     protected string $class = '';
 
     /**
+     * The column css styles.
+     *
+     * @var array<string, string>
+     */
+    protected array $css = [];
+
+    /**
+     * The column html attributes.
+     *
+     * @var array<string, string>
+     */
+    protected array $attributes = [];
+
+    /**
      * The column's width.
      *
      * @var string
@@ -195,7 +209,7 @@ class Column implements ColumnContract
     }
 
     /**
-     * Set the column's label class.
+     * Set the column's content class.
      *
      * @param string $class
      * @return $this
@@ -203,6 +217,32 @@ class Column implements ColumnContract
     public function class(string $class): Column
     {
         $this->class = $class;
+
+        return $this;
+    }
+
+    /**
+     * Set the column's content css styles.
+     *
+     * @param array $css
+     * @return $this
+     */
+    public function css(array $css): Column
+    {
+        $this->css = $css;
+
+        return $this;
+    }
+
+    /**
+     * Set the column's content html attributes.
+     *
+     * @param array $attributes
+     * @return $this
+     */
+    public function attributes(array $attributes): Column
+    {
+        $this->attributes = $attributes;
 
         return $this;
     }
