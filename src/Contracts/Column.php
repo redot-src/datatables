@@ -57,6 +57,22 @@ interface Column
     public function fixed(bool $fixed = true): Column;
 
     /**
+     * Set the column as HTML.
+     *
+     * @param bool $html
+     * @return $this
+     */
+    public function html(bool $html = true): Column;
+
+    /**
+     * Set the column's default value.
+     *
+     * @param mixed $default
+     * @return $this
+     */
+    public function default(mixed $default): Column;
+
+    /**
      * Set the column as sortable.
      *
      * @param bool $sortable

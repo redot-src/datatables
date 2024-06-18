@@ -61,6 +61,20 @@ class Column implements ColumnContract
     protected bool $fixed = false;
 
     /**
+     * Determine if the column content is HTML.
+     *
+     * @var bool
+     */
+    protected bool $html = false;
+
+    /**
+     * The column's default value.
+     *
+     * @var mixed
+     */
+    protected mixed $default = null;
+
+    /**
      * Determine if the column is sortable.
      *
      * @var bool
@@ -220,6 +234,32 @@ class Column implements ColumnContract
     }
 
     /**
+     * Set the column as HTML.
+     *
+     * @param bool $html
+     * @return $this
+     */
+    public function html(bool $html = true): Column
+    {
+        $this->html = $html;
+
+        return $this;
+    }
+
+    /**
+     * Set the column's default value.
+     *
+     * @param mixed $default
+     * @return $this
+     */
+    public function default(mixed $default): Column
+    {
+        $this->default = $default;
+
+        return $this;
+    }
+
+    /**
      * Set the column as sortable.
      *
      * @param bool $sortable
@@ -318,7 +358,7 @@ class Column implements ColumnContract
      */
     public function get(Model $row): mixed
     {
-        $value = $this->name ? data_get($row, $this->name) : null;
+        $value = $this->name ? data_get($row, $this->name) : $this->default;
 
         if ($this->getter) {
             return call_user_func($this->getter, $value, $row);
