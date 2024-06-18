@@ -14,11 +14,32 @@ class TextColumn extends Column
     protected string $type = 'text';
 
     /**
-     * Determine whether the text should be truncated.
+     * Text prefix for the column.
+     *
+     * @var string
+     */
+    protected string $prefix = '';
+
+    /**
+     * Text suffix for the column.
+     *
+     * @var string
+     */
+    protected string $suffix = '';
+
+    /**
+     * Truncate text based on character count.
      *
      * @var int|null
      */
     protected int|null $truncate = null;
+
+    /**
+     * Truncate text based on word count.
+     *
+     * @var int|null
+     */
+    protected int|null $wordCount = null;
 
     /**
      * Set the column's truncate length.
@@ -34,6 +55,19 @@ class TextColumn extends Column
     }
 
     /**
+     * Set the column's truncate length based on word count.
+     *
+     * @param int $wordCount
+     * @return $this
+     */
+    public function wordCount(int $wordCount): Column
+    {
+        $this->wordCount = $wordCount;
+
+        return $this;
+    }
+
+    /**
      * Default getter for the column.
      *
      * @param mixed $value
@@ -42,8 +76,14 @@ class TextColumn extends Column
      */
     protected function defaultGetter(mixed $value, Model $row): mixed
     {
+        $value = $this->prefix . $value . $this->suffix;
+
         if ($this->truncate !== null) {
             return \Illuminate\Support\Str::limit($value, $this->truncate);
+        }
+
+        if ($this->wordCount !== null) {
+            return \Illuminate\Support\Str::words($value, $this->wordCount);
         }
 
         return $value;
