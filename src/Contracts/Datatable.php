@@ -33,4 +33,32 @@ interface Datatable
      * @return Action[]
      */
     public function actions(): array;
+
+    /**
+     * Export the datatable to a XLSX file.
+     *
+     * @return void
+     */
+    public function toXlsx(): void;
+
+    /**
+     * Export the datatable to a CSV file.
+     *
+     * @return void
+     */
+    public function toCsv(): void;
+
+    /**
+     * Export the datatable to a PDF file.
+     *
+     * @return void
+     */
+    public function toPdf(): void;
+
+    /**
+     * Export the datatable to a JSON file.
+     *
+     * @return void
+     */
+    public function toJson(): void;
 }
