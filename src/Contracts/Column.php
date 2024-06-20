@@ -17,6 +17,14 @@ interface Column
     public static function make(string $name = null, string $label = null): Column;
 
     /**
+     * Set the column's type.
+     *
+     * @param string $type
+     * @return $this
+     */
+    public function type(string $type): Column;
+
+    /**
      * Set the column's name.
      *
      * @param string $name
@@ -39,6 +47,22 @@ interface Column
      * @return $this
      */
     public function class(string $class): Column;
+
+    /**
+     * Set the column's content css styles.
+     *
+     * @param array $css
+     * @return $this
+     */
+    public function css(array $css): Column;
+
+    /**
+     * Set the column's content html attributes.
+     *
+     * @param array $attributes
+     * @return $this
+     */
+    public function attributes(array $attributes): Column;
 
     /**
      * Set the column's width.
@@ -144,4 +168,11 @@ interface Column
      * @return void
      */
     public function set(Model $row, mixed $value): void;
+
+    /**
+     * Get the type of the column.
+     *
+     * @return string|null
+     */
+    public function getType(): string|null;
 }
