@@ -56,6 +56,13 @@ class TextColumn extends Column
     public bool $external = false;
 
     /**
+     * Determine if the text is an icon.
+     *
+     * @var bool
+     */
+    public bool $icon = false;
+
+    /**
      * Truncate text based on character count.
      *
      * @var int|null
@@ -96,7 +103,7 @@ class TextColumn extends Column
     }
 
     /**
-     * Set the column's email type.
+     * Set the column's as an email.
      *
      * @param bool $email
      * @return $this
@@ -109,7 +116,7 @@ class TextColumn extends Column
     }
 
     /**
-     * Set the column's phone type.
+     * Set the column's as a phone number.
      *
      * @param bool $phone
      * @return $this
@@ -122,7 +129,7 @@ class TextColumn extends Column
     }
 
     /**
-     * Set the column's URL type.
+     * Set the column's as a URL.
      *
      * @param bool $url
      * @return $this
@@ -136,7 +143,7 @@ class TextColumn extends Column
     }
 
     /**
-     * Set the column's external URL type.
+     * Set the column's URL as external.
      *
      * @param bool $external
      * @return $this
@@ -144,6 +151,19 @@ class TextColumn extends Column
     public function external(bool $external = true): Column
     {
         $this->external = $external;
+
+        return $this;
+    }
+
+    /**
+     * Set the column's as an icon.
+     *
+     * @param bool $icon
+     * @return $this
+     */
+    public function icon(bool $icon = true): Column
+    {
+        $this->icon = $icon;
 
         return $this;
     }
@@ -195,6 +215,10 @@ class TextColumn extends Column
 
         if ($this->url) {
             return sprintf('<a href="%s" target="%s">%s</a>', $value, $this->external ? '_blank' : '_self', $value);
+        }
+
+        if ($this->icon) {
+            return sprintf('<i class="%s"></i>', $value);
         }
 
         if ($this->truncate !== null) {
