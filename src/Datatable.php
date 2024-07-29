@@ -58,7 +58,7 @@ abstract class Datatable extends Component implements DatatableContract
     /**
      * Get the actions for the datatable.
      *
-     * @return Action[]
+     * @return array<Action|ActionGroup>
      */
     public function actions(): array
     {
