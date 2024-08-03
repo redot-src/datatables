@@ -168,11 +168,4 @@ interface Column
      * @return void
      */
     public function set(Model $row, mixed $value): void;
-
-    /**
-     * Get the type of the column.
-     *
-     * @return string|null
-     */
-    public function getType(): string|null;
 }

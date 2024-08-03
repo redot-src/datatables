@@ -454,14 +454,4 @@ class Column implements ColumnContract
 
         $row->save();
     }
-
-    /**
-     * Get the type of the column.
-     *
-     * @return string|null
-     */
-    public function getType(): string|null
-    {
-        return $this->type;
-    }
 }
