@@ -36,17 +36,25 @@ class Action
     /**
      * Make button action.
      */
-    public static function button(string $route = '', array $routeParams = [], string $method = 'GET', string $title = '', string $icon = '', array $attrs = []): static
+    public static function button(string $route = '', array|callable $routeParams = [], string $method = 'GET', string $title = '', string $icon = '', array|callable $attrs = []): static
     {
         return static::make()
             ->do(function ($row) use ($route, $routeParams, $method, $title, $icon, $attrs) {
                 $template = config('livewire-datatable.templates.row-action');
+
+                if (is_callable($routeParams)) {
+                    $routeParams = call_user_func($routeParams, $row);
+                }
 
                 try {
                     $routeParams = $routeParams ?: request()->route()->parameters();
                     $href = route($route, array_merge($routeParams, [$row]));
                 } catch (Exception) {
                     $href = $route;
+                }
+
+                if (is_callable($attrs)) {
+                    $attrs = call_user_func($attrs, $row);
                 }
 
                 return view($template, [

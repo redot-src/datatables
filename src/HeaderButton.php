@@ -31,16 +31,24 @@ class HeaderButton
     /**
      * Make button action.
      */
-    public static function button(string $route = '', array $routeParams = [], string $title = '', string $icon = '', array $attrs = []): static
+    public static function button(string $route = '', array|callable $routeParams = [], string $title = '', string $icon = '', array|callable $attrs = []): static
     {
         return static::make()
             ->do(function () use ($route, $routeParams, $title, $icon, $attrs) {
                 $template = config('livewire-datatable.templates.header-button');
 
+                if (is_callable($routeParams)) {
+                    $routeParams = call_user_func($routeParams);
+                }
+
                 try {
                     $href = route($route, $routeParams ?: request()->route()->parameters());
                 } catch (Exception) {
                     $href = $route;
+                }
+
+                if (is_callable($attrs)) {
+                    $attrs = call_user_func($attrs);
                 }
 
                 return view($template, [
