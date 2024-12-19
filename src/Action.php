@@ -70,7 +70,7 @@ class Action
     /**
      * Make view action.
      */
-    public static function view(string $route, array $routeParams = []): static
+    public static function view(string $route, array|callable $routeParams = [], array|callable $attrs = []): static
     {
         return static::button(
             route: $route,
@@ -78,14 +78,14 @@ class Action
             method: 'GET',
             title: __('View'),
             icon: config('livewire-datatable.icons.view'),
-            attrs: ['datatable-action' => 'view'],
+            attrs: fn ($row) => array_merge(['datatable-action' => 'view'], is_callable($attrs) ? call_user_func($attrs, $row) : $attrs),
         );
     }
 
     /**
      * Make edit action.
      */
-    public static function edit(string $route, array $routeParams = []): static
+    public static function edit(string $route, array|callable $routeParams = [], array|callable $attrs = []): static
     {
         return static::button(
             route: $route,
@@ -93,14 +93,14 @@ class Action
             method: 'GET',
             title: __('Edit'),
             icon: config('livewire-datatable.icons.edit'),
-            attrs: ['datatable-action' => 'edit'],
+            attrs: fn ($row) => array_merge(['datatable-action' => 'edit'], is_callable($attrs) ? call_user_func($attrs, $row) : $attrs),
         );
     }
 
     /**
      * Make delete action.
      */
-    public static function delete(string $route, array $routeParams = []): static
+    public static function delete(string $route, array|callable $routeParams = [], array|callable $attrs = []): static
     {
         return static::button(
             route: $route,
@@ -108,7 +108,7 @@ class Action
             method: 'DELETE',
             title: __('Delete'),
             icon: config('livewire-datatable.icons.delete'),
-            attrs: ['datatable-action' => 'delete'],
+            attrs: fn ($row) => array_merge(['datatable-action' => 'delete'], is_callable($attrs) ? call_user_func($attrs, $row) : $attrs),
         );
     }
 
