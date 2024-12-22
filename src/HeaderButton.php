@@ -31,10 +31,10 @@ class HeaderButton
     /**
      * Make button action.
      */
-    public static function button(string $route = '', array|callable $routeParams = [], string $title = '', string $icon = '', array|callable $attrs = []): static
+    public static function button(string $route = '', array|callable $routeParams = [], string $title = '', string $icon = '', array|callable $attrs = [], bool $fancybox = false): static
     {
         return static::make()
-            ->do(function () use ($route, $routeParams, $title, $icon, $attrs) {
+            ->do(function () use ($route, $routeParams, $title, $icon, $attrs, $fancybox) {
                 $template = config('livewire-datatable.templates.header-button');
 
                 if (is_callable($routeParams)) {
@@ -51,6 +51,11 @@ class HeaderButton
                     $attrs = call_user_func($attrs);
                 }
 
+                if ($fancybox) {
+                    $attrs['data-fancybox'] = uniqid('fancybox-');
+                    $attrs['data-type'] = 'iframe';
+                }
+
                 return view($template, [
                     'href' => $href,
                     'title' => $title,
@@ -60,14 +65,15 @@ class HeaderButton
             });
     }
 
-    public static function create(string $route, array $routeParams = []): static
+    public static function create(string $route, array $routeParams = [], array|callable $attrs = [], bool $fancybox = false): static
     {
         return static::button(
             route: $route,
             routeParams: $routeParams,
             title: __('Create'),
             icon: config('livewire-datatable.icons.create'),
-            attrs: ['datatable-action' => 'create'],
+            attrs: fn () => array_merge(['datatable-action' => 'create'], is_callable($attrs) ? call_user_func($attrs) : $attrs),
+            fancybox: $fancybox
         );
     }
 

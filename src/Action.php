@@ -36,10 +36,10 @@ class Action
     /**
      * Make button action.
      */
-    public static function button(string $route = '', array|callable $routeParams = [], string $method = 'GET', string $title = '', string $icon = '', array|callable $attrs = []): static
+    public static function button(string $route = '', array|callable $routeParams = [], string $method = 'GET', string $title = '', string $icon = '', array|callable $attrs = [], bool $fancybox = false): static
     {
         return static::make()
-            ->do(function ($row) use ($route, $routeParams, $method, $title, $icon, $attrs) {
+            ->do(function ($row) use ($route, $routeParams, $method, $title, $icon, $attrs, $fancybox) {
                 $template = config('livewire-datatable.templates.row-action');
 
                 if (is_callable($routeParams)) {
@@ -57,6 +57,11 @@ class Action
                     $attrs = call_user_func($attrs, $row);
                 }
 
+                if ($fancybox) {
+                    $attrs['data-fancybox'] = uniqid('fancybox-');
+                    $attrs['data-type'] = 'iframe';
+                }
+
                 return view($template, [
                     'href' => $href,
                     'method' => $method,
@@ -70,7 +75,7 @@ class Action
     /**
      * Make view action.
      */
-    public static function view(string $route, array|callable $routeParams = [], array|callable $attrs = []): static
+    public static function view(string $route, array|callable $routeParams = [], array|callable $attrs = [], bool $fancybox = false): static
     {
         return static::button(
             route: $route,
@@ -79,13 +84,14 @@ class Action
             title: __('View'),
             icon: config('livewire-datatable.icons.view'),
             attrs: fn ($row) => array_merge(['datatable-action' => 'view'], is_callable($attrs) ? call_user_func($attrs, $row) : $attrs),
+            fancybox: $fancybox,
         );
     }
 
     /**
      * Make edit action.
      */
-    public static function edit(string $route, array|callable $routeParams = [], array|callable $attrs = []): static
+    public static function edit(string $route, array|callable $routeParams = [], array|callable $attrs = [], bool $fancybox = false): static
     {
         return static::button(
             route: $route,
@@ -94,6 +100,7 @@ class Action
             title: __('Edit'),
             icon: config('livewire-datatable.icons.edit'),
             attrs: fn ($row) => array_merge(['datatable-action' => 'edit'], is_callable($attrs) ? call_user_func($attrs, $row) : $attrs),
+            fancybox: $fancybox,
         );
     }
 
