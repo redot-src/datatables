@@ -4,6 +4,11 @@ namespace Redot\LivewireDatatable;
 
 use Closure;
 use Exception;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Traits\Macroable;
 
 class Action
@@ -40,15 +45,15 @@ class Action
     {
         return static::make()
             ->do(function ($row) use ($route, $routeParams, $method, $title, $icon, $attrs, $fancybox) {
-                $template = config('livewire-datatable.templates.row-action');
+                $template = Config::get('livewire-datatable.templates.row-action');
 
                 if (is_callable($routeParams)) {
                     $routeParams = call_user_func($routeParams, $row);
                 }
 
                 try {
-                    $routeParams = $routeParams ?: request()->route()->parameters();
-                    $href = route($route, array_merge($routeParams, [$row]));
+                    $routeParams = $routeParams ?: Request::route()->parameters();
+                    $href = URL::route($route, array_merge($routeParams, [$row]));
                 } catch (Exception) {
                     $href = $route;
                 }
@@ -62,7 +67,7 @@ class Action
                     $attrs['data-type'] = 'iframe';
                 }
 
-                return view($template, [
+                return View::make($template, [
                     'href' => $href,
                     'method' => $method,
                     'title' => $title,
@@ -81,8 +86,8 @@ class Action
             route: $route,
             routeParams: $routeParams,
             method: 'GET',
-            title: __('View'),
-            icon: config('livewire-datatable.icons.view'),
+            title: Lang::get('View'),
+            icon: Config::get('livewire-datatable.icons.view'),
             attrs: fn ($row) => array_merge(['datatable-action' => 'view'], is_callable($attrs) ? call_user_func($attrs, $row) : $attrs),
             fancybox: $fancybox,
         );
@@ -97,8 +102,8 @@ class Action
             route: $route,
             routeParams: $routeParams,
             method: 'GET',
-            title: __('Edit'),
-            icon: config('livewire-datatable.icons.edit'),
+            title: Lang::get('Edit'),
+            icon: Config::get('livewire-datatable.icons.edit'),
             attrs: fn ($row) => array_merge(['datatable-action' => 'edit'], is_callable($attrs) ? call_user_func($attrs, $row) : $attrs),
             fancybox: $fancybox,
         );
@@ -113,8 +118,8 @@ class Action
             route: $route,
             routeParams: $routeParams,
             method: 'DELETE',
-            title: __('Delete'),
-            icon: config('livewire-datatable.icons.delete'),
+            title: Lang::get('Delete'),
+            icon: Config::get('livewire-datatable.icons.delete'),
             attrs: fn ($row) => array_merge(['datatable-action' => 'delete'], is_callable($attrs) ? call_user_func($attrs, $row) : $attrs),
         );
     }

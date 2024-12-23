@@ -12,10 +12,7 @@
     "autoload": {
         "psr-4": {
             "Redot\\LivewireDatatable\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+        }
     },
     "require": {
         "php": "^8.1",

@@ -4,6 +4,11 @@ namespace Redot\LivewireDatatable;
 
 use Closure;
 use Exception;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Traits\Macroable;
 
 class HeaderButton
@@ -35,14 +40,14 @@ class HeaderButton
     {
         return static::make()
             ->do(function () use ($route, $routeParams, $title, $icon, $attrs, $fancybox) {
-                $template = config('livewire-datatable.templates.header-button');
+                $template = Config::get('livewire-datatable.templates.header-button');
 
                 if (is_callable($routeParams)) {
                     $routeParams = call_user_func($routeParams);
                 }
 
                 try {
-                    $href = route($route, $routeParams ?: request()->route()->parameters());
+                    $href = URL::route($route, $routeParams ?: Request::route()->parameters());
                 } catch (Exception) {
                     $href = $route;
                 }
@@ -56,7 +61,7 @@ class HeaderButton
                     $attrs['data-type'] = 'iframe';
                 }
 
-                return view($template, [
+                return View::make($template, [
                     'href' => $href,
                     'title' => $title,
                     'icon' => $icon,
@@ -70,8 +75,8 @@ class HeaderButton
         return static::button(
             route: $route,
             routeParams: $routeParams,
-            title: __('Create'),
-            icon: config('livewire-datatable.icons.create'),
+            title: Lang::get('Create'),
+            icon: Config::get('livewire-datatable.icons.create'),
             attrs: fn () => array_merge(['datatable-action' => 'create'], is_callable($attrs) ? call_user_func($attrs) : $attrs),
             fancybox: $fancybox
         );

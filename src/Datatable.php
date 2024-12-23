@@ -3,6 +3,8 @@
 namespace Redot\LivewireDatatable;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\View;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -107,7 +109,7 @@ abstract class Datatable extends Component
      */
     public function paginationView(): string
     {
-        return config('livewire-datatable.templates.pagination.default');
+        return Config::get('livewire-datatable.templates.pagination.default');
     }
 
     /**
@@ -115,7 +117,7 @@ abstract class Datatable extends Component
      */
     public function paginationSimpleView(): string
     {
-        return config('livewire-datatable.templates.pagination.simple');
+        return Config::get('livewire-datatable.templates.pagination.simple');
     }
 
     /**
@@ -123,7 +125,7 @@ abstract class Datatable extends Component
      */
     public function template(): string
     {
-        return config('livewire-datatable.templates.datatable');
+        return Config::get('livewire-datatable.templates.datatable');
     }
 
     /**
@@ -277,6 +279,6 @@ abstract class Datatable extends Component
      */
     public function render()
     {
-        return view($this->template(), $this->params());
+        return View::make($this->template(), $this->params());
     }
 }
