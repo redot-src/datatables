@@ -57,7 +57,7 @@ class HeaderButton
                 }
 
                 if ($fancybox) {
-                    $attrs['data-fancybox'] = uniqid('fancybox-');
+                    $attrs['data-fancybox'] = '';
                     $attrs['data-type'] = 'iframe';
                 }
 
