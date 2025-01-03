@@ -211,12 +211,12 @@ class Column implements ColumnContract
     /**
      * Set the column's content class.
      *
-     * @param string $class
+     * @param string|array $class
      * @return $this
      */
-    public function class(string $class): Column
+    public function class(string|array $class): Column
     {
-        $this->class = $class;
+        $this->class = is_array($class) ? implode(' ', $class) : $class;
 
         return $this;
     }

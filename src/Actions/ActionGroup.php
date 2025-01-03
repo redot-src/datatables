@@ -77,12 +77,12 @@ class ActionGroup implements ActionGroupContract
     /**
      * Set the action group's class.
      *
-     * @param string $class
+     * @param string|array $class
      * @return $this
      */
-    public function class(string $class): ActionGroup
+    public function class(string|array $class): ActionGroup
     {
-        $this->class = $class;
+        $this->class = is_array($class) ? implode(' ', $class) : $class;
 
         return $this;
     }

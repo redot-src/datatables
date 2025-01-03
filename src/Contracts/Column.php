@@ -43,10 +43,10 @@ interface Column
     /**
      * Set the column's label class.
      *
-     * @param string $class
+     * @param string|array $class
      * @return $this
      */
-    public function class(string $class): Column;
+    public function class(string|array $class): Column;
 
     /**
      * Set the column's content css styles.
