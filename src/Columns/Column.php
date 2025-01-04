@@ -96,6 +96,13 @@ class Column implements ColumnContract
     public bool $sortable = false;
 
     /**
+     * The sorting method for the column.
+     *
+     * @var Closure|null
+     */
+    public Closure|null $sorter = null;
+
+    /**
      * Determine if the column is searchable.
      *
      * @var bool
@@ -150,10 +157,15 @@ class Column implements ColumnContract
      * @param string|null $name
      * @param string|null $label
      */
-    public function __construct(string $name = null, string $label = null)
+    public function __construct(string|null $name = null, string|null $label = null)
     {
-        $this->name($name);
-        $this->label($label);
+        if ($name) {
+            $this->name($name);
+        }
+
+        if ($label) {
+            $this->label($label);
+        }
     }
 
     /**
@@ -163,7 +175,7 @@ class Column implements ColumnContract
      * @param string|null $label
      * @return static
      */
-    public static function make(string $name = null, string $label = null): Column
+    public static function make(string|null $name = null, string|null $label = null): Column
     {
         return new static($name, $label);
     }
@@ -313,6 +325,20 @@ class Column implements ColumnContract
     }
 
     /**
+     * Set the sorting method for the column.
+     *
+     * @param Closure $sorter
+     * @return $this
+     */
+    public function sorter(Closure $sorter): Column
+    {
+        $this->sorter = $sorter;
+        $this->sortable = true;
+
+        return $this;
+    }
+
+    /**
      * Set the column as searchable.
      *
      * @param bool $searchable
@@ -334,6 +360,7 @@ class Column implements ColumnContract
     public function searcher(Closure $searcher): Column
     {
         $this->searcher = $searcher;
+        $this->searchable = true;
 
         return $this;
     }
@@ -386,6 +413,32 @@ class Column implements ColumnContract
     public function exportable(bool $exportable = true): Column
     {
         $this->exportable = $exportable;
+
+        return $this;
+    }
+
+    /**
+     * Set the getter method for the column.
+     *
+     * @param Closure $getter
+     * @return $this
+     */
+    public function getter(Closure $getter): Column
+    {
+        $this->getter = $getter;
+
+        return $this;
+    }
+
+    /**
+     * Set the setter method for the column.
+     *
+     * @param Closure $setter
+     * @return $this
+     */
+    public function setter(Closure $setter): Column
+    {
+        $this->setter = $setter;
 
         return $this;
     }

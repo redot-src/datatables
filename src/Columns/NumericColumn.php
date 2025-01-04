@@ -11,7 +11,7 @@ class NumericColumn extends Column
      *
      * @var string
      */
-    public string $type = 'numeric';
+    public string|null $type = 'numeric';
 
     /**
      * The column's precision.

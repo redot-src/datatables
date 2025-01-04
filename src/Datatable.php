@@ -40,10 +40,7 @@ abstract class Datatable extends Component implements DatatableContract
      *
      * @return Column[]
      */
-    public function columns(): array
-    {
-        return [];
-    }
+    abstract public function columns(): array;
 
     /**
      * Get the filters for the datatable.
@@ -103,5 +100,13 @@ abstract class Datatable extends Component implements DatatableContract
     public function toJson(): void
     {
         // ...
+    }
+
+    /**
+     * Render the component.
+     */
+    public function render()
+    {
+        dd($this->columns());
     }
 }

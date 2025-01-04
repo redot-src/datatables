@@ -11,7 +11,7 @@ class TextColumn extends Column
      *
      * @var string
      */
-    public string $type = 'text';
+    public string|null $type = 'text';
 
     /**
      * Text prefix for the column.

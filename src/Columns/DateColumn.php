@@ -12,7 +12,7 @@ class DateColumn extends Column
      *
      * @var string
      */
-    public string $type = 'date';
+    public string|null $type = 'date';
 
     /**
      * Datetime format.
