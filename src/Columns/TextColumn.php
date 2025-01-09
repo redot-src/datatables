@@ -137,7 +137,6 @@ class TextColumn extends Column
     public function url(bool $url = true): Column
     {
         $this->url = $url;
-        $this->external = strpos($this->url, 'http') === 0;
 
         return $this;
     }
