@@ -13,6 +13,7 @@ class DatatablesServiceProvider extends ServiceProvider
     {
         $this->config();
         $this->views();
+        $this->lang();
     }
 
     /**
@@ -43,6 +44,21 @@ class DatatablesServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/components' => resource_path('components/vendor/datatables'),
         ], 'components');
+    }
+
+    /**
+     * Register the package language files.
+     */
+    protected function lang(): void
+    {
+        $this->loadTranslationsFrom(
+            __DIR__.'/../lang',
+            'datatables'
+        );
+
+        $this->publishes([
+            __DIR__.'/../lang' => resource_path('lang/vendor/datatables'),
+        ], 'lang');
     }
 
     /**

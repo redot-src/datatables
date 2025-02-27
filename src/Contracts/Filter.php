@@ -3,6 +3,7 @@
 namespace Redot\Datatables\Contracts;
 
 use Closure;
+use Illuminate\Database\Eloquent\Builder;
 
 interface Filter
 {
@@ -45,4 +46,12 @@ interface Filter
      * @return $this
      */
     public function query(Closure $callback): Filter;
+
+    /**
+     * Apply the filter to the given query.
+     *
+     * @param Builder $query
+     * @return void
+     */
+    public function apply(Builder $query): void;
 }

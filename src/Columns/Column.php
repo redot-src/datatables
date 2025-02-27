@@ -4,7 +4,9 @@ namespace Redot\Datatables\Columns;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
+use Illuminate\View\ComponentAttributeBag;
 use Redot\Datatables\Contracts\Column as ColumnContract;
 
 class Column implements ColumnContract
@@ -236,11 +238,17 @@ class Column implements ColumnContract
     /**
      * Set the column's content css styles.
      *
-     * @param array $css
+     * @param string|array $css
      * @return $this
      */
-    public function css(array $css): Column
+    public function css(string|array $css): Column
     {
+        $css = Arr::wrap($css);
+
+        if (Arr::isAssoc($css)) {
+            $css = collect($css)->map(fn ($value, $key) => "$key: $value")->values()->toArray();
+        }
+
         $this->css = $css;
 
         return $this;
@@ -506,5 +514,21 @@ class Column implements ColumnContract
         data_set($row, $this->name, $value);
 
         $row->save();
+    }
+
+    /**
+     * Build attributes for the column.
+     *
+     * @param Model $row
+     * @return ComponentAttributeBag
+     */
+    public function buildAttributes(Model $row): ComponentAttributeBag
+    {
+        $attributes = [];
+        foreach ($this->attributes as $key => $value) {
+            $attributes[$key] = is_callable($value) ? $value($row) : $value;
+        }
+
+        return new ComponentAttributeBag($attributes);
     }
 }

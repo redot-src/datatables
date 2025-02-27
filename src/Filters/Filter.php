@@ -3,6 +3,7 @@
 namespace Redot\Datatables\Filters;
 
 use Closure;
+use Illuminate\Database\Eloquent\Builder;
 use Redot\Datatables\Contracts\Filter as FilterContract;
 
 class Filter implements FilterContract
@@ -109,5 +110,18 @@ class Filter implements FilterContract
         $this->queryCallback = $callback;
 
         return $this;
+    }
+
+    /**
+     * Apply the filter to the given query.
+     *
+     * @param Builder $query
+     * @return void
+     */
+    public function apply(Builder $query): void
+    {
+        if ($this->queryCallback) {
+            $this->queryCallback->call($this, $query);
+        }
     }
 }
