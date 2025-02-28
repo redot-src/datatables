@@ -19,6 +19,13 @@ abstract class Datatable extends Component implements DatatableContract
     use WithPagination;
 
     /**
+     * Unique identifier for the datatable.
+     *
+     * @var string
+     */
+    public string $id;
+
+    /**
      * Model bound to the datatable.
      *
      * @var string
@@ -30,7 +37,7 @@ abstract class Datatable extends Component implements DatatableContract
      *
      * @var array
      */
-    public array $perPageOptions = [10, 25, 50, 100];
+    public array $perPageOptions = [5, 10, 25, 50, 100, 250, 500];
 
     /**
      * The default per page value.
@@ -38,14 +45,29 @@ abstract class Datatable extends Component implements DatatableContract
      * @var int|string
      */
     #[Url]
-    public int $perPage;
+    public int $perPage = 10;
 
     /**
-     * Unique identifier for the datatable.
+     * Search term for the datatable.
      *
      * @var string
      */
-    public string $id;
+    #[Url]
+    public string $search = '';
+
+    /**
+     * Set the datatable maximum height.
+     *
+     * @var string
+     */
+    public string $height = 'auto';
+
+    /**
+     * Determine if the datatable has a sticky header.
+     *
+     * @var boolean
+     */
+    public bool $stickyHeader = true;
 
     /**
      * Create a new datatable instance.
@@ -54,7 +76,6 @@ abstract class Datatable extends Component implements DatatableContract
      */
     public function __construct()
     {
-        $this->perPage = $this->perPageOptions[0];
         $this->id ??= uniqid('datatable-');
     }
 
@@ -122,7 +143,7 @@ abstract class Datatable extends Component implements DatatableContract
      */
     public function toXlsx(): void
     {
-        // ...
+        dd('Export to XLSX');
     }
 
     /**
@@ -132,7 +153,7 @@ abstract class Datatable extends Component implements DatatableContract
      */
     public function toCsv(): void
     {
-        // ...
+        dd('Export to CSV');
     }
 
     /**
@@ -142,7 +163,7 @@ abstract class Datatable extends Component implements DatatableContract
      */
     public function toPdf(): void
     {
-        // ...
+        dd('Export to PDF');
     }
 
     /**
@@ -152,7 +173,17 @@ abstract class Datatable extends Component implements DatatableContract
      */
     public function toJson(): void
     {
-        // ...
+        dd('Export to JSON');
+    }
+
+    /**
+     * Refresh the datatable.
+     *
+     * @return void
+     */
+    public function refresh(): void
+    {
+        $this->resetPage();
     }
 
     /**
@@ -178,6 +209,12 @@ abstract class Datatable extends Component implements DatatableContract
         $colspan = count(array_filter($columns, fn (Column $column) => $column->visible));
         $colspan += empty($actions) ? 0 : 1;
 
+        $searchable = array_filter($columns, fn (Column $column) => $column->searchable);
+        $searchable = empty($searchable) ? false : true;
+
+        $exportable = array_filter($columns, fn (Column $column) => $column->exportable);
+        $exportable = empty($exportable) ? false : true;
+
         $query = $this->query();
         $filters = $this->filters();
 
@@ -190,12 +227,21 @@ abstract class Datatable extends Component implements DatatableContract
             $query = $filter->apply($query);
         }
 
+        // Apply global search
+        $fields = array_map(fn (Column $column) => $column->searchable ? $column->name : null, $columns);
+        $fields = array_filter($fields);
+
+        $query->when($this->search, fn ($query, $search) => search_model($query, $fields, $search));
+
         // Get the rows with pagination
         $rows = $query->paginate($this->perPage);
 
         return [
             'columns' => $columns,
             'colspan' => $colspan,
+
+            'searchable' => $searchable,
+            'exportable' => $exportable,
 
             'filters' => $filters,
             'rows' => $rows,
