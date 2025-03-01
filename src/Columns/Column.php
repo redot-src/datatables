@@ -42,6 +42,13 @@ class Column implements ColumnContract
     public string|null $label = null;
 
     /**
+     * The column's empty value if null.
+     *
+     * @var string|Closure
+     */
+    public string|Closure $empty = '-';
+
+    /**
      * The column label class.
      *
      * @var string
@@ -218,6 +225,19 @@ class Column implements ColumnContract
     public function label(string $label): Column
     {
         $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * Set the column's empty value if null.
+     *
+     * @param string $empty
+     * @return $this
+     */
+    public function empty(string|Closure $empty): Column
+    {
+        $this->empty = $empty;
 
         return $this;
     }
@@ -463,7 +483,11 @@ class Column implements ColumnContract
         $value = $this->defaultGetter($value, $row);
 
         if ($this->getter) {
-            return call_user_func($this->getter, $value, $row);
+            $value = call_user_func($this->getter, $value, $row);
+        }
+
+        if (is_null($value)) {
+            $value = is_callable($this->empty) ? call_user_func($this->empty, $row) : $this->empty;
         }
 
         return $value;
