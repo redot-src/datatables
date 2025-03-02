@@ -3,7 +3,28 @@
         <thead @class(['sticky-top' => $stickyHeader])>
             <tr>
                 @foreach ($columns as $column)
-                    <th>{{ $column->label }}</th>
+                    <th>
+                        @if ($column->sortable && $column->name)
+                            <a href="#" class="text-decoration-none text-muted"
+                                wire:click.prevent="sort('{{ $column->name }}')">
+                                <span class="me-1">
+                                    {{ $column->label }}
+                                </span>
+
+                                @if ($sortColumn === $column->name)
+                                    @if ($sortDirection === 'asc')
+                                        <i class="fas fa-sort-up"></i>
+                                    @else
+                                        <i class="fas fa-sort-down"></i>
+                                    @endif
+                                @else
+                                    <i class="fas fa-sort"></i>
+                                @endif
+                            </a>
+                        @else
+                            {{ $column->label }}
+                        @endif
+                    </th>
                 @endforeach
             </tr>
         </thead>

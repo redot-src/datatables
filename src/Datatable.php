@@ -3,6 +3,7 @@
 namespace Redot\Datatables;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -54,6 +55,22 @@ abstract class Datatable extends Component implements DatatableContract
      */
     #[Url]
     public string $search = '';
+
+    /**
+     * Sort column for the datatable.
+     *
+     * @var string
+     */
+    #[Url]
+    public string $sortColumn = '';
+
+    /**
+     * Sort direction for the datatable.
+     *
+     * @var string
+     */
+    #[Url]
+    public string $sortDirection = 'asc';
 
     /**
      * Set the datatable maximum height.
@@ -118,6 +135,22 @@ abstract class Datatable extends Component implements DatatableContract
     public function actions(): array
     {
         return [];
+    }
+
+    /**
+     * Sort the datatable by the given column.
+     *
+     * @param string $column
+     * @return void
+     */
+    public function sort(string $column): void
+    {
+        if ($this->sortColumn === $column) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortColumn = $column;
+            $this->sortDirection = 'asc';
+        }
     }
 
     /**
@@ -205,20 +238,70 @@ abstract class Datatable extends Component implements DatatableContract
     {
         $actions = $this->actions();
         $columns = $this->columns();
-
-        $colspan = count(array_filter($columns, fn (Column $column) => $column->visible));
-        $colspan += empty($actions) ? 0 : 1;
-
-        $searchable = array_filter($columns, fn (Column $column) => $column->searchable);
-        $searchable = empty($searchable) ? false : true;
-
-        $exportable = array_filter($columns, fn (Column $column) => $column->exportable);
-        $exportable = empty($exportable) ? false : true;
-
-        $query = $this->query();
         $filters = $this->filters();
 
-        // Apply filters
+        $query = $this->getQueryBuilder($columns, $filters);
+        $rows = $query->paginate($this->perPage);
+
+        return [
+            'columns' => $columns,
+            'filters' => $filters,
+            'actions' => $actions,
+
+            'colspan' => $this->getColspanForColumns($columns),
+
+            'searchable' => count(array_filter($columns, fn (Column $column) => $column->searchable)) > 0,
+            'exportable' => count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
+
+            'rows' => $rows,
+        ];
+    }
+
+    /**
+     * Get the colspan for the columns.
+     *
+     * @param array $columns
+     * @return int
+     */
+    protected function getColspanForColumns(array $columns): int
+    {
+        $colspan = count(array_filter($columns, fn (Column $column) => $column->visible));
+
+        // Add one for the actions column
+        if (count($this->actions()) > 0) {
+            $colspan++;
+        }
+
+        return $colspan;
+    }
+
+    /**
+     * Get eloquent query builder.
+     *
+     * @param array $columns
+     * @param array $filters
+     * @return Builder
+     */
+    protected function getQueryBuilder(array $columns, array $filters): Builder
+    {
+        $query = $this->query();
+
+        $this->applyFilters($query, $filters);
+        $this->applyGlobalSearch($query, $columns);
+        $this->applySorting($query);
+
+        return $query;
+    }
+
+    /**
+     * Apply filters to the query.
+     *
+     * @param Builder $query
+     * @param array $filters
+     * @return Builder
+     */
+    protected function applyFilters(Builder $query, array $filters): Builder
+    {
         foreach ($filters as $filter) {
             if (! $filter->isActive) {
                 continue;
@@ -227,26 +310,115 @@ abstract class Datatable extends Component implements DatatableContract
             $query = $filter->apply($query);
         }
 
-        // Apply global search
-        $fields = array_map(fn (Column $column) => $column->searchable ? $column->name : null, $columns);
-        $fields = array_filter($fields);
+        return $query;
+    }
 
-        $query->when($this->search, fn ($query, $search) => search_model($query, $fields, $search));
+    /**
+     * Apply global search to the query.
+     *
+     * @param Builder $query
+     * @param array $columns
+     * @return void
+     */
+    protected function applyGlobalSearch(Builder $query, array $columns): void
+    {
+        if (! $this->search) {
+            return;
+        }
 
-        // Get the rows with pagination
-        $rows = $query->paginate($this->perPage);
+        $query->where(function ($query) use ($columns) {
+            foreach ($columns as $column) {
+                if (! $column->searchable) {
+                    continue;
+                }
 
-        return [
-            'columns' => $columns,
-            'colspan' => $colspan,
+                if (is_callable($column->searcher)) {
+                    call_user_func($column->searcher, $query, $this->search);
 
-            'searchable' => $searchable,
-            'exportable' => $exportable,
+                    continue;
+                }
 
-            'filters' => $filters,
-            'rows' => $rows,
+                $name = $column->name;
 
-            'actions' => $actions,
-        ];
+                if (str_contains($name, '.')) {
+                    $this->searchWithinRelation($query, $name);
+
+                    continue;
+                }
+
+                $query->orWhere($name, 'like', '%' . $this->search . '%');
+            }
+        });
+    }
+
+    /**
+     * Search within relation.
+     *
+     * @param Builder $query
+     * @param string $field
+     * @return void
+     */
+    protected function searchWithinRelation(Builder $query, string $column): void
+    {
+        $relations = explode('.', $column);
+        $column = array_pop($relations);
+
+        foreach ($relations as $relation) {
+            $query->orWhereHas($relation, function ($query) use ($column) {
+                $query->where($column, 'like', '%' . $this->search . '%');
+            });
+        }
+    }
+
+    /**
+     * Apply sorting to the query.
+     *
+     * @param Builder $query
+     * @return void
+     */
+    protected function applySorting(Builder $query): void
+    {
+        if (! $this->sortColumn) {
+            return;
+        }
+
+        // Find the column to sort by
+        $column = Arr::first($this->columns(), function ($column) {
+            return $column->sortable && $column->name === $this->sortColumn;
+        });
+
+        if (! $column) {
+            throw new Exceptions\InvalidColumnException(sprintf('Could not find column with name "%s"', $this->sortColumn));
+        }
+
+        if ($column->sorter) {
+            call_user_func($column->sorter, $query, $this->sortDirection);
+
+            return;
+        }
+
+        if (str_contains($column->name, '.')) {
+            $this->sortWithinRelation($query, $column->name);
+
+            return;
+        }
+
+        $query->orderBy($column->name, $this->sortDirection);
+    }
+
+    /**
+     * Sort within relation.
+     *
+     * @param Builder $query
+     * @param string $column
+     * @return void
+     */
+    protected function sortWithinRelation(Builder $query, string $column): void
+    {
+        $relations = explode('.', $column);
+        $field = array_pop($relations);
+
+        $query->withAggregate($relations, $field);
+        $query->orderBy(implode('_', $relations) . '_' . $field, $this->sortDirection);
     }
 }
