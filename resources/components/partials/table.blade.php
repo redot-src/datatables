@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table card-table table-vcenter text-nowrap datatable">
+    <table class="table card-table table-vcenter datatable">
         <thead @class(['sticky-top' => $stickyHeader])>
             <tr>
                 @foreach ($columns as $column)
@@ -33,7 +33,7 @@
             @forelse($rows as $row)
                 <tr>
                     @foreach ($columns as $column)
-                        <td @style($column->css) @class($column->class) {{ $column->buildAttributes($row) }}>
+                        <td {{ $column->buildAttributes($row) }}>
                             @if ($column->html)
                                 {!! $column->get($row) !!}
                             @else

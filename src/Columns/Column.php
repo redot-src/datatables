@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\View\ComponentAttributeBag;
-use Redot\Datatables\Contracts\Column as ColumnContract;
 
-class Column implements ColumnContract
+class Column
 {
     use Macroable;
 
@@ -51,16 +50,16 @@ class Column implements ColumnContract
     /**
      * The column label class.
      *
-     * @var string
+     * @var string|array
      */
-    public string $class = '';
+    public string|array $class = '';
 
     /**
      * The column css styles.
      *
-     * @var array<string, string>
+     * @var string|array
      */
-    public array $css = [];
+    public string|array $css = [];
 
     /**
      * The column html attributes.
@@ -77,11 +76,32 @@ class Column implements ColumnContract
     public string $width = 'auto';
 
     /**
+     * The column's max width.
+     *
+     * @var string|null
+     */
+    public string|null $maxWidth = null;
+
+    /**
+     * The column's min width.
+     *
+     * @var string|null
+     */
+    public string|null $minWidth = null;
+
+    /**
      * Determine if the column is a fixed column.
      *
      * @var bool
      */
     public bool $fixed = false;
+
+    /**
+     * Determine if the column whitespace should be nowrap.
+     *
+     * @var bool
+     */
+    public bool $nowrap = false;
 
     /**
      * Determine if the column content is HTML.
@@ -175,6 +195,8 @@ class Column implements ColumnContract
         if ($label) {
             $this->label($label);
         }
+
+        $this->init();
     }
 
     /**
@@ -187,6 +209,16 @@ class Column implements ColumnContract
     public static function make(string|null $name = null, string|null $label = null): Column
     {
         return new static($name, $label);
+    }
+
+    /**
+     * Initialize the column.
+     *
+     * @return void
+     */
+    protected function init(): void
+    {
+        //
     }
 
     /**
@@ -250,7 +282,7 @@ class Column implements ColumnContract
      */
     public function class(string|array $class): Column
     {
-        $this->class = is_array($class) ? implode(' ', $class) : $class;
+        $this->class = $class;
 
         return $this;
     }
@@ -263,12 +295,6 @@ class Column implements ColumnContract
      */
     public function css(string|array $css): Column
     {
-        $css = Arr::wrap($css);
-
-        if (Arr::isAssoc($css)) {
-            $css = collect($css)->map(fn ($value, $key) => "$key: $value")->values()->toArray();
-        }
-
         $this->css = $css;
 
         return $this;
@@ -301,6 +327,32 @@ class Column implements ColumnContract
     }
 
     /**
+     * Set the column's max width.
+     *
+     * @param string $maxWidth
+     * @return $this
+     */
+    public function maxWidth(string $maxWidth): Column
+    {
+        $this->maxWidth = $maxWidth;
+
+        return $this;
+    }
+
+    /**
+     * Set the column's min width.
+     *
+     * @param string $minWidth
+     * @return $this
+     */
+    public function minWidth(string $minWidth): Column
+    {
+        $this->minWidth = $minWidth;
+
+        return $this;
+    }
+
+    /**
      * Set the column as fixed.
      *
      * @param bool $fixed
@@ -309,6 +361,19 @@ class Column implements ColumnContract
     public function fixed(bool $fixed = true): Column
     {
         $this->fixed = $fixed;
+
+        return $this;
+    }
+
+    /**
+     * Set the column's whitespace as nowrap.
+     *
+     * @param bool $nowrap
+     * @return $this
+     */
+    public function nowrap(bool $nowrap = true): Column
+    {
+        $this->nowrap = $nowrap;
 
         return $this;
     }
@@ -553,6 +618,33 @@ class Column implements ColumnContract
             $attributes[$key] = is_callable($value) ? $value($row) : $value;
         }
 
-        return new ComponentAttributeBag($attributes);
+        $classes = Arr::wrap($this->class);
+        foreach ($classes as $key => $value) {
+            $classes[$key] = is_callable($value) ? $value($row) : $value;
+        }
+
+        $styles = Arr::wrap($this->css);
+        foreach ($styles as $key => $value) {
+            $styles[$key] = is_callable($value) ? $value($row) : $value;
+        }
+
+        // Add fixed to the classes if the column is fixed.
+        if ($this->fixed) {
+            array_push($classes, 'datatable-fixed-column');
+        }
+
+        // Add the column's width to the styles.
+        array_push($styles, sprintf('width: %s', $this->width));
+        array_push($styles, sprintf('min-width: %s', $this->minWidth ?? $this->width));
+        array_push($styles, sprintf('max-width: %s', $this->maxWidth ?? $this->width));
+
+        // Add nowrap to the styles if the column is nowrap.
+        if ($this->nowrap) {
+            array_push($styles, 'white-space: nowrap');
+        }
+
+        return (new ComponentAttributeBag($attributes))
+            ->class($classes)
+            ->style($styles);
     }
 }

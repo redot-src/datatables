@@ -2,9 +2,7 @@
 
 namespace Redot\Datatables\Actions;
 
-use Redot\Datatables\Contracts\ActionGroup as ActionGroupContract;
-
-class ActionGroup implements ActionGroupContract
+class ActionGroup
 {
     /**
      * The label of the action group.

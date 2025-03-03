@@ -8,13 +8,12 @@ use Illuminate\Support\Traits\Macroable;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Redot\Datatables\Contracts\Datatable as DatatableContract;
 use Redot\Datatables\Columns\Column;
 use Redot\Datatables\Filters\Filter;
 use Redot\Datatables\Actions\Action;
 use Redot\Datatables\Actions\ActionGroup;
 
-abstract class Datatable extends Component implements DatatableContract
+abstract class Datatable extends Component
 {
     use Macroable;
     use WithPagination;
@@ -338,15 +337,11 @@ abstract class Datatable extends Component implements DatatableContract
                     continue;
                 }
 
-                $name = $column->name;
-
-                if (str_contains($name, '.')) {
-                    $this->searchWithinRelation($query, $name);
-
-                    continue;
+                if ($column->relationship) {
+                    $this->searchWithinRelation($query, $column->name);
+                } else {
+                    $query->orWhere($column->name, 'like', '%' . $this->search . '%');
                 }
-
-                $query->orWhere($name, 'like', '%' . $this->search . '%');
             }
         });
     }
@@ -397,13 +392,11 @@ abstract class Datatable extends Component implements DatatableContract
             return;
         }
 
-        if (str_contains($column->name, '.')) {
+        if ($column->relationship) {
             $this->sortWithinRelation($query, $column->name);
-
-            return;
+        } else {
+            $query->orderBy($column->name, $this->sortDirection);
         }
-
-        $query->orderBy($column->name, $this->sortDirection);
     }
 
     /**

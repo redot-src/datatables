@@ -4,9 +4,8 @@ namespace Redot\Datatables\Filters;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
-use Redot\Datatables\Contracts\Filter as FilterContract;
 
-class Filter implements FilterContract
+class Filter
 {
     /**
      * The filter's label.
