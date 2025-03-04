@@ -2,6 +2,7 @@
 
 namespace Redot\Datatables\Actions;
 
+use Illuminate\Database\Eloquent\Model;
 use Redot\Datatables\Traits\BuildAttributes;
 
 class ActionGroup
@@ -38,8 +39,8 @@ class ActionGroup
      */
     public function __construct(?string $label = null, ?string $icon = null)
     {
-        $this->label = $label ?? __('Actions');
-        $this->icon = $icon ?? 'fas fa-cog';
+        $this->label = $label;
+        $this->icon = $icon;
     }
 
     /**
@@ -106,5 +107,21 @@ class ActionGroup
     public function hidden(bool $hidden = true): ActionGroup
     {
         return $this->visible(! $hidden);
+    }
+
+    /**
+     * Prepare the attributes before building.
+     */
+    protected function prepareAttributes(?Model $row = null): void
+    {
+        $this->class = array_merge($this->class, [
+            'btn',
+            'dropdown-toggle' => $this->label,
+            'btn-icon' => $this->icon && ! $this->label,
+        ]);
+
+        // Append the dropdown attributes.
+        $this->attributes['data-bs-toggle'] = 'dropdown';
+        $this->attributes['aria-expanded'] = 'false';
     }
 }

@@ -50,9 +50,9 @@
                         <td class="fixed-end datatable-actions">
                             @foreach ($actions as $action)
                                 @if ($action->isActionGroup)
-                                    @include('datatables::partials.action-group', ['action' => $action, 'row' => $row])
+                                    @include('datatables::partials.action-group', ['group' => $action, 'row' => $row])
                                 @else
-                                    @include('datatables::partials.action', ['action' => $action, 'row' => $row])
+                                    @include('datatables::partials.action', ['action' => $action, 'row' => $row, 'grouped' => false])
                                 @endif
                             @endforeach
                         </td>
