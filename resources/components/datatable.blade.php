@@ -1,4 +1,9 @@
-<div class="card" @style(['max-height: ' . $height]) id="{{ $id }}">
+@assets
+    <link rel="stylesheet" href="{{ route('__datatables.css') }}">
+    <script src="{{ route('__datatables.js') }}"></script>
+@endassets
+
+<div class="card datatable" @style(['max-height: ' . $height]) id="{{ $id }}">
     <div class="card-body d-flex align-items-center gap-1 border-bottom" wire:ignore>
         <div class="w-auto me-auto">
             @include('datatables::partials.per-page')

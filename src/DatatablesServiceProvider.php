@@ -14,6 +14,7 @@ class DatatablesServiceProvider extends ServiceProvider
         $this->config();
         $this->views();
         $this->lang();
+        $this->routes();
     }
 
     /**
@@ -22,12 +23,12 @@ class DatatablesServiceProvider extends ServiceProvider
     protected function config(): void
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../config/datatables.php',
+            __DIR__ . '/../config/datatables.php',
             'datatables'
         );
 
         $this->publishes([
-            __DIR__.'/../config/datatables.php' => config_path('datatables.php'),
+            __DIR__ . '/../config/datatables.php' => config_path('datatables.php'),
         ], 'config');
     }
 
@@ -37,12 +38,12 @@ class DatatablesServiceProvider extends ServiceProvider
     protected function views(): void
     {
         $this->loadViewsFrom(
-            __DIR__.'/../resources/components',
+            __DIR__ . '/../resources/components',
             'datatables'
         );
 
         $this->publishes([
-            __DIR__.'/../resources/components' => resource_path('components/vendor/datatables'),
+            __DIR__ . '/../resources/components' => resource_path('components/vendor/datatables'),
         ], 'components');
     }
 
@@ -52,13 +53,23 @@ class DatatablesServiceProvider extends ServiceProvider
     protected function lang(): void
     {
         $this->loadTranslationsFrom(
-            __DIR__.'/../lang',
+            __DIR__ . '/../lang',
             'datatables'
         );
 
         $this->publishes([
-            __DIR__.'/../lang' => resource_path('lang/vendor/datatables'),
+            __DIR__ . '/../lang' => resource_path('lang/vendor/datatables'),
         ], 'lang');
+    }
+
+    /**
+     * Register the package routes.
+     */
+    protected function routes(): void
+    {
+        $this->loadRoutesFrom(
+            __DIR__ . '/../routes/datatable.php'
+        );
     }
 
     /**

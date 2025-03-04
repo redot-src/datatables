@@ -14,179 +14,128 @@ class Column
 
     /**
      * The column's type.
-     *
-     * @var string
      */
-    public string|null $type = null;
+    public ?string $type = null;
 
     /**
      * The column's name.
-     *
-     * @var string
      */
-    public string|null $name = null;
+    public ?string $name = null;
 
     /**
      * Determine if the column is a relationship.
-     *
-     * @var bool
      */
     public bool $relationship = false;
 
     /**
      * The column's label.
-     *
-     * @var string
      */
-    public string|null $label = null;
+    public ?string $label = null;
 
     /**
      * The column's empty value if null.
-     *
-     * @var string|Closure
      */
     public string|Closure $empty = '-';
 
     /**
-     * The column label class.
-     *
-     * @var string|array
+     * The column's content class.
      */
-    public string|array $class = '';
+    public string|array $class = [];
 
     /**
      * The column css styles.
-     *
-     * @var string|array
      */
     public string|array $css = [];
 
     /**
      * The column html attributes.
-     *
-     * @var array<string, string>
      */
     public array $attributes = [];
 
     /**
      * The column's width.
-     *
-     * @var string
      */
     public string $width = 'auto';
 
     /**
      * The column's max width.
-     *
-     * @var string|null
      */
-    public string|null $maxWidth = null;
+    public ?string $maxWidth = null;
 
     /**
      * The column's min width.
-     *
-     * @var string|null
      */
-    public string|null $minWidth = null;
+    public ?string $minWidth = null;
 
     /**
      * Determine if the column is a fixed column.
-     *
-     * @var bool
      */
     public bool $fixed = false;
 
     /**
      * Determine if the column whitespace should be nowrap.
-     *
-     * @var bool
      */
     public bool $nowrap = false;
 
     /**
      * Determine if the column content is HTML.
-     *
-     * @var bool
      */
     public bool $html = false;
 
     /**
      * The column's default value.
-     *
-     * @var mixed
      */
     public mixed $default = null;
 
     /**
      * Determine if the column is sortable.
-     *
-     * @var bool
      */
     public bool $sortable = false;
 
     /**
      * The sorting method for the column.
-     *
-     * @var Closure|null
      */
-    public Closure|null $sorter = null;
+    public ?Closure $sorter = null;
 
     /**
      * Determine if the column is searchable.
-     *
-     * @var bool
      */
     public bool $searchable = false;
 
     /**
      * The searching method for the column.
-     *
-     * @var Closure|null
      */
-    public Closure|null $searcher = null;
+    public ?Closure $searcher = null;
 
     /**
      * Determine if the column is visible.
-     *
-     * @var bool
      */
     public bool $visible = true;
 
     /**
      * Determine if the column is editable.
-     *
-     * @var bool
      */
     public bool $editable = false;
 
     /**
      * Determine if the column is exportable.
-     *
-     * @var bool
      */
     public bool $exportable = true;
 
     /**
      * The getter method for the column.
-     *
-     * @var Closure|null
      */
-    public Closure|null $getter = null;
+    public ?Closure $getter = null;
 
     /**
      * The setter method for the column.
-     *
-     * @var Closure|null
      */
-    public Closure|null $setter = null;
+    public ?Closure $setter = null;
 
     /**
      * Create a new column instance.
-     *
-     * @param string|null $name
-     * @param string|null $label
      */
-    public function __construct(string|null $name = null, string|null $label = null)
+    public function __construct(?string $name = null, ?string $label = null)
     {
         if ($name) {
             $this->name($name);
@@ -201,20 +150,14 @@ class Column
 
     /**
      * Make a new column instance.
-     *
-     * @param string|null $name
-     * @param string|null $label
-     * @return static
      */
-    public static function make(string|null $name = null, string|null $label = null): Column
+    public static function make(?string $name = null, ?string $label = null): Column
     {
         return new static($name, $label);
     }
 
     /**
      * Initialize the column.
-     *
-     * @return void
      */
     protected function init(): void
     {
@@ -223,9 +166,6 @@ class Column
 
     /**
      * Set the column's type.
-     *
-     * @param string $type
-     * @return $this
      */
     public function type(string $type): Column
     {
@@ -236,9 +176,6 @@ class Column
 
     /**
      * Set the column's name.
-     *
-     * @param string $name
-     * @return $this
      */
     public function name(string $name): Column
     {
@@ -250,9 +187,6 @@ class Column
 
     /**
      * Set the column's label.
-     *
-     * @param string $label
-     * @return $this
      */
     public function label(string $label): Column
     {
@@ -263,9 +197,6 @@ class Column
 
     /**
      * Set the column's empty value if null.
-     *
-     * @param string $empty
-     * @return $this
      */
     public function empty(string|Closure $empty): Column
     {
@@ -276,9 +207,6 @@ class Column
 
     /**
      * Set the column's content class.
-     *
-     * @param string|array $class
-     * @return $this
      */
     public function class(string|array $class): Column
     {
@@ -289,9 +217,6 @@ class Column
 
     /**
      * Set the column's content css styles.
-     *
-     * @param string|array $css
-     * @return $this
      */
     public function css(string|array $css): Column
     {
@@ -302,9 +227,6 @@ class Column
 
     /**
      * Set the column's content html attributes.
-     *
-     * @param array $attributes
-     * @return $this
      */
     public function attributes(array $attributes): Column
     {
@@ -315,9 +237,6 @@ class Column
 
     /**
      * Set the column's width.
-     *
-     * @param string $width
-     * @return $this
      */
     public function width(string $width): Column
     {
@@ -328,9 +247,6 @@ class Column
 
     /**
      * Set the column's max width.
-     *
-     * @param string $maxWidth
-     * @return $this
      */
     public function maxWidth(string $maxWidth): Column
     {
@@ -341,9 +257,6 @@ class Column
 
     /**
      * Set the column's min width.
-     *
-     * @param string $minWidth
-     * @return $this
      */
     public function minWidth(string $minWidth): Column
     {
@@ -354,9 +267,6 @@ class Column
 
     /**
      * Set the column as fixed.
-     *
-     * @param bool $fixed
-     * @return $this
      */
     public function fixed(bool $fixed = true): Column
     {
@@ -367,9 +277,6 @@ class Column
 
     /**
      * Set the column's whitespace as nowrap.
-     *
-     * @param bool $nowrap
-     * @return $this
      */
     public function nowrap(bool $nowrap = true): Column
     {
@@ -380,9 +287,6 @@ class Column
 
     /**
      * Set the column as HTML.
-     *
-     * @param bool $html
-     * @return $this
      */
     public function html(bool $html = true): Column
     {
@@ -393,9 +297,6 @@ class Column
 
     /**
      * Set the column's default value.
-     *
-     * @param mixed $default
-     * @return $this
      */
     public function default(mixed $default): Column
     {
@@ -406,9 +307,6 @@ class Column
 
     /**
      * Set the column as sortable.
-     *
-     * @param bool $sortable
-     * @return $this
      */
     public function sortable(bool $sortable = true): Column
     {
@@ -419,9 +317,6 @@ class Column
 
     /**
      * Set the sorting method for the column.
-     *
-     * @param Closure $sorter
-     * @return $this
      */
     public function sorter(Closure $sorter): Column
     {
@@ -433,9 +328,6 @@ class Column
 
     /**
      * Set the column as searchable.
-     *
-     * @param bool $searchable
-     * @return $this
      */
     public function searchable(bool $searchable = true): Column
     {
@@ -446,9 +338,6 @@ class Column
 
     /**
      * Set the searching method for the column.
-     *
-     * @param Closure $searcher
-     * @return $this
      */
     public function searcher(Closure $searcher): Column
     {
@@ -460,9 +349,6 @@ class Column
 
     /**
      * Set the column as visible.
-     *
-     * @param bool $visible
-     * @return $this
      */
     public function visible(bool $visible = true): Column
     {
@@ -473,9 +359,6 @@ class Column
 
     /**
      * Set the column as hidden.
-     *
-     * @param bool $hidden
-     * @return $this
      */
     public function hidden(bool $hidden = true): Column
     {
@@ -486,9 +369,6 @@ class Column
 
     /**
      * Set the column as editable.
-     *
-     * @param bool $editable
-     * @return $this
      */
     public function editable(bool $editable = true): Column
     {
@@ -499,9 +379,6 @@ class Column
 
     /**
      * Set the column as exportable.
-     *
-     * @param bool $exportable
-     * @return $this
      */
     public function exportable(bool $exportable = true): Column
     {
@@ -512,9 +389,6 @@ class Column
 
     /**
      * Set the getter method for the column.
-     *
-     * @param Closure $getter
-     * @return $this
      */
     public function getter(Closure $getter): Column
     {
@@ -525,9 +399,6 @@ class Column
 
     /**
      * Set the setter method for the column.
-     *
-     * @param Closure $setter
-     * @return $this
      */
     public function setter(Closure $setter): Column
     {
@@ -538,9 +409,6 @@ class Column
 
     /**
      * Get the value of the column.
-     *
-     * @param Model $row
-     * @return mixed
      */
     public function get(Model $row): mixed
     {
@@ -560,10 +428,6 @@ class Column
 
     /**
      * Default getter for the column.
-     *
-     * @param mixed $value
-     * @param Model $row
-     * @return mixed
      */
     protected function defaultGetter(mixed $value, Model $row): mixed
     {
@@ -572,10 +436,6 @@ class Column
 
     /**
      * Set the value of the column on the model [if editable].
-     *
-     * @param Model $row
-     * @param mixed $value
-     * @return void
      */
     public function set(Model $row, mixed $value): void
     {
@@ -585,6 +445,7 @@ class Column
 
         if ($this->setter) {
             call_user_func($this->setter, $value, $row);
+
             return;
         }
 
@@ -593,10 +454,6 @@ class Column
 
     /**
      * Default setter for the column.
-     *
-     * @param mixed $value
-     * @param Model $row
-     * @return void
      */
     protected function defaultSetter(mixed $value, Model $row): void
     {
@@ -607,9 +464,6 @@ class Column
 
     /**
      * Build attributes for the column.
-     *
-     * @param Model $row
-     * @return ComponentAttributeBag
      */
     public function buildAttributes(Model $row): ComponentAttributeBag
     {
@@ -634,13 +488,19 @@ class Column
         }
 
         // Add the column's width to the styles.
-        array_push($styles, sprintf('width: %s', $this->width));
-        array_push($styles, sprintf('min-width: %s', $this->minWidth ?? $this->width));
-        array_push($styles, sprintf('max-width: %s', $this->maxWidth ?? $this->width));
+        $styles = array_merge($styles, [
+            'width: ' . $this->width,
+            'min-width: ' . ($this->minWidth ?? $this->width),
+            'max-width: ' . ($this->maxWidth ?? $this->width),
+        ]);
 
         // Add nowrap to the styles if the column is nowrap.
         if ($this->nowrap) {
-            array_push($styles, 'white-space: nowrap');
+            $styles = array_merge($styles, [
+                'white-space: nowrap',
+                'overflow: hidden',
+                'text-overflow: ellipsis',
+            ]);
         }
 
         return (new ComponentAttributeBag($attributes))

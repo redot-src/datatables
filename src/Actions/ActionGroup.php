@@ -6,51 +6,52 @@ class ActionGroup
 {
     /**
      * The label of the action group.
-     *
-     * @var string
      */
-    public string|null $label = null;
+    public ?string $label = null;
 
     /**
      * The icon of the action group.
-     *
-     * @var string|null
      */
-    public string|null $icon = null;
+    public ?string $icon = null;
 
     /**
-     * The class of the action group.
-     *
-     * @var string|null
+     * The action class.
      */
-    public string|null $class = null;
+    public string|array $class = [];
 
     /**
-     * The css of the action group.
-     *
-     * @var array<string, string>
+     * The action css styles.
      */
-    public array $css = [];
+    public string|array $css = [];
 
     /**
      * The attributes of the action group.
-     *
-     * @var array<string, string>
      */
     public array $attributes = [];
 
     /**
      * The actions of the action group.
-     *
-     * @var Action[]
      */
     public array $actions = [];
 
     /**
+     * Create a new action group instance.
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Create a new action group instance.
+     */
+    public static function make(): ActionGroup
+    {
+        return new static;
+    }
+
+    /**
      * Set the label of the action group.
-     *
-     * @param string $label
-     * @return $this
      */
     public function label(string $label): ActionGroup
     {
@@ -61,9 +62,6 @@ class ActionGroup
 
     /**
      * Set the icon of the action group.
-     *
-     * @param string $icon
-     * @return $this
      */
     public function icon(string $icon): ActionGroup
     {
@@ -74,9 +72,6 @@ class ActionGroup
 
     /**
      * Set the action group's class.
-     *
-     * @param string|array $class
-     * @return $this
      */
     public function class(string|array $class): ActionGroup
     {
@@ -87,11 +82,8 @@ class ActionGroup
 
     /**
      * Set the action group's css.
-     *
-     * @param array<string, string> $css
-     * @return $this
      */
-    public function css(array $css): ActionGroup
+    public function css(string|array $css): ActionGroup
     {
         $this->css = $css;
 
@@ -100,9 +92,6 @@ class ActionGroup
 
     /**
      * Set the action group's attributes.
-     *
-     * @param array<string, string> $attributes
-     * @return $this
      */
     public function attributes(array $attributes): ActionGroup
     {
@@ -113,9 +102,6 @@ class ActionGroup
 
     /**
      * Set the actions of the action group.
-     *
-     * @param Action[] $actions
-     * @return $this
      */
     public function actions(array $actions): ActionGroup
     {

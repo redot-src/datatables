@@ -1,6 +1,8 @@
 {
-    "preset": "psr12",
+    "preset": "laravel",
     "rules": {
-        "not_operator_with_successor_space": true
+        "concat_space": {
+            "spacing": "one"
+        }
     }
 }

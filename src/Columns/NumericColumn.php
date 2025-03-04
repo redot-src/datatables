@@ -8,23 +8,16 @@ class NumericColumn extends Column
 {
     /**
      * The column's type.
-     *
-     * @var string
      */
-    public string|null $type = 'numeric';
+    public ?string $type = 'numeric';
 
     /**
      * The column's precision.
-     *
-     * @var int|null
      */
-    public int|null $precision = null;
+    public ?int $precision = null;
 
     /**
      * Set the column's precision.
-     *
-     * @param int $precision
-     * @return $this
      */
     public function precision(int $precision): Column
     {
@@ -35,10 +28,6 @@ class NumericColumn extends Column
 
     /**
      * Default getter for the column.
-     *
-     * @param mixed $value
-     * @param Model $row
-     * @return mixed
      */
     protected function defaultGetter(mixed $value, Model $row): mixed
     {

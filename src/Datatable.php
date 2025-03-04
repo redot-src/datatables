@@ -9,9 +9,6 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Redot\Datatables\Columns\Column;
-use Redot\Datatables\Filters\Filter;
-use Redot\Datatables\Actions\Action;
-use Redot\Datatables\Actions\ActionGroup;
 
 abstract class Datatable extends Component
 {
@@ -20,85 +17,69 @@ abstract class Datatable extends Component
 
     /**
      * Unique identifier for the datatable.
-     *
-     * @var string
      */
     public string $id;
 
     /**
      * Model bound to the datatable.
-     *
-     * @var string
      */
     public string $model;
 
     /**
      * The default per page options.
-     *
-     * @var array
      */
     public array $perPageOptions = [5, 10, 25, 50, 100, 250, 500];
 
     /**
      * The default per page value.
-     *
-     * @var int|string
      */
     #[Url]
     public int $perPage = 10;
 
     /**
      * Search term for the datatable.
-     *
-     * @var string
      */
     #[Url]
     public string $search = '';
 
     /**
      * Sort column for the datatable.
-     *
-     * @var string
      */
     #[Url]
     public string $sortColumn = '';
 
     /**
      * Sort direction for the datatable.
-     *
-     * @var string
      */
     #[Url]
     public string $sortDirection = 'asc';
 
     /**
      * Set the datatable maximum height.
-     *
-     * @var string
      */
     public string $height = 'auto';
 
     /**
      * Determine if the datatable has a sticky header.
-     *
-     * @var boolean
      */
     public bool $stickyHeader = true;
 
     /**
+     * Set the datatable empty message.
+     */
+    public ?string $emptyMessage = null;
+
+    /**
      * Create a new datatable instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         $this->id ??= uniqid('datatable-');
+        $this->emptyMessage ??= __('datatables::datatable.pagination.empty');
     }
 
     /**
      * Get the query source of the datatable.
-     *
-     * @return Builder
      */
     public function query(): Builder
     {
@@ -111,15 +92,11 @@ abstract class Datatable extends Component
 
     /**
      * Get the columns for the datatable.
-     *
-     * @return Column[]
      */
     abstract public function columns(): array;
 
     /**
      * Get the filters for the datatable.
-     *
-     * @return Filter[]
      */
     public function filters(): array
     {
@@ -128,8 +105,6 @@ abstract class Datatable extends Component
 
     /**
      * Get the actions for the datatable.
-     *
-     * @return array<Action|ActionGroup>
      */
     public function actions(): array
     {
@@ -138,9 +113,6 @@ abstract class Datatable extends Component
 
     /**
      * Sort the datatable by the given column.
-     *
-     * @param string $column
-     * @return void
      */
     public function sort(string $column): void
     {
@@ -170,8 +142,6 @@ abstract class Datatable extends Component
 
     /**
      * Export the datatable to a XLSX file.
-     *
-     * @return void
      */
     public function toXlsx(): void
     {
@@ -180,8 +150,6 @@ abstract class Datatable extends Component
 
     /**
      * Export the datatable to a CSV file.
-     *
-     * @return void
      */
     public function toCsv(): void
     {
@@ -190,8 +158,6 @@ abstract class Datatable extends Component
 
     /**
      * Export the datatable to a PDF file.
-     *
-     * @return void
      */
     public function toPdf(): void
     {
@@ -200,8 +166,6 @@ abstract class Datatable extends Component
 
     /**
      * Export the datatable to a JSON file.
-     *
-     * @return void
      */
     public function toJson(): void
     {
@@ -210,8 +174,6 @@ abstract class Datatable extends Component
 
     /**
      * Refresh the datatable.
-     *
-     * @return void
      */
     public function refresh(): void
     {
@@ -220,18 +182,14 @@ abstract class Datatable extends Component
 
     /**
      * Render the component.
-     *
-     * @return \Illuminate\View\View
      */
-    public function render()
+    public function render(): \Illuminate\View\View
     {
         return view('datatables::datatable', $this->viewData());
     }
 
     /**
      * Get the view parameters.
-     *
-     * @return array
      */
     public function viewData(): array
     {
@@ -258,9 +216,6 @@ abstract class Datatable extends Component
 
     /**
      * Get the colspan for the columns.
-     *
-     * @param array $columns
-     * @return int
      */
     protected function getColspanForColumns(array $columns): int
     {
@@ -276,10 +231,6 @@ abstract class Datatable extends Component
 
     /**
      * Get eloquent query builder.
-     *
-     * @param array $columns
-     * @param array $filters
-     * @return Builder
      */
     protected function getQueryBuilder(array $columns, array $filters): Builder
     {
@@ -294,10 +245,6 @@ abstract class Datatable extends Component
 
     /**
      * Apply filters to the query.
-     *
-     * @param Builder $query
-     * @param array $filters
-     * @return Builder
      */
     protected function applyFilters(Builder $query, array $filters): Builder
     {
@@ -314,10 +261,6 @@ abstract class Datatable extends Component
 
     /**
      * Apply global search to the query.
-     *
-     * @param Builder $query
-     * @param array $columns
-     * @return void
      */
     protected function applyGlobalSearch(Builder $query, array $columns): void
     {
@@ -348,10 +291,6 @@ abstract class Datatable extends Component
 
     /**
      * Search within relation.
-     *
-     * @param Builder $query
-     * @param string $field
-     * @return void
      */
     protected function searchWithinRelation(Builder $query, string $column): void
     {
@@ -367,9 +306,6 @@ abstract class Datatable extends Component
 
     /**
      * Apply sorting to the query.
-     *
-     * @param Builder $query
-     * @return void
      */
     protected function applySorting(Builder $query): void
     {
@@ -401,10 +337,6 @@ abstract class Datatable extends Component
 
     /**
      * Sort within relation.
-     *
-     * @param Builder $query
-     * @param string $column
-     * @return void
      */
     protected function sortWithinRelation(Builder $query, string $column): void
     {

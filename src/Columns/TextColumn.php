@@ -8,79 +8,56 @@ class TextColumn extends Column
 {
     /**
      * The column's type.
-     *
-     * @var string
      */
-    public string|null $type = 'text';
+    public ?string $type = 'text';
 
     /**
      * Text prefix for the column.
-     *
-     * @var string
      */
     public string $prefix = '';
 
     /**
      * Text suffix for the column.
-     *
-     * @var string
      */
     public string $suffix = '';
 
     /**
      * Determine if the text is email.
-     *
-     * @var bool
      */
     public bool $email = false;
 
     /**
      * Determine if the text is phone number.
-     *
-     * @var bool
      */
     public bool $phone = false;
 
     /**
      * Determine if the text is URL.
-     *
-     * @var bool
      */
     public bool $url = false;
 
     /**
      * Determine if the URL is external.
-     *
-     * @var bool
      */
     public bool $external = false;
 
     /**
      * Determine if the text is an icon.
-     *
-     * @var bool
      */
     public bool $icon = false;
 
     /**
      * Truncate text based on character count.
-     *
-     * @var int|null
      */
-    public int|null $truncate = null;
+    public ?int $truncate = null;
 
     /**
      * Truncate text based on word count.
-     *
-     * @var int|null
      */
-    public int|null $wordCount = null;
+    public ?int $wordCount = null;
 
     /**
      * Set the column's prefix.
-     *
-     * @param string $prefix
-     * @return $this
      */
     public function prefix(string $prefix): Column
     {
@@ -91,9 +68,6 @@ class TextColumn extends Column
 
     /**
      * Set the column's suffix.
-     *
-     * @param string $suffix
-     * @return $this
      */
     public function suffix(string $suffix): Column
     {
@@ -104,9 +78,6 @@ class TextColumn extends Column
 
     /**
      * Set the column's as an email.
-     *
-     * @param bool $email
-     * @return $this
      */
     public function email(bool $email = true): Column
     {
@@ -117,9 +88,6 @@ class TextColumn extends Column
 
     /**
      * Set the column's as a phone number.
-     *
-     * @param bool $phone
-     * @return $this
      */
     public function phone(bool $phone = true): Column
     {
@@ -130,9 +98,6 @@ class TextColumn extends Column
 
     /**
      * Set the column's as a URL.
-     *
-     * @param bool $url
-     * @return $this
      */
     public function url(bool $url = true): Column
     {
@@ -143,9 +108,6 @@ class TextColumn extends Column
 
     /**
      * Set the column's URL as external.
-     *
-     * @param bool $external
-     * @return $this
      */
     public function external(bool $external = true): Column
     {
@@ -156,9 +118,6 @@ class TextColumn extends Column
 
     /**
      * Set the column's as an icon.
-     *
-     * @param bool $icon
-     * @return $this
      */
     public function icon(bool $icon = true): Column
     {
@@ -169,9 +128,6 @@ class TextColumn extends Column
 
     /**
      * Set the column's truncate length.
-     *
-     * @param int $length
-     * @return $this
      */
     public function truncate(int $length): Column
     {
@@ -182,9 +138,6 @@ class TextColumn extends Column
 
     /**
      * Set the column's truncate length based on word count.
-     *
-     * @param int $wordCount
-     * @return $this
      */
     public function wordCount(int $wordCount): Column
     {
@@ -195,10 +148,6 @@ class TextColumn extends Column
 
     /**
      * Default getter for the column.
-     *
-     * @param mixed $value
-     * @param Model $row
-     * @return mixed
      */
     protected function defaultGetter(mixed $value, Model $row): mixed
     {

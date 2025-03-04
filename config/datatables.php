@@ -6,7 +6,7 @@ return [
     | Redot Datatables config
     |--------------------------------------------------------------------------
     |
-    | Here you can specify the configuration of the livewire-datatable.
+    | Here you can specify the configuration of the redot datatable.
     |
     */
 

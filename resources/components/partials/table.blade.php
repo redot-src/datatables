@@ -45,7 +45,7 @@
             @empty
                 <tr>
                     <td colspan="{{ $colspan }}" class="text-center text-muted">
-                        @lang('datatables::datatable.pagination.empty')
+                        @include('datatables::partials.empty')
                     </td>
                 </tr>
             @endforelse
