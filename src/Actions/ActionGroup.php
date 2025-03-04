@@ -2,6 +2,7 @@
 
 namespace Redot\Datatables\Actions;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Redot\Datatables\Traits\BuildAttributes;
 
@@ -28,6 +29,11 @@ class ActionGroup
      * Determine if the action group is visible.
      */
     public bool $visible = true;
+
+    /**
+     * The condition callback of the action.
+     */
+    public ?Closure $condition = null;
 
     /**
      * A flag to indicate that the class is an action group.
@@ -78,6 +84,10 @@ class ActionGroup
     {
         $this->actions = $actions;
 
+        foreach ($this->actions as $action) {
+            $action->grouped(true);
+        }
+
         return $this;
     }
 
@@ -110,6 +120,16 @@ class ActionGroup
     }
 
     /**
+     * Set the condition callback of the action group.
+     */
+    public function condition(Closure $condition): self
+    {
+        $this->condition = $condition;
+
+        return $this;
+    }
+
+    /**
      * Prepare the attributes before building.
      */
     protected function prepareAttributes(?Model $row = null): void
@@ -123,5 +143,6 @@ class ActionGroup
         // Append the dropdown attributes.
         $this->attributes['data-bs-toggle'] = 'dropdown';
         $this->attributes['aria-expanded'] = 'false';
+        $this->attributes['wire:key'] = sprintf('action-for-%s', $row->getKey());
     }
 }

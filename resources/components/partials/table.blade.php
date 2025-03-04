@@ -48,13 +48,19 @@
 
                     @if ($actions)
                         <td class="fixed-end datatable-actions">
-                            @foreach ($actions as $action)
-                                @if ($action->isActionGroup)
-                                    @include('datatables::partials.action-group', ['group' => $action, 'row' => $row])
-                                @else
-                                    @include('datatables::partials.action', ['action' => $action, 'row' => $row, 'grouped' => false])
-                                @endif
-                            @endforeach
+                            <div class="d-flex gap-1">
+                                @foreach ($actions as $action)
+                                    @if ($action->condition && ! call_user_func($action->condition, $row))
+                                        @continue
+                                    @endif
+
+                                    @if ($action->isActionGroup)
+                                        @include('datatables::partials.action-group', ['group' => $action, 'row' => $row])
+                                    @else
+                                        @include('datatables::partials.action', ['action' => $action, 'row' => $row])
+                                    @endif
+                                @endforeach
+                            </div>
                         </td>
                     @endif
                 </tr>

@@ -10,7 +10,9 @@
                 <i class="fas fa-file-pdf"></i>
             </span>
 
-            @lang('datatables::datatable.exports.pdf')
+            <span class="dropdown-item-title">
+                @lang('datatables::datatable.exports.pdf')
+            </span>
         </a>
 
         <a class="dropdown-item" href="#" wire:click.prevent="toXlsx">
@@ -18,7 +20,9 @@
                 <i class="fas fa-file-excel"></i>
             </span>
 
-            @lang('datatables::datatable.exports.excel')
+            <span class="dropdown-item-title">
+                @lang('datatables::datatable.exports.excel')
+            </span>
         </a>
 
         <a class="dropdown-item" href="#" wire:click.prevent="toCsv">
@@ -26,7 +30,9 @@
                 <i class="fas fa-file-csv"></i>
             </span>
 
-            @lang('datatables::datatable.exports.csv')
+            <span class="dropdown-item-title">
+                @lang('datatables::datatable.exports.csv')
+            </span>
         </a>
 
         <a class="dropdown-item" href="#" wire:click.prevent="toJson">
@@ -34,7 +40,9 @@
                 <i class="fas fa-file-code"></i>
             </span>
 
-            @lang('datatables::datatable.exports.json')
+            <span class="dropdown-item-title">
+                @lang('datatables::datatable.exports.json')
+            </span>
         </a>
     </div>
 </div>

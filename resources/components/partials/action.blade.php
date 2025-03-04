@@ -1,17 +1,18 @@
-@props(['action', 'row', 'grouped' => false])
+@props(['action', 'row'])
 
-@if ($grouped)
-    <a class="dropdown-item">
-        @if ($action->icon)
-            <i class="{{ $action->icon }}"></i>
-        @endif
+<a {{ $action->buildAttributes($row) }}>
+    @if ($action->icon)
+        <span @class(['dropdown-item-icon' => $action->grouped])>
+            <i @class([$action->icon])></i>
+        </span>
+    @endif
 
-        @if ($action->label)
-            <span>{{ $action->label }}</span>
-        @endif
-    </a>
-@else
-    <a class="btn" {{ $action->buildAttributes($row) }}>
-        <i class="{{ $action->icon }}"></i>
-    </a>
-@endif
+    @if ($action->label && $action->grouped)
+        <span @class([
+            'dropdown-item-title' => $action->grouped,
+            'ms-2' => ! $action->grouped && $action->icon,
+        ])>
+            {{ $action->label }}
+        </span>
+    @endif
+</a>

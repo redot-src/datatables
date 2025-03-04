@@ -83,6 +83,10 @@ class TextColumn extends Column
     {
         $this->email = $email;
 
+        if ($this->html === false && $email) {
+            $this->html = true;
+        }
+
         return $this;
     }
 
@@ -93,6 +97,10 @@ class TextColumn extends Column
     {
         $this->phone = $phone;
 
+        if ($this->html === false && $phone) {
+            $this->html = true;
+        }
+
         return $this;
     }
 
@@ -102,6 +110,10 @@ class TextColumn extends Column
     public function url(bool $url = true): Column
     {
         $this->url = $url;
+
+        if ($this->html === false && $url) {
+            $this->html = true;
+        }
 
         return $this;
     }
@@ -122,6 +134,10 @@ class TextColumn extends Column
     public function icon(bool $icon = true): Column
     {
         $this->icon = $icon;
+
+        if ($this->html === false && $icon) {
+            $this->html = true;
+        }
 
         return $this;
     }
@@ -178,16 +194,5 @@ class TextColumn extends Column
         }
 
         return $value;
-    }
-
-    /**
-     * Prepare the attributes before building.
-     */
-    protected function prepareAttributes(?Model $row = null): void
-    {
-        parent::prepareAttributes($row);
-
-        // Set the column as HTML if it's an email, phone, URL, or icon.
-        $this->html = $this->email || $this->phone || $this->url || $this->icon;
     }
 }

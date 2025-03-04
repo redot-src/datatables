@@ -43,6 +43,11 @@ class Action
     public bool $visible = true;
 
     /**
+     * Determine if the action is grouped.
+     */
+    public bool $grouped = false;
+
+    /**
      * The condition callback of the action.
      */
     public ?Closure $condition = null;
@@ -77,6 +82,30 @@ class Action
     public static function make(?string $label = null, ?string $icon = null): Action
     {
         return new static($label, $icon);
+    }
+
+    /**
+     * Create a new view action instance.
+     */
+    public static function view(?string $route = null, array $parameters = []): Action
+    {
+        return static::make(__('View'), 'fas fa-eye')->route($route, $parameters)->fancybox();
+    }
+
+    /**
+     * Create a new edit action instance.
+     */
+    public static function edit(?string $route = null, array $parameters = []): Action
+    {
+        return static::make(__('Edit'), 'fas fa-edit')->route($route, $parameters);
+    }
+
+    /**
+     * Create a new delete action instance.
+     */
+    public static function delete(?string $route = null, array $parameters = []): Action
+    {
+        return static::make(__('Delete'), 'fas fa-trash')->route($route, $parameters, 'delete');
     }
 
     /**
@@ -115,6 +144,16 @@ class Action
     }
 
     /**
+     * Set the parameters of the action.
+     */
+    public function parameters(array $parameters): self
+    {
+        $this->parameters = $parameters;
+
+        return $this;
+    }
+
+    /**
      * Set the method of the action.
      */
     public function method(string $method): self
@@ -147,6 +186,16 @@ class Action
     public function hidden(bool $hidden = true): Action
     {
         return $this->visible(! $hidden);
+    }
+
+    /**
+     * Set the action to be grouped.
+     */
+    public function grouped(bool $grouped = true): self
+    {
+        $this->grouped = $grouped;
+
+        return $this;
     }
 
     /**
@@ -189,8 +238,8 @@ class Action
             $parameters = array_merge($parameters, $this->parameters);
 
             $this->attributes['href'] = route($this->route, array_merge([$row], $parameters));
-            $this->attributes['action-method'] = $this->method;
-            $this->attributes['csrf-token'] = csrf_token();
+            $this->attributes['method'] = $this->method;
+            $this->attributes['token'] = csrf_token();
         }
 
         if ($this->newTab) {
@@ -201,5 +250,17 @@ class Action
             $this->attributes['data-fancybox'] = '';
             $this->attributes['data-type'] = 'iframe';
         }
+
+        if (! $this->grouped && $this->label) {
+            $this->attributes['title'] = $this->label;
+            $this->attributes['data-bs-toggle'] = 'tooltip';
+            $this->attributes['data-bs-placement'] = 'bottom';
+        }
+
+        $this->class = array_merge($this->class, [
+            'datatable-action',
+            'dropdown-item' => $this->grouped,
+            'btn btn-icon' => ! $this->grouped,
+        ]);
     }
 }

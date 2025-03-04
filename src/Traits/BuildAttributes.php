@@ -11,12 +11,12 @@ trait BuildAttributes
     /**
      * Class list for the element.
      */
-    public string|array $class = [];
+    public array $class = [];
 
     /**
      * CSS styles for the element.
      */
-    public string|array $css = [];
+    public array $css = [];
 
     /**
      * Additional attributes for the element.
@@ -24,26 +24,68 @@ trait BuildAttributes
     public array $attributes = [];
 
     /**
+     * Set the class list for the element.
+     */
+    public function class($class): static
+    {
+        $this->class = Arr::wrap($class);
+
+        return $this;
+    }
+
+    /**
+     * Set the CSS styles for the element.
+     */
+    public function css($css): static
+    {
+        $this->css = Arr::wrap($css);
+
+        return $this;
+    }
+
+    /**
+     * Set additional attributes for the element.
+     */
+    public function attributes(array $attributes): static
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * Clone the element.
+     */
+    protected function clone(): static
+    {
+        return clone $this;
+    }
+
+    /**
      * Build attributes for the element.
      */
     public function buildAttributes(?Model $row = null): ComponentAttributeBag
     {
-        $this->prepareAttributes($row);
+        $clone = clone $this;
+        $clone->prepareAttributes($row);
 
         $attributes = [];
-        foreach ($this->attributes as $key => $value) {
-            $attributes[$key] = is_callable($value) ? $value($row) : $value;
+        foreach ($clone->attributes as $key => $value) {
+            $attributes[$key] = $this->evaluate($value, $row);
         }
 
-        $classes = Arr::wrap($this->class);
-        foreach ($classes as $key => $value) {
-            $classes[$key] = is_callable($value) ? $value($row) : $value;
+        $classes = [];
+        foreach ($clone->class as $key => $value) {
+            $classes[$key] = $this->evaluate($value, $row);
         }
 
-        $styles = Arr::wrap($this->css);
-        foreach ($styles as $key => $value) {
-            $styles[$key] = is_callable($value) ? $value($row) : $value;
+        $styles = [];
+        foreach ($clone->css as $key => $value) {
+            $styles[$key] = $this->evaluate($value, $row);
         }
+
+        // Clean up the clone from memory
+        unset($clone);
 
         return (new ComponentAttributeBag($attributes))
             ->class($classes)
@@ -56,5 +98,18 @@ trait BuildAttributes
     protected function prepareAttributes(?Model $row = null): void
     {
         //
+    }
+
+    /**
+     * Evaluate the value.
+     */
+    protected function evaluate(mixed $value, ?Model $row = null)
+    {
+        // Early return if the value is a string
+        if (is_string($value)) {
+            return $value;
+        }
+
+        return is_callable($value) ? $value($row) : $value;
     }
 }

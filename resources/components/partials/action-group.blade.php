@@ -16,7 +16,6 @@
             @include('datatables::partials.action', [
                 'action' => $action,
                 'row' => $row,
-                'grouped' => true,
             ])
         @endforeach
     </div>
