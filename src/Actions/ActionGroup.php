@@ -2,8 +2,12 @@
 
 namespace Redot\Datatables\Actions;
 
+use Redot\Datatables\Traits\BuildAttributes;
+
 class ActionGroup
 {
+    use BuildAttributes;
+
     /**
      * The label of the action group.
      */
@@ -13,21 +17,6 @@ class ActionGroup
      * The icon of the action group.
      */
     public ?string $icon = null;
-
-    /**
-     * The action class.
-     */
-    public string|array $class = [];
-
-    /**
-     * The action css styles.
-     */
-    public string|array $css = [];
-
-    /**
-     * The attributes of the action group.
-     */
-    public array $attributes = [];
 
     /**
      * The actions of the action group.
@@ -66,36 +55,6 @@ class ActionGroup
     public function icon(string $icon): ActionGroup
     {
         $this->icon = $icon;
-
-        return $this;
-    }
-
-    /**
-     * Set the action group's class.
-     */
-    public function class(string|array $class): ActionGroup
-    {
-        $this->class = is_array($class) ? implode(' ', $class) : $class;
-
-        return $this;
-    }
-
-    /**
-     * Set the action group's css.
-     */
-    public function css(string|array $css): ActionGroup
-    {
-        $this->css = $css;
-
-        return $this;
-    }
-
-    /**
-     * Set the action group's attributes.
-     */
-    public function attributes(array $attributes): ActionGroup
-    {
-        $this->attributes = $attributes;
 
         return $this;
     }

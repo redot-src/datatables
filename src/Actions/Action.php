@@ -2,8 +2,12 @@
 
 namespace Redot\Datatables\Actions;
 
+use Redot\Datatables\Traits\BuildAttributes;
+
 class Action
 {
+    use BuildAttributes;
+
     /**
      * The label of the action.
      */
@@ -13,21 +17,6 @@ class Action
      * The icon of the action.
      */
     public ?string $icon = null;
-
-    /**
-     * The action class.
-     */
-    public string|array $class = [];
-
-    /**
-     * The action css styles.
-     */
-    public string|array $css = [];
-
-    /**
-     * The attributes of the action.
-     */
-    public array $attributes = [];
 
     /**
      * Create a new action instance.
@@ -61,36 +50,6 @@ class Action
     public function icon(string $icon): self
     {
         $this->icon = $icon;
-
-        return $this;
-    }
-
-    /**
-     * Set the class of the action.
-     */
-    public function class(string|array $class): self
-    {
-        $this->class = $class;
-
-        return $this;
-    }
-
-    /**
-     * Set the css of the action.
-     */
-    public function css(string|array $css): self
-    {
-        $this->css = $css;
-
-        return $this;
-    }
-
-    /**
-     * Set the attributes of the action.
-     */
-    public function attributes(array $attributes): self
-    {
-        $this->attributes = $attributes;
 
         return $this;
     }

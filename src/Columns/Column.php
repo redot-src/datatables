@@ -4,12 +4,12 @@ namespace Redot\Datatables\Columns;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
-use Illuminate\View\ComponentAttributeBag;
+use Redot\Datatables\Traits\BuildAttributes;
 
 class Column
 {
+    use BuildAttributes;
     use Macroable;
 
     /**
@@ -36,21 +36,6 @@ class Column
      * The column's empty value if null.
      */
     public string|Closure $empty = '-';
-
-    /**
-     * The column's content class.
-     */
-    public string|array $class = [];
-
-    /**
-     * The column css styles.
-     */
-    public string|array $css = [];
-
-    /**
-     * The column html attributes.
-     */
-    public array $attributes = [];
 
     /**
      * The column's width.
@@ -201,36 +186,6 @@ class Column
     public function empty(string|Closure $empty): Column
     {
         $this->empty = $empty;
-
-        return $this;
-    }
-
-    /**
-     * Set the column's content class.
-     */
-    public function class(string|array $class): Column
-    {
-        $this->class = $class;
-
-        return $this;
-    }
-
-    /**
-     * Set the column's content css styles.
-     */
-    public function css(string|array $css): Column
-    {
-        $this->css = $css;
-
-        return $this;
-    }
-
-    /**
-     * Set the column's content html attributes.
-     */
-    public function attributes(array $attributes): Column
-    {
-        $this->attributes = $attributes;
 
         return $this;
     }
@@ -463,32 +418,17 @@ class Column
     }
 
     /**
-     * Build attributes for the column.
+     * Prepare the column's attributes.
      */
-    public function buildAttributes(Model $row): ComponentAttributeBag
+    protected function prepareAttributes(): void
     {
-        $attributes = [];
-        foreach ($this->attributes as $key => $value) {
-            $attributes[$key] = is_callable($value) ? $value($row) : $value;
-        }
-
-        $classes = Arr::wrap($this->class);
-        foreach ($classes as $key => $value) {
-            $classes[$key] = is_callable($value) ? $value($row) : $value;
-        }
-
-        $styles = Arr::wrap($this->css);
-        foreach ($styles as $key => $value) {
-            $styles[$key] = is_callable($value) ? $value($row) : $value;
-        }
-
         // Add fixed to the classes if the column is fixed.
         if ($this->fixed) {
-            array_push($classes, 'datatable-fixed-column');
+            array_push($this->class, 'datatable-fixed-column');
         }
 
         // Add the column's width to the styles.
-        $styles = array_merge($styles, [
+        $this->css = array_merge($this->css, [
             'width: ' . $this->width,
             'min-width: ' . ($this->minWidth ?? $this->width),
             'max-width: ' . ($this->maxWidth ?? $this->width),
@@ -496,15 +436,11 @@ class Column
 
         // Add nowrap to the styles if the column is nowrap.
         if ($this->nowrap) {
-            $styles = array_merge($styles, [
+            $this->css = array_merge($this->css, [
                 'white-space: nowrap',
                 'overflow: hidden',
                 'text-overflow: ellipsis',
             ]);
         }
-
-        return (new ComponentAttributeBag($attributes))
-            ->class($classes)
-            ->style($styles);
     }
 }
