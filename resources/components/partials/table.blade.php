@@ -1,9 +1,9 @@
 <div class="table-responsive">
-    <table class="table card-table table-vcenter datatable">
+    <table @class(['table card-table table-vcenter datatable', 'bordered' => $bordered])>
         <thead @class(['sticky-top' => $stickyHeader])>
             <tr>
                 @foreach ($columns as $column)
-                    <th>
+                    <th @class(['fixed-' . $column->fixedDirection => $column->fixed])>
                         @if ($column->sortable && $column->name)
                             <a href="#" class="text-decoration-none text-muted"
                                 wire:click.prevent="sort('{{ $column->name }}')">

@@ -21,17 +21,18 @@ class Action
     /**
      * Create a new action instance.
      */
-    public function __construct()
+    public function __construct(?string $label = null, ?string $icon = null)
     {
-        //
+        $this->label = $label;
+        $this->icon = $icon;
     }
 
     /**
      * Create a new action instance.
      */
-    public static function make(): Action
+    public static function make(?string $label = null, ?string $icon = null): Action
     {
-        return new static;
+        return new static($label, $icon);
     }
 
     /**

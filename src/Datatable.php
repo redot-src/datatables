@@ -65,6 +65,11 @@ abstract class Datatable extends Component
     public bool $stickyHeader = true;
 
     /**
+     * Determine if the datatable is bordered.
+     */
+    public bool $bordered = true;
+
+    /**
      * Set the datatable empty message.
      */
     public ?string $emptyMessage = null;

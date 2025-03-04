@@ -67,9 +67,9 @@ class Filter
     /**
      * Mark the filter as active.
      */
-    public function active(): Filter
+    public function active(bool $isActive = true): Filter
     {
-        $this->isActive = true;
+        $this->isActive = $isActive;
 
         return $this;
     }
@@ -90,7 +90,7 @@ class Filter
     public function apply(Builder $query): void
     {
         if ($this->queryCallback) {
-            $this->queryCallback->call($this, $query);
+            call_user_func($this->queryCallback, $query);
         }
     }
 }

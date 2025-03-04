@@ -58,6 +58,11 @@ class Column
     public bool $fixed = false;
 
     /**
+     * The fixed direction of the column.
+     */
+    public string $fixedDirection = 'start';
+
+    /**
      * Determine if the column whitespace should be nowrap.
      */
     public bool $nowrap = false;
@@ -223,9 +228,10 @@ class Column
     /**
      * Set the column as fixed.
      */
-    public function fixed(bool $fixed = true): Column
+    public function fixed(bool $fixed = true, string $direction = 'start'): Column
     {
         $this->fixed = $fixed;
+        $this->fixedDirection = $direction;
 
         return $this;
     }
@@ -424,7 +430,7 @@ class Column
     {
         // Add fixed to the classes if the column is fixed.
         if ($this->fixed) {
-            array_push($this->class, 'datatable-fixed-column');
+            array_push($this->class, 'fixed-' . $this->fixedDirection);
         }
 
         // Add the column's width to the styles.

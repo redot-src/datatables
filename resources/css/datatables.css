@@ -1,3 +1,58 @@
+/* ---------------------------------
+ * Bordered Table
+ * --------------------------------- */
+
+.datatable table.bordered {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.datatable table.bordered th,
+.datatable table.bordered td {
+    border: 1px solid var(--tblr-border-color);
+}
+
+.datatable table.bordered th:first-child,
+.datatable table.bordered td:first-child {
+    border-inline-start: 0;
+}
+
+.datatable table.bordered th:last-child,
+.datatable table.bordered td:last-child {
+    border-inline-end: 0;
+}
+
+/* ---------------------------------
+ * Fixed Column
+ * --------------------------------- */
+
+.datatable table .fixed-start,
+.datatable table .fixed-end {
+    position: sticky;
+    z-index: 1;
+}
+
+.datatable table .fixed-start {
+    inset-inline-start: 0;
+    border-inline-end: none;
+    box-shadow: inset -1px 0 var(--tblr-card-border-color);
+}
+
+.datatable table .fixed-end {
+    inset-inline-end: 0;
+    border-inline-start: none;
+    box-shadow: inset 1px 0 var(--tblr-card-border-color);
+}
+
+.datatable td.fixed-start,
+.datatable td.fixed-end {
+    background: var(--tblr-bg-surface);
+}
+
+/* ---------------------------------
+ * Overrides
+ * --------------------------------- */
+
 .datatable .dropdown-menu {
     z-index: 9999;
 }

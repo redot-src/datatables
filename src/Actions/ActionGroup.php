@@ -26,17 +26,18 @@ class ActionGroup
     /**
      * Create a new action group instance.
      */
-    public function __construct()
+    public function __construct(?string $label = null, ?string $icon = null)
     {
-        //
+        $this->label = $label;
+        $this->icon = $icon;
     }
 
     /**
      * Create a new action group instance.
      */
-    public static function make(): ActionGroup
+    public static function make(?string $label = null, ?string $icon = null): ActionGroup
     {
-        return new static;
+        return new static($label, $icon);
     }
 
     /**
