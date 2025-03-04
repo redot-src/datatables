@@ -3,18 +3,13 @@
  * --------------------------------- */
 
 .datatable table.bordered {
-    border-collapse: collapse;
+    border-collapse: separate;
     border-spacing: 0;
 }
 
-.datatable table.bordered th,
-.datatable table.bordered td {
-    border: 1px solid var(--tblr-border-color);
-}
-
-.datatable table.bordered th:first-child,
-.datatable table.bordered td:first-child {
-    border-inline-start: 0;
+.datatable table.bordered th:not(:has(+ .datatable-actions)),
+.datatable table.bordered td:not(:has(+ .datatable-actions)) {
+    border-inline-end: 1px solid var(--tblr-border-color);
 }
 
 .datatable table.bordered th:last-child,
@@ -34,14 +29,12 @@
 
 .datatable table .fixed-start {
     inset-inline-start: 0;
-    border-inline-end: none;
-    box-shadow: inset -1px 0 var(--tblr-card-border-color);
+    border-inline-end: 1px solid var(--tblr-border-color);
 }
 
 .datatable table .fixed-end {
     inset-inline-end: 0;
-    border-inline-start: none;
-    box-shadow: inset 1px 0 var(--tblr-card-border-color);
+    border-inline-start: 1px solid var(--tblr-border-color);
 }
 
 .datatable td.fixed-start,

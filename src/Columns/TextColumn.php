@@ -179,4 +179,15 @@ class TextColumn extends Column
 
         return $value;
     }
+
+    /**
+     * Prepare the attributes before building.
+     */
+    protected function prepareAttributes(?Model $row = null): void
+    {
+        parent::prepareAttributes($row);
+
+        // Set the column as HTML if it's an email, phone, URL, or icon.
+        $this->html = $this->email || $this->phone || $this->url || $this->icon;
+    }
 }

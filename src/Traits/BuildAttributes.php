@@ -9,28 +9,26 @@ use Illuminate\View\ComponentAttributeBag;
 trait BuildAttributes
 {
     /**
-     * The column's content class.
+     * Class list for the element.
      */
     public string|array $class = [];
 
     /**
-     * The column css styles.
+     * CSS styles for the element.
      */
     public string|array $css = [];
 
     /**
-     * The column html attributes.
+     * Additional attributes for the element.
      */
     public array $attributes = [];
 
     /**
-     * Build attributes for the column.
+     * Build attributes for the element.
      */
     public function buildAttributes(?Model $row = null): ComponentAttributeBag
     {
-        if (method_exists($this, 'prepareAttributes')) {
-            $this->prepareAttributes($row);
-        }
+        $this->prepareAttributes($row);
 
         $attributes = [];
         foreach ($this->attributes as $key => $value) {
@@ -50,5 +48,13 @@ trait BuildAttributes
         return (new ComponentAttributeBag($attributes))
             ->class($classes)
             ->style($styles);
+    }
+
+    /**
+     * Prepare the attributes before building.
+     */
+    protected function prepareAttributes(?Model $row = null): void
+    {
+        //
     }
 }

@@ -26,6 +26,10 @@
                         @endif
                     </th>
                 @endforeach
+
+                @if ($actions)
+                    <th class="w-1 fixed-end datatable-actions"></th>
+                @endif
             </tr>
         </thead>
 
@@ -41,6 +45,18 @@
                             @endif
                         </td>
                     @endforeach
+
+                    @if ($actions)
+                        <td class="fixed-end datatable-actions">
+                            @foreach ($actions as $action)
+                                @if ($action->isActionGroup)
+                                    @include('datatables::partials.action-group', ['action' => $action, 'row' => $row])
+                                @else
+                                    @include('datatables::partials.action', ['action' => $action, 'row' => $row])
+                                @endif
+                            @endforeach
+                        </td>
+                    @endif
                 </tr>
             @empty
                 <tr>

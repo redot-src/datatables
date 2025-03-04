@@ -1,6 +1,6 @@
 @assets
-    <link rel="stylesheet" href="{{ route('__datatables.css') }}">
-    <script src="{{ route('__datatables.js') }}"></script>
+    <link rel="stylesheet" href="{{ route('__datatables.css', ['v' => $jsAssetsVersionHash]) }}">
+    <script src="{{ route('__datatables.js', ['v' => $cssAssetsVersionHash]) }}"></script>
 @endassets
 
 <div class="card datatable" @style(['max-height: ' . $height]) id="{{ $id }}">

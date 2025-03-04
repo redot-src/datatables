@@ -424,9 +424,9 @@ class Column
     }
 
     /**
-     * Prepare the column's attributes.
+     * Prepare the attributes before building.
      */
-    protected function prepareAttributes(): void
+    protected function prepareAttributes(?Model $row = null): void
     {
         // Add fixed to the classes if the column is fixed.
         if ($this->fixed) {
@@ -447,6 +447,11 @@ class Column
                 'overflow: hidden',
                 'text-overflow: ellipsis',
             ]);
+        }
+
+        // Add d-none to the classes if the column is not visible.
+        if (! $this->visible) {
+            array_push($this->class, 'd-none');
         }
     }
 }

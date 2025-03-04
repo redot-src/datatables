@@ -24,12 +24,22 @@ class ActionGroup
     public array $actions = [];
 
     /**
+     * Determine if the action group is visible.
+     */
+    public bool $visible = true;
+
+    /**
+     * A flag to indicate that the class is an action group.
+     */
+    final public $isActionGroup = true;
+
+    /**
      * Create a new action group instance.
      */
     public function __construct(?string $label = null, ?string $icon = null)
     {
-        $this->label = $label;
-        $this->icon = $icon;
+        $this->label = $label ?? __('Actions');
+        $this->icon = $icon ?? 'fas fa-cog';
     }
 
     /**
@@ -68,5 +78,33 @@ class ActionGroup
         $this->actions = $actions;
 
         return $this;
+    }
+
+    /**
+     * Add an action to the action group.
+     */
+    public function addAction(Action $action): ActionGroup
+    {
+        $this->actions[] = $action;
+
+        return $this;
+    }
+
+    /**
+     * Set the visibility of the action group.
+     */
+    public function visible(bool $visible = true): ActionGroup
+    {
+        $this->visible = $visible;
+
+        return $this;
+    }
+
+    /**
+     * Set the visibility of the action group to hidden.
+     */
+    public function hidden(bool $hidden = true): ActionGroup
+    {
+        return $this->visible(! $hidden);
     }
 }

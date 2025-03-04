@@ -8,6 +8,8 @@ use Illuminate\Support\Traits\Macroable;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Redot\Datatables\Actions\Action;
+use Redot\Datatables\Actions\ActionGroup;
 use Redot\Datatables\Columns\Column;
 
 abstract class Datatable extends Component
@@ -75,12 +77,27 @@ abstract class Datatable extends Component
     public ?string $emptyMessage = null;
 
     /**
+     * JavaScript assets version hash.
+     */
+    public string $jsAssetsVersionHash;
+
+    /**
+     * CSS assets version hash.
+     */
+    public string $cssAssetsVersionHash;
+
+    /**
      * Create a new datatable instance.
      */
     public function __construct()
     {
         $this->id ??= uniqid('datatable-');
         $this->emptyMessage ??= __('datatables::datatable.pagination.empty');
+
+        $path = __DIR__ . '/../resources';
+
+        $this->jsAssetsVersionHash = md5(filemtime($path . '/js/datatables.js'));
+        $this->cssAssetsVersionHash = md5(filemtime($path . '/css/datatables.css'));
     }
 
     /**
@@ -101,17 +118,17 @@ abstract class Datatable extends Component
     abstract public function columns(): array;
 
     /**
-     * Get the filters for the datatable.
+     * Get the actions for the datatable.
      */
-    public function filters(): array
+    public function actions(): array
     {
         return [];
     }
 
     /**
-     * Get the actions for the datatable.
+     * Get the filters for the datatable.
      */
-    public function actions(): array
+    public function filters(): array
     {
         return [];
     }
@@ -198,10 +215,11 @@ abstract class Datatable extends Component
      */
     public function viewData(): array
     {
-        $actions = $this->actions();
-        $columns = $this->columns();
+        $columns = $this->getVisibleColumns();
+        $actions = $this->getVisibleActions();
         $filters = $this->filters();
 
+        // Build the query and get the rows
         $query = $this->getQueryBuilder($columns, $filters);
         $rows = $query->paginate($this->perPage);
 
@@ -210,7 +228,7 @@ abstract class Datatable extends Component
             'filters' => $filters,
             'actions' => $actions,
 
-            'colspan' => $this->getColspanForColumns($columns),
+            'colspan' => $this->getColspanForColumns($columns, $actions),
 
             'searchable' => count(array_filter($columns, fn (Column $column) => $column->searchable)) > 0,
             'exportable' => count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
@@ -220,14 +238,38 @@ abstract class Datatable extends Component
     }
 
     /**
+     * Get the visible columns.
+     */
+    protected function getVisibleColumns(): array
+    {
+        return array_filter($this->columns(), fn (Column $column) => $column->visible);
+    }
+
+    /**
+     * Get the visible actions.
+     */
+    protected function getVisibleActions(): array
+    {
+        return array_filter($this->actions(), function (Action|ActionGroup $action) {
+            if ($action->isActionGroup) {
+                $action->actions = array_filter($action->actions, fn (Action $action) => $action->visible);
+
+                return $action->visible && count($action->actions) > 0;
+            }
+
+            return $action->visible;
+        });
+    }
+
+    /**
      * Get the colspan for the columns.
      */
-    protected function getColspanForColumns(array $columns): int
+    protected function getColspanForColumns(array $columns, array $actions): int
     {
         $colspan = count(array_filter($columns, fn (Column $column) => $column->visible));
 
         // Add one for the actions column
-        if (count($this->actions()) > 0) {
+        if (count($actions) > 0) {
             $colspan++;
         }
 
