@@ -20,17 +20,27 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Handle datatable action click
-    $(document).on('click', '.datatable-actions .datatable-action:not([method="get"])', (event) => {
+    $(document).on('click', '.datatable-action[method]:not([method="get"])', (event) => {
         event.preventDefault();
 
         // Get the action element
         const $action = $(event.target).closest('.datatable-action');
-        const $form = $(`<form action="${$action.attr('href')}" method="POST"></form>`);
 
-        // Spoof the form method
-        $form.append(`<input type="hidden" name="_method" value="${$action.attr('method')}">`);
-        $form.append(`<input type="hidden" name="_token" value="${$action.attr('token')}">`);
+        // Define the callback function
+        const callback = function () {
+            const $form = $(`<form action="${$action.attr('href')}" method="POST"></form>`);
 
-        $form.appendTo('body').submit();
+            // Spoof the form method
+            $form.append(`<input type="hidden" name="_method" value="${$action.attr('method')}">`);
+            $form.append(`<input type="hidden" name="_token" value="${$action.attr('token')}">`);
+
+            $form.appendTo('body').submit();
+        };
+
+        if ($action.hasAttr('confirm')) {
+            warnBeforeAction(callback, { content: $action.attr('confirm') });
+        } else {
+            callback();
+        }
     });
 });

@@ -28,4 +28,12 @@ return [
         'pdf' => 'Export PDF',
         'json' => 'Export JSON',
     ],
+
+    'actions' => [
+        'view' => 'View',
+        'edit' => 'Edit',
+        'delete' => 'Delete',
+        'export' => 'Export',
+        'confirm' => 'Are you sure you want to perform this action?',
+    ],
 ];

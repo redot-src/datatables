@@ -126,6 +126,17 @@ abstract class Datatable extends Component
     }
 
     /**
+     * Get the default action group for the datatable.
+     */
+    public static function defaultActionGroup(array $actions, ?string $label = null, ?string $icon = null): array
+    {
+        return [
+            ActionGroup::make($label, $icon ?? 'fas fa-ellipsis-v')
+                ->actions($actions),
+        ];
+    }
+
+    /**
      * Get the filters for the datatable.
      */
     public function filters(): array

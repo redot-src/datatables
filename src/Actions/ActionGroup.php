@@ -94,9 +94,9 @@ class ActionGroup
     /**
      * Add an action to the action group.
      */
-    public function addAction(Action $action): ActionGroup
+    public function add(Action $action): ActionGroup
     {
-        $this->actions[] = $action;
+        $this->actions[] = $action->grouped(true);
 
         return $this;
     }
@@ -134,15 +134,16 @@ class ActionGroup
      */
     protected function prepareAttributes(?Model $row = null): void
     {
-        $this->class = array_merge($this->class, [
+        $this->class([
             'btn',
             'dropdown-toggle' => $this->label,
             'btn-icon' => $this->icon && ! $this->label,
         ]);
 
         // Append the dropdown attributes.
-        $this->attributes['data-bs-toggle'] = 'dropdown';
-        $this->attributes['aria-expanded'] = 'false';
-        $this->attributes['wire:key'] = sprintf('action-for-%s', $row->getKey());
+        $this->attributes([
+            'data-bs-toggle' => 'dropdown',
+            'wire:key' => sprintf('action-group-for-%s', $row->getKey()),
+        ]);
     }
 }

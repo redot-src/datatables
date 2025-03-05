@@ -430,11 +430,11 @@ class Column
     {
         // Add fixed to the classes if the column is fixed.
         if ($this->fixed) {
-            array_push($this->class, 'fixed-' . $this->fixedDirection);
+            $this->class('fixed-' . $this->fixedDirection);
         }
 
         // Add the column's width to the styles.
-        $this->css = array_merge($this->css, [
+        $this->css([
             'width: ' . $this->width,
             'min-width: ' . ($this->minWidth ?? $this->width),
             'max-width: ' . ($this->maxWidth ?? $this->width),
@@ -442,16 +442,11 @@ class Column
 
         // Add nowrap to the styles if the column is nowrap.
         if ($this->nowrap) {
-            $this->css = array_merge($this->css, [
+            $this->css([
                 'white-space: nowrap',
                 'overflow: hidden',
                 'text-overflow: ellipsis',
             ]);
-        }
-
-        // Add d-none to the classes if the column is not visible.
-        if (! $this->visible) {
-            array_push($this->class, 'd-none');
         }
     }
 }

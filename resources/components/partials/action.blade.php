@@ -7,10 +7,10 @@
         </span>
     @endif
 
-    @if ($action->label && $action->grouped)
+    @if ($action->label && ($action->grouped || $action->expanded || ! $action->icon))
         <span @class([
             'dropdown-item-title' => $action->grouped,
-            'ms-2' => ! $action->grouped && $action->icon,
+            'ms-2' => $action->icon && ! $action->grouped,
         ])>
             {{ $action->label }}
         </span>

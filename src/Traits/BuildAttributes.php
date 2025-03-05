@@ -28,7 +28,7 @@ trait BuildAttributes
      */
     public function class($class): static
     {
-        $this->class = Arr::wrap($class);
+        $this->class = array_merge($this->class, Arr::wrap($class));
 
         return $this;
     }
@@ -38,7 +38,7 @@ trait BuildAttributes
      */
     public function css($css): static
     {
-        $this->css = Arr::wrap($css);
+        $this->css = array_merge($this->css, Arr::wrap($css));
 
         return $this;
     }
@@ -48,7 +48,17 @@ trait BuildAttributes
      */
     public function attributes(array $attributes): static
     {
-        $this->attributes = $attributes;
+        $this->attributes = array_merge($this->attributes, $attributes);
+
+        return $this;
+    }
+
+    /**
+     * Add attribute to the element.
+     */
+    public function attribute(string $key, $value): static
+    {
+        $this->attributes[$key] = $value;
 
         return $this;
     }

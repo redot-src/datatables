@@ -28,6 +28,11 @@ class Action
     public ?string $route = null;
 
     /**
+     * The href of the action.
+     */
+    public string|Closure|null $href = null;
+
+    /**
      * The route parameters of the action.
      */
     public array $parameters = [];
@@ -48,6 +53,11 @@ class Action
     public bool $grouped = false;
 
     /**
+     * Determine if the action is expanded.
+     */
+    public bool $expanded = false;
+
+    /**
      * The condition callback of the action.
      */
     public ?Closure $condition = null;
@@ -61,6 +71,16 @@ class Action
      * Determine if the action should be opened in fancybox.
      */
     public bool $fancybox = false;
+
+    /**
+     * Determine if the action is confirmable.
+     */
+    public bool $confirmable = false;
+
+    /**
+     * Confirm message for the action.
+     */
+    public ?string $confirmMessage = null;
 
     /**
      * A flag to indicate that the class is not an action group.
@@ -89,7 +109,13 @@ class Action
      */
     public static function view(?string $route = null, array $parameters = []): Action
     {
-        return static::make(__('View'), 'fas fa-eye')->route($route, $parameters)->fancybox();
+        $action = static::make(__('datatables::datatable.actions.view'), 'fas fa-eye')->fancybox();
+
+        if ($route) {
+            $action->route($route, $parameters);
+        }
+
+        return $action;
     }
 
     /**
@@ -97,7 +123,13 @@ class Action
      */
     public static function edit(?string $route = null, array $parameters = []): Action
     {
-        return static::make(__('Edit'), 'fas fa-edit')->route($route, $parameters);
+        $action = static::make(__('datatables::datatable.actions.edit'), 'fas fa-edit');
+
+        if ($route) {
+            $action->route($route, $parameters);
+        }
+
+        return $action;
     }
 
     /**
@@ -105,7 +137,27 @@ class Action
      */
     public static function delete(?string $route = null, array $parameters = []): Action
     {
-        return static::make(__('Delete'), 'fas fa-trash')->route($route, $parameters, 'delete');
+        $action = static::make(__('datatables::datatable.actions.delete'), 'fas fa-trash-alt')->method('delete')->confirmable();
+
+        if ($route) {
+            $action->route($route, $parameters);
+        }
+
+        return $action;
+    }
+
+    /**
+     * Create a new export action instance.
+     */
+    public static function export(?string $route = null, array $parameters = []): Action
+    {
+        $action = static::make(__('datatables::datatable.actions.export'), 'fas fa-file-export');
+
+        if ($route) {
+            $action->route($route, $parameters);
+        }
+
+        return $action;
     }
 
     /**
@@ -139,6 +191,16 @@ class Action
         if ($method) {
             $this->method($method);
         }
+
+        return $this;
+    }
+
+    /**
+     * Set the href of the action.
+     */
+    public function href(string|Closure $href): self
+    {
+        $this->href = $href;
 
         return $this;
     }
@@ -199,6 +261,16 @@ class Action
     }
 
     /**
+     * Set the action to be expanded.
+     */
+    public function expanded(bool $expanded = true): self
+    {
+        $this->expanded = $expanded;
+
+        return $this;
+    }
+
+    /**
      * Set the condition callback of the action.
      */
     public function condition(Closure $condition): self
@@ -229,38 +301,84 @@ class Action
     }
 
     /**
+     * Set the action to be confirmable.
+     */
+    public function confirmable(bool $confirmable = true, ?string $confirmMessage = null): self
+    {
+        $this->confirmable = $confirmable;
+
+        if ($confirmMessage) {
+            $this->confirmMessage($confirmMessage);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the confirm message for the action.
+     */
+    public function confirmMessage(string $confirmMessage): self
+    {
+        $this->confirmMessage = $confirmMessage;
+
+        return $this;
+    }
+
+    /**
      * Prepare the attributes before building.
      */
     protected function prepareAttributes(?Model $row = null): void
     {
+        if ($this->confirmable && $this->method === 'get') {
+            throw new InvalidArgumentException('Confirmable actions must have a method other than "get".');
+        }
+
         if ($this->route) {
             $parameters = Request::route()->parameters();
             $parameters = array_merge($parameters, $this->parameters);
 
-            $this->attributes['href'] = route($this->route, array_merge([$row], $parameters));
-            $this->attributes['method'] = $this->method;
-            $this->attributes['token'] = csrf_token();
+            $this->attributes([
+                'href' => route($this->route, array_merge([$row], $parameters)),
+                'method' => $this->method,
+                'token' => csrf_token(),
+            ]);
+        }
+
+        if ($this->href) {
+            $this->attribute('href', is_callable($this->href) ? call_user_func($this->href, $row) : $this->href);
         }
 
         if ($this->newTab) {
-            $this->attributes['target'] = '_blank';
+            $this->attribute('target', '_blank');
         }
 
         if ($this->fancybox) {
-            $this->attributes['data-fancybox'] = '';
-            $this->attributes['data-type'] = 'iframe';
+            $this->attributes([
+                'data-fancybox' => '',
+                'data-type' => 'iframe',
+            ]);
         }
 
-        if (! $this->grouped && $this->label) {
-            $this->attributes['title'] = $this->label;
-            $this->attributes['data-bs-toggle'] = 'tooltip';
-            $this->attributes['data-bs-placement'] = 'bottom';
+        if ($this->confirmable) {
+            $this->attribute('confirm', $this->confirmMessage ?? __('datatables::datatable.actions.confirm'));
         }
 
-        $this->class = array_merge($this->class, [
-            'datatable-action',
-            'dropdown-item' => $this->grouped,
-            'btn btn-icon' => ! $this->grouped,
-        ]);
+        if ($this->label && ! $this->grouped && ! $this->expanded) {
+            $this->attributes([
+                'title' => $this->label,
+                'data-bs-toggle' => 'tooltip',
+                'data-bs-placement' => 'bottom',
+            ]);
+        }
+
+        // Append the class for the action
+        $this->class('datatable-action');
+
+        if ($this->grouped) {
+            $this->class('dropdown-item');
+        } else {
+            $this->class('btn');
+            $this->class(['btn-icon' => $this->icon && ! $this->expanded]);
+        }
     }
 }
