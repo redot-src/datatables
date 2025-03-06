@@ -47,7 +47,7 @@
                     @endforeach
 
                     @if ($actions)
-                        <td class="fixed-end datatable-actions">
+                        <td class="fixed-end datatable-cell datatable-actions">
                             <div class="d-flex gap-1">
                                 @foreach ($actions as $action)
                                     @if ($action->condition && ! call_user_func($action->condition, $row))
@@ -55,9 +55,9 @@
                                     @endif
 
                                     @if ($action->isActionGroup)
-                                        @include('datatables::partials.action-group', ['group' => $action, 'row' => $row])
+                                        @include('datatables::partials.action-group')
                                     @else
-                                        @include('datatables::partials.action', ['action' => $action, 'row' => $row])
+                                        @include('datatables::partials.action')
                                     @endif
                                 @endforeach
                             </div>

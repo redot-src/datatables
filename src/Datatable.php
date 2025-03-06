@@ -4,6 +4,7 @@ namespace Redot\Datatables;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Js;
 use Illuminate\Support\Traits\Macroable;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -11,6 +12,7 @@ use Livewire\WithPagination;
 use Redot\Datatables\Actions\Action;
 use Redot\Datatables\Actions\ActionGroup;
 use Redot\Datatables\Columns\Column;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 abstract class Datatable extends Component
 {
@@ -176,17 +178,54 @@ abstract class Datatable extends Component
     /**
      * Export the datatable to a XLSX file.
      */
-    public function toXlsx(): void
+    public function toXlsx(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        dd('Export to XLSX');
+        if (! class_exists(\Maatwebsite\Excel\Excel::class)) {
+            throw new Exceptions\MissingDependencyException('Please install the "maatwebsite/excel" package to use the toXlsx method.');
+        }
+
+        [$headings, $rows] = $this->getExportData();
+
+        $filename = sprintf('export-%s.xlsx', now()->format('Y-m-d_H-i-s'));
+        $rows->prepend($headings)->storeExcel($filename, null, \Maatwebsite\Excel\Excel::XLSX);
+
+        return response()->download(storage_path('app/' . $filename))->deleteFileAfterSend(true);
     }
 
     /**
      * Export the datatable to a CSV file.
      */
-    public function toCsv(): void
+    public function toCsv(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        dd('Export to CSV');
+        if (! class_exists(\Maatwebsite\Excel\Excel::class)) {
+            throw new Exceptions\MissingDependencyException('Please install the "maatwebsite/excel" package to use the toCsv method.');
+        }
+
+        [$headings, $rows] = $this->getExportData();
+
+        $filename = sprintf('export-%s.csv', now()->format('Y-m-d_H-i-s'));
+        $rows->prepend($headings)->storeExcel($filename, null, \Maatwebsite\Excel\Excel::CSV);
+
+        return response()->download(storage_path('app/' . $filename))->deleteFileAfterSend(true);
+    }
+
+    /**
+     * Export the datatable to a JSON file.
+     */
+    public function toJson(): StreamedResponse
+    {
+        [$headings, $rows] = $this->getExportData();
+
+        $items = $rows->map(fn ($row) => array_combine($headings, $row))->toArray();
+        $filename = sprintf('export-%s.json', now()->format('Y-m-d_H-i-s'));
+        $flags = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
+
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        return response()->streamDownload(fn () => print(Js::encode($items, $flags)), $filename, $headers);
     }
 
     /**
@@ -194,15 +233,21 @@ abstract class Datatable extends Component
      */
     public function toPdf(): void
     {
-        dd('Export to PDF');
+        // ...
     }
 
     /**
-     * Export the datatable to a JSON file.
+     * Get export data.
      */
-    public function toJson(): void
+    protected function getExportData(): array
     {
-        dd('Export to JSON');
+        $columns = array_filter($this->columns(), fn (Column $column) => $column->exportable && $column->visible);
+        $headings = array_column($columns, 'label');
+
+        $rows = $this->getQueryBuilder($columns, $this->filters())->get();
+        $rows = $rows->map(fn ($row) => array_map(fn (Column $column) => $column->get($row), $columns));
+
+        return [$headings, $rows];
     }
 
     /**

@@ -1,18 +1,16 @@
-@props(['group', 'row'])
-
 <div class="dropdown">
-    <button type="button" {{ $group->buildAttributes($row) }}>
-        @if ($group->icon)
-            <i @class([$group->icon, 'me-2' => $group->label])></i>
+    <button type="button" {{ $action->buildAttributes($row) }}>
+        @if ($action->icon)
+            <i @class([$action->icon, 'me-2' => $action->label])></i>
         @endif
 
-        @if ($group->label)
-            <span>{{ $group->label }}</span>
+        @if ($action->label)
+            <span>{{ $action->label }}</span>
         @endif
     </button>
 
     <div class="dropdown-menu">
-        @foreach ($group->actions as $action)
+        @foreach ($action->actions as $action)
             @include('datatables::partials.action', [
                 'action' => $action,
                 'row' => $row,

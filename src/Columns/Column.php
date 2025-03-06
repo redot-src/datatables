@@ -103,11 +103,6 @@ class Column
     public bool $visible = true;
 
     /**
-     * Determine if the column is editable.
-     */
-    public bool $editable = false;
-
-    /**
      * Determine if the column is exportable.
      */
     public bool $exportable = true;
@@ -116,11 +111,6 @@ class Column
      * The getter method for the column.
      */
     public ?Closure $getter = null;
-
-    /**
-     * The setter method for the column.
-     */
-    public ?Closure $setter = null;
 
     /**
      * Create a new column instance.
@@ -329,16 +319,6 @@ class Column
     }
 
     /**
-     * Set the column as editable.
-     */
-    public function editable(bool $editable = true): Column
-    {
-        $this->editable = $editable;
-
-        return $this;
-    }
-
-    /**
      * Set the column as exportable.
      */
     public function exportable(bool $exportable = true): Column
@@ -354,16 +334,6 @@ class Column
     public function getter(Closure $getter): Column
     {
         $this->getter = $getter;
-
-        return $this;
-    }
-
-    /**
-     * Set the setter method for the column.
-     */
-    public function setter(Closure $setter): Column
-    {
-        $this->setter = $setter;
 
         return $this;
     }
@@ -396,51 +366,22 @@ class Column
     }
 
     /**
-     * Set the value of the column on the model [if editable].
-     */
-    public function set(Model $row, mixed $value): void
-    {
-        if (! $this->editable) {
-            return;
-        }
-
-        if ($this->setter) {
-            call_user_func($this->setter, $value, $row);
-
-            return;
-        }
-
-        $this->defaultSetter($value, $row);
-    }
-
-    /**
-     * Default setter for the column.
-     */
-    protected function defaultSetter(mixed $value, Model $row): void
-    {
-        data_set($row, $this->name, $value);
-
-        $row->save();
-    }
-
-    /**
      * Prepare the attributes before building.
      */
     protected function prepareAttributes(?Model $row = null): void
     {
-        // Add fixed to the classes if the column is fixed.
+        $this->class('datatable-cell');
+
         if ($this->fixed) {
             $this->class('fixed-' . $this->fixedDirection);
         }
 
-        // Add the column's width to the styles.
         $this->css([
             'width: ' . $this->width,
             'min-width: ' . ($this->minWidth ?? $this->width),
             'max-width: ' . ($this->maxWidth ?? $this->width),
         ]);
 
-        // Add nowrap to the styles if the column is nowrap.
         if ($this->nowrap) {
             $this->css([
                 'white-space: nowrap',

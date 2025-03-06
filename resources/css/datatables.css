@@ -37,8 +37,8 @@
     border-inline-start: 1px solid var(--tblr-border-color);
 }
 
-.datatable td.fixed-start,
-.datatable td.fixed-end {
+.datatable .datatable-cell.fixed-start,
+.datatable .datatable-cell.fixed-end {
     background: var(--tblr-bg-surface);
 }
 
