@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'global-search' => 'Global search...',
+    'search' => 'Search...',
 
     'pagination' => [
         'next' => 'Next',
@@ -21,7 +21,6 @@ return [
         'showing' => 'Showing :first to :last of :total entries',
     ],
 
-    'export' => 'Export',
     'exports' => [
         'excel' => 'Export Excel',
         'csv' => 'Export CSV',
@@ -35,5 +34,9 @@ return [
         'delete' => 'Delete',
         'export' => 'Export',
         'confirm' => 'Are you sure you want to perform this action?',
+    ],
+
+    'filters' => [
+        'select' => 'Select...',
     ],
 ];

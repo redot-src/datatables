@@ -11,6 +11,10 @@
 
     <div class="dropdown-menu">
         @foreach ($action->actions as $action)
+            @if ($action->shouldRender($row) === false)
+                @continue
+            @endif
+
             @include('datatables::partials.action', [
                 'action' => $action,
                 'row' => $row,

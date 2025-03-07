@@ -62,6 +62,18 @@ abstract class Datatable extends Component
     public string $sortDirection = 'asc';
 
     /**
+     * Filters values for the datatable.
+     */
+    #[Url]
+    public array $filtered = [];
+
+    /**
+     * Toggle filters visibility.
+     */
+    #[Url]
+    public bool $showFilters = false;
+
+    /**
      * Set the datatable maximum height.
      */
     public string $height = 'auto';
@@ -312,6 +324,7 @@ abstract class Datatable extends Component
 
             'colspan' => $this->getColspanForColumns($columns, $actions),
 
+            'filterable' => count($filters) > 0,
             'searchable' => count(array_filter($columns, fn (Column $column) => $column->searchable)) > 0,
             'exportable' => count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
 
@@ -377,13 +390,15 @@ abstract class Datatable extends Component
      */
     protected function applyFilters(Builder $query, array $filters): Builder
     {
-        foreach ($filters as $filter) {
-            if (! $filter->isActive) {
-                continue;
-            }
+        $query->where(function ($query) use ($filters) {
+            foreach ($filters as $filter) {
+                $value = $this->filtered[$filter->index] ?? null;
 
-            $query = $filter->apply($query);
-        }
+                if ($value) {
+                    $filter->apply($query, $value);
+                }
+            }
+        });
 
         return $query;
     }

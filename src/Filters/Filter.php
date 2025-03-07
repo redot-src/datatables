@@ -4,9 +4,29 @@ namespace Redot\Datatables\Filters;
 
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Traits\Macroable;
+use Redot\Datatables\Traits\BuildAttributes;
 
 class Filter
 {
+    use BuildAttributes;
+    use Macroable;
+
+    /**
+     * Static counter for filters.
+     */
+    public static int $counter = 0;
+
+    /**
+     * Unique identifier for the filter.
+     */
+    public int $index;
+
+    /**
+     * The filter's livewire key.
+     */
+    public string $wireKey;
+
     /**
      * The filter's label.
      */
@@ -18,9 +38,9 @@ class Filter
     public ?string $column = null;
 
     /**
-     * The filter's active state.
+     * The filter's view.
      */
-    public bool $isActive = false;
+    public ?string $view = null;
 
     /**
      * The filter's query callback.
@@ -32,8 +52,21 @@ class Filter
      */
     public function __construct(?string $label = null, ?string $column = null)
     {
+        $this->index = ++static::$counter;
+        $this->wireKey ??= sprintf('filtered.%s', $this->index);
+
         $this->label = $label;
         $this->column = $column;
+
+        $this->init();
+    }
+
+    /**
+     * Initialize the filter.
+     */
+    protected function init(): void
+    {
+        //
     }
 
     /**
@@ -65,16 +98,6 @@ class Filter
     }
 
     /**
-     * Mark the filter as active.
-     */
-    public function active(bool $isActive = true): Filter
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    /**
      * Modify the base query.
      */
     public function query(Closure $callback): Filter
@@ -85,12 +108,20 @@ class Filter
     }
 
     /**
+     * Render the filter view.
+     */
+    public function render(): \Illuminate\Contracts\View\View
+    {
+        return view($this->view, ['filter' => $this]);
+    }
+
+    /**
      * Apply the filter to the given query.
      */
-    public function apply(Builder $query): void
+    public function apply(Builder $query, mixed $value): void
     {
         if ($this->queryCallback) {
-            call_user_func($this->queryCallback, $query);
+            call_user_func($this->queryCallback, $query, $value);
         }
     }
 }

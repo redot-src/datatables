@@ -54,6 +54,11 @@
  * Overrides
  * --------------------------------- */
 
+
+.datatable .datatable-per-page {
+    min-width: max-content;
+}
+
 .datatable .dropdown-menu {
     z-index: 9999;
 }

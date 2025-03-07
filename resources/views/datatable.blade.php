@@ -3,28 +3,40 @@
     <script src="{{ route('__datatables.js', ['v' => $cssAssetsVersionHash]) }}" defer></script>
 @endassets
 
-<div class="card datatable" @style(['max-height: ' . $height]) id="{{ $id }}">
-    <div class="card-body d-flex align-items-center gap-1 border-bottom" wire:ignore>
-        <div class="w-auto me-auto">
+<div class="card datatable" @style(['max-height: ' . $height]) id="{{ $id }}" wire:ignore.self>
+    <div class="card-body d-flex align-items-center gap-1">
+        <div class="w-auto me-auto" wire:ignore>
             @include('datatables::partials.per-page')
         </div>
 
         @if ($searchable)
-            <div>
+            <div wire:ignore>
                 @include('datatables::partials.search')
             </div>
         @endif
 
         @if ($exportable)
-            <div>
+            <div wire:ignore>
                 @include('datatables::partials.export')
             </div>
         @endif
 
-        <div>
+        @if ($filterable)
+            <div class="d-flex align-items-center gap-1">
+                @include('datatables::partials.filters-toggle')
+            </div>
+        @endif
+
+        <div wire:ignore>
             @include('datatables::partials.refresh')
         </div>
     </div>
+
+    @if ($filterable && $showFilters)
+        <div class="card-body" wire:ignore>
+            @include('datatables::partials.filters')
+        </div>
+    @endif
 
     @include('datatables::partials.table')
 

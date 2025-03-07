@@ -38,13 +38,13 @@ class DatatablesServiceProvider extends ServiceProvider
     protected function views(): void
     {
         $this->loadViewsFrom(
-            __DIR__ . '/../resources/components',
+            __DIR__ . '/../resources/views',
             'datatables'
         );
 
         $this->publishes([
-            __DIR__ . '/../resources/components' => resource_path('components/vendor/datatables'),
-        ], 'components');
+            __DIR__ . '/../resources/views' => resource_path('views/vendor/datatables'),
+        ], 'views');
     }
 
     /**

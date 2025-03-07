@@ -5,12 +5,14 @@ namespace Redot\Datatables\Actions;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Traits\Macroable;
 use InvalidArgumentException;
 use Redot\Datatables\Traits\BuildAttributes;
 
 class Action
 {
     use BuildAttributes;
+    use Macroable;
 
     /**
      * The label of the action.
@@ -322,6 +324,14 @@ class Action
         $this->confirmMessage = $confirmMessage;
 
         return $this;
+    }
+
+    /**
+     * Determine if the action should be rendered.
+     */
+    public function shouldRender(Model $row): bool
+    {
+        return $this->visible && ($this->condition ? call_user_func($this->condition, $row) : true);
     }
 
     /**

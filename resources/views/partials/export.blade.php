@@ -1,7 +1,6 @@
 <div class="dropdown">
-    <a href="#" class="btn dropdown-toggle" data-bs-toggle="dropdown">
-        <i class="fas fa-file-export me-2"></i>
-        @lang('datatables::datatable.export')
+    <a href="#" class="btn btn-icon" data-bs-toggle="dropdown">
+        <i class="fas fa-file-export"></i>
     </a>
 
     <div class="dropdown-menu">

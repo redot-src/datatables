@@ -1,4 +1,4 @@
-<div class="table-responsive">
+<div class="table-responsive border-top">
     <table @class(['table card-table table-vcenter datatable', 'bordered' => $bordered])>
         <thead @class(['sticky-top' => $stickyHeader])>
             <tr>
@@ -46,7 +46,7 @@
                         <td class="fixed-end datatable-cell datatable-actions">
                             <div class="d-flex gap-1">
                                 @foreach ($actions as $action)
-                                    @if ($action->condition && ! call_user_func($action->condition, $row))
+                                    @if ($action->shouldRender($row) === false)
                                         @continue
                                     @endif
 

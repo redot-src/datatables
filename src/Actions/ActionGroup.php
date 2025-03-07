@@ -4,11 +4,13 @@ namespace Redot\Datatables\Actions;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Traits\Macroable;
 use Redot\Datatables\Traits\BuildAttributes;
 
 class ActionGroup
 {
     use BuildAttributes;
+    use Macroable;
 
     /**
      * The label of the action group.
@@ -127,6 +129,14 @@ class ActionGroup
         $this->condition = $condition;
 
         return $this;
+    }
+
+    /**
+     * Determine if the action group should be rendered.
+     */
+    public function shouldRender(Model $row): bool
+    {
+        return $this->visible && ($this->condition ? call_user_func($this->condition, $row) : true);
     }
 
     /**
