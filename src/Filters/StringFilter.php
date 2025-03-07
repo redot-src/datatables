@@ -31,7 +31,13 @@ class StringFilter extends Filter
         ];
 
         $this->queryCallback = function ($query, $value) {
-            [$operator, $value] = $value;
+            $operator = isset($value['operator']) ? $value['operator'] : 'equals';
+            $value = isset($value['value']) ? $value['value'] : '';
+
+            // Early return if the value is empty.
+            if (empty($value)) {
+                return;
+            }
 
             match ($operator) {
                 'equals' => $query->where($this->column, $value),

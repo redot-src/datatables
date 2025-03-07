@@ -15,7 +15,16 @@ class DateFilter extends Filter
     protected function init(): void
     {
         $this->queryCallback = function ($query, $value) {
-            $query->whereBetween($this->column, $value);
+            $from = $value['from'] ?? null;
+            $to = $value['to'] ?? null;
+
+            if ($from && !$to) {
+                $query->whereDate($this->column, '>=', $from);
+            } elseif (!$from && $to) {
+                $query->whereDate($this->column, '<=', $to);
+            } elseif ($from && $to) {
+                $query->whereBetween($this->column, [$from, $to]);
+            }
         };
     }
 }

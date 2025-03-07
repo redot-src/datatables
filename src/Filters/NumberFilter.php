@@ -26,12 +26,16 @@ class NumberFilter extends Filter
             'greater_than_or_equals' => __('datatables::datatable.filters.number.greater_than_or_equals'),
             'less_than' => __('datatables::datatable.filters.number.less_than'),
             'less_than_or_equals' => __('datatables::datatable.filters.number.less_than_or_equals'),
-            'between' => __('datatables::datatable.filters.number.between'),
-            'not_between' => __('datatables::datatable.filters.number.not_between'),
         ];
 
         $this->queryCallback = function ($query, $value) {
-            [$operator, $value] = $value;
+            $operator = isset($value['operator']) ? $value['operator'] : 'equals';
+            $value = isset($value['value']) ? $value['value'] : '';
+
+            // Early return if the value is empty.
+            if (empty($value)) {
+                return;
+            }
 
             match ($operator) {
                 'equals' => $query->where($this->column, $value),
@@ -40,8 +44,6 @@ class NumberFilter extends Filter
                 'greater_than_or_equals' => $query->where($this->column, '>=', $value),
                 'less_than' => $query->where($this->column, '<', $value),
                 'less_than_or_equals' => $query->where($this->column, '<=', $value),
-                'between' => $query->whereBetween($this->column, $value),
-                'not_between' => $query->whereNotBetween($this->column, $value),
             };
         };
     }

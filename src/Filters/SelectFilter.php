@@ -26,7 +26,7 @@ class SelectFilter extends Filter
      */
     protected function init(): void
     {
-        $this->placeholder = __('datatables::datatable.filters.select');
+        $this->placeholder = __('datatables::datatable.filters.select.placeholder');
 
         $this->queryCallback = function ($query, $value) {
             $query->where($this->column, $value);
