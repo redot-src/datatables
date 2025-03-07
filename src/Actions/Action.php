@@ -94,8 +94,13 @@ class Action
      */
     public function __construct(?string $label = null, ?string $icon = null)
     {
-        $this->label = $label;
-        $this->icon = $icon;
+        if ($label) {
+            $this->label($label);
+        }
+
+        if ($icon) {
+            $this->icon($icon);
+        }
     }
 
     /**

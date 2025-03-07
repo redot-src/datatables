@@ -55,8 +55,13 @@ class Filter
         $this->index = ++static::$counter;
         $this->wireKey ??= sprintf('filtered.%s', $this->index);
 
-        $this->label = $label;
-        $this->column = $column;
+        if ($label) {
+            $this->label($label);
+        }
+
+        if ($column) {
+            $this->column($column);
+        }
 
         $this->init();
     }
