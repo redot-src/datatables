@@ -34,7 +34,8 @@
     },
     "suggest": {
         "maatwebsite/excel": "Allow exporting data to multiple formats",
-        "mpdf/mpdf": "Can be used to export data to a PDF file"
+        "carlos-meneses/laravel-mpdf": "Laravel wrapper for mPDF library, used to generate PDFs",
+        "barryvdh/laravel-dompdf": "A DOMPDF Wrapper for Laravel, used to generate PDFs"
     },
     "config": {
         "sort-packages": true,
