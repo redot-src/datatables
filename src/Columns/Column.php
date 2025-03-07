@@ -354,7 +354,7 @@ class Column
             $value = is_callable($this->empty) ? call_user_func($this->empty, $row) : $this->empty;
         }
 
-        return $value;
+        return $this->html ? $value : e($value);
     }
 
     /**

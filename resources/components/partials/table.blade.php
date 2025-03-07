@@ -38,11 +38,7 @@
                 <tr>
                     @foreach ($columns as $column)
                         <td {{ $column->buildAttributes($row) }}>
-                            @if ($column->html)
-                                {!! $column->get($row) !!}
-                            @else
-                                {{ $column->get($row) }}
-                            @endif
+                            {!! $column->get($row) !!}
                         </td>
                     @endforeach
 

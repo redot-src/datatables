@@ -11,7 +11,10 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Redot\Datatables\Actions\Action;
 use Redot\Datatables\Actions\ActionGroup;
+use Redot\Datatables\Adaptors\PDF\Adabtor;
+use Redot\Datatables\Adaptors\PDF\LaravelMpdf;
 use Redot\Datatables\Columns\Column;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 abstract class Datatable extends Component
@@ -27,7 +30,7 @@ abstract class Datatable extends Component
     /**
      * Model bound to the datatable.
      */
-    public string $model;
+    protected string $model;
 
     /**
      * The default per page options.
@@ -87,6 +90,21 @@ abstract class Datatable extends Component
      * CSS assets version hash.
      */
     public string $cssAssetsVersionHash;
+
+    /**
+     * PDF adaptor class.
+     */
+    public string $pdfAdaptor = LaravelMpdf::class;
+
+    /**
+     * PDF adaptor options.
+     */
+    public array $pdfOptions = [];
+
+    /**
+     * PDF view template.
+     */
+    public string $pdfTemplate = 'datatables::pdf.default';
 
     /**
      * Create a new datatable instance.
@@ -225,15 +243,23 @@ abstract class Datatable extends Component
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
 
-        return response()->streamDownload(fn () => print(Js::encode($items, $flags)), $filename, $headers);
+        return response()->streamDownload(fn () => print Js::encode($items, $flags), $filename, $headers);
     }
 
     /**
      * Export the datatable to a PDF file.
      */
-    public function toPdf(): void
+    public function toPdf(): StreamedResponse|Response
     {
-        // ...
+        $pdfAdaptor = new $this->pdfAdaptor;
+
+        if (! $pdfAdaptor instanceof Adabtor || ! $pdfAdaptor->supported()) {
+            throw new Exceptions\MissingDependencyException(sprintf('The PDF adaptor "%s" is not supported.', $this->pdfAdaptor));
+        }
+
+        [$headings, $rows] = $this->getExportData();
+
+        return $pdfAdaptor->download($this->pdfTemplate, $headings, $rows, $this->pdfOptions);
     }
 
     /**
