@@ -1,103 +1,158 @@
 <?php
 
-namespace Redot\LivewireDatatable;
+namespace Redot\Datatables;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Js;
+use Illuminate\Support\Traits\Macroable;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Redot\Datatables\Actions\Action;
+use Redot\Datatables\Actions\ActionGroup;
+use Redot\Datatables\Adapters\PDF\Adabter;
+use Redot\Datatables\Columns\Column;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 abstract class Datatable extends Component
 {
+    use Macroable;
     use WithPagination;
 
     /**
-     * Datatable title.
+     * Unique identifier for the datatable.
      */
-    public string $title = '';
+    public string $id;
 
     /**
-     * Datatable subtitle.
+     * Model bound to the datatable.
      */
-    public string $subtitle = '';
+    protected string $model;
 
     /**
-     * Fixed header.
+     * The default per page options.
      */
-    public bool $fixedHeader = false;
+    public array $perPageOptions = [5, 10, 25, 50, 100, 250, 500];
 
     /**
-     * Datatable max-height.
-     */
-    public string $maxHeight = '100%';
-
-    /**
-     * With trashed records.
-     */
-    public bool $withTrashed = false;
-
-    /**
-     * Only trashed records.
-     */
-    public bool $onlyTrashed = false;
-
-    /**
-     * Search term.
-     */
-    #[Url]
-    public string $search = '';
-
-    /**
-     * Sort field.
-     */
-    #[Url]
-    public string $sortField = 'id';
-
-    /**
-     * Sort direction.
-     */
-    #[Url]
-    public string $sortDirection = 'desc';
-
-    /**
-     * Per page.
+     * The default per page value.
      */
     #[Url]
     public int $perPage = 10;
 
     /**
-     * Per page options.
+     * Search term for the datatable.
      */
-    public array $perPageOptions = [10, 25, 50, 100];
+    #[Url]
+    public string $search = '';
 
     /**
-     * Query builder.
+     * Sort column for the datatable.
      */
-    abstract public function query(): Builder;
+    #[Url]
+    public string $sortColumn = '';
 
     /**
-     * Data table header buttons.
-     *
-     * @return HeaderButton[]
+     * Sort direction for the datatable.
      */
-    public function headerButtons(): array
+    #[Url]
+    public string $sortDirection = 'asc';
+
+    /**
+     * Filters values for the datatable.
+     */
+    #[Url]
+    public array $filtered = [];
+
+    /**
+     * Toggle filters visibility.
+     */
+    #[Url]
+    public bool $showFilters = false;
+
+    /**
+     * Set the datatable maximum height.
+     */
+    public string $height = 'auto';
+
+    /**
+     * Determine if the datatable has a sticky header.
+     */
+    public bool $stickyHeader = true;
+
+    /**
+     * Determine if the datatable is bordered.
+     */
+    public bool $bordered = true;
+
+    /**
+     * Set the datatable empty message.
+     */
+    public ?string $emptyMessage = null;
+
+    /**
+     * JavaScript assets url.
+     */
+    public string $jsAssetsUrl;
+
+    /**
+     * CSS assets url.
+     */
+    public string $cssAssetsUrl;
+
+    /**
+     * PDF adapter class.
+     */
+    public string $pdfAdapter;
+
+    /**
+     * PDF adapter options.
+     */
+    public array $pdfOptions = [];
+
+    /**
+     * PDF view template.
+     */
+    public string $pdfTemplate = 'datatables::pdf.default';
+
+    /**
+     * Create a new datatable instance.
+     */
+    public function __construct()
     {
-        return [];
+        $this->id ??= uniqid('datatable-');
+        $this->emptyMessage ??= __('datatables::datatable.pagination.empty');
+
+        // Set the PDF adapter and options
+        $this->pdfAdapter = config('datatables.export.pdf.adapter');
+        $this->pdfOptions = array_merge(config('datatables.export.pdf.options'), $this->pdfOptions);
+
+        // Set the assets urls
+        $this->cssAssetsUrl = route(config('datatables.assets.css.route'), ['v' => md5(filemtime(config('datatables.assets.css.file')))]);
+        $this->jsAssetsUrl = route(config('datatables.assets.js.route'), ['v' => md5(filemtime(config('datatables.assets.js.file')))]);
     }
 
     /**
-     * Data table columns.
-     *
-     * @return Column[]
+     * Get the query source of the datatable.
+     */
+    public function query(): Builder
+    {
+        if (isset($this->model)) {
+            return app($this->model)->query();
+        }
+
+        throw new Exceptions\ResourceNotFoundException('Resource not found. Please set the model property in your datatable class.');
+    }
+
+    /**
+     * Get the columns for the datatable.
      */
     abstract public function columns(): array;
 
     /**
-     * Data table actions.
-     *
-     * @return Action[]
+     * Get the actions for the datatable.
      */
     public function actions(): array
     {
@@ -105,180 +160,328 @@ abstract class Datatable extends Component
     }
 
     /**
-     * Pagination view.
+     * Get the default action group for the datatable.
+     */
+    public static function defaultActionGroup(array $actions, ?string $label = null, ?string $icon = null): array
+    {
+        return [
+            ActionGroup::make($label, $icon ?? 'fas fa-ellipsis-v')
+                ->actions($actions),
+        ];
+    }
+
+    /**
+     * Get the filters for the datatable.
+     */
+    public function filters(): array
+    {
+        return [];
+    }
+
+    /**
+     * Sort the datatable by the given column.
+     */
+    public function sort(string $column): void
+    {
+        if ($this->sortColumn === $column) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortColumn = $column;
+            $this->sortDirection = 'asc';
+        }
+    }
+
+    /**
+     * Get the pagination view.
      */
     public function paginationView(): string
     {
-        return Config::get('livewire-datatable.templates.pagination.default');
+        return 'datatables::pagination.default';
     }
 
     /**
-     * Simple pagination view.
+     * Export the datatable to a XLSX file.
      */
-    public function paginationSimpleView(): string
+    public function toXlsx(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        return Config::get('livewire-datatable.templates.pagination.simple');
-    }
-
-    /**
-     * Datatable template.
-     */
-    public function template(): string
-    {
-        return Config::get('livewire-datatable.templates.datatable');
-    }
-
-    /**
-     * Reset page number when searching.
-     */
-    public function updatingSearch(): void
-    {
-        $this->resetPage();
-    }
-
-    /**
-     * Reset page number when sorting.
-     */
-    public function updatingSortField(): void
-    {
-        $this->resetPage();
-    }
-
-    /**
-     * Reset page number when changing per page.
-     */
-    public function updatingPerPage(): void
-    {
-        $this->resetPage();
-    }
-
-    /**
-     * Apply trashed to the query.
-     */
-    public function applyTrashed(Builder $query): void
-    {
-        if ($this->withTrashed) {
-            $query->withTrashed();
+        if (! class_exists('Maatwebsite\Excel\Excel')) {
+            throw new Exceptions\MissingDependencyException('Please install the "maatwebsite/excel" package to use the toXlsx method.');
         }
 
-        if ($this->onlyTrashed) {
-            $query->onlyTrashed();
-        }
+        [$headings, $rows] = $this->getExportData();
+
+        $filename = sprintf('export-%s.xlsx', now()->format('Y-m-d_H-i-s'));
+        $rows->prepend($headings)->storeExcel($filename, null, 'Xlsx');
+
+        return response()->download(storage_path('app/' . $filename))->deleteFileAfterSend(true);
     }
 
     /**
-     * Apply search and sort to the query.
+     * Export the datatable to a CSV file.
      */
-    public function applySearch(Builder $query): void
+    public function toCsv(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        if ($this->search === '') {
+        if (! class_exists('Maatwebsite\Excel\Excel')) {
+            throw new Exceptions\MissingDependencyException('Please install the "maatwebsite/excel" package to use the toCsv method.');
+        }
+
+        [$headings, $rows] = $this->getExportData();
+
+        $filename = sprintf('export-%s.csv', now()->format('Y-m-d_H-i-s'));
+        $rows->prepend($headings)->storeExcel($filename, null, 'Csv');
+
+        return response()->download(storage_path('app/' . $filename))->deleteFileAfterSend(true);
+    }
+
+    /**
+     * Export the datatable to a JSON file.
+     */
+    public function toJson(): StreamedResponse
+    {
+        [$headings, $rows] = $this->getExportData();
+
+        $items = $rows->map(fn ($row) => array_combine($headings, $row))->toArray();
+        $filename = sprintf('export-%s.json', now()->format('Y-m-d_H-i-s'));
+        $flags = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
+
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        return response()->streamDownload(fn () => print Js::encode($items, $flags), $filename, $headers);
+    }
+
+    /**
+     * Export the datatable to a PDF file.
+     */
+    public function toPdf(): StreamedResponse|Response
+    {
+        $pdfAdapter = new $this->pdfAdapter;
+
+        if (! $pdfAdapter instanceof Adabter || ! $pdfAdapter->supported()) {
+            throw new Exceptions\MissingDependencyException(sprintf('The PDF adapter "%s" is not supported.', $this->pdfAdapter));
+        }
+
+        [$headings, $rows] = $this->getExportData();
+
+        return $pdfAdapter->download($this->pdfTemplate, $headings, $rows, $this->pdfOptions);
+    }
+
+    /**
+     * Get export data.
+     */
+    protected function getExportData(): array
+    {
+        $columns = array_filter($this->columns(), fn (Column $column) => $column->exportable && $column->visible);
+        $headings = array_column($columns, 'label');
+
+        $rows = $this->getQueryBuilder($columns, $this->filters())->get();
+        $rows = $rows->map(fn ($row) => array_map(fn (Column $column) => $column->get($row), $columns));
+
+        return [$headings, $rows];
+    }
+
+    /**
+     * Refresh the datatable.
+     */
+    public function refresh(): void
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Render the component.
+     */
+    public function render(): \Illuminate\View\View
+    {
+        return view('datatables::datatable', $this->viewData());
+    }
+
+    /**
+     * Get the view parameters.
+     */
+    public function viewData(): array
+    {
+        $columns = $this->getVisibleColumns();
+        $actions = $this->getVisibleActions();
+        $filters = $this->filters();
+
+        // Build the query and get the rows
+        $query = $this->getQueryBuilder($columns, $filters);
+        $rows = $query->paginate($this->perPage);
+
+        return [
+            'columns' => $columns,
+            'filters' => $filters,
+            'actions' => $actions,
+
+            'colspan' => $this->getColspanForColumns($columns, $actions),
+
+            'filterable' => count($filters) > 0,
+            'searchable' => count(array_filter($columns, fn (Column $column) => $column->searchable)) > 0,
+            'exportable' => count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
+
+            'rows' => $rows,
+        ];
+    }
+
+    /**
+     * Get the visible columns.
+     */
+    protected function getVisibleColumns(): array
+    {
+        return array_filter($this->columns(), fn (Column $column) => $column->visible);
+    }
+
+    /**
+     * Get the visible actions.
+     */
+    protected function getVisibleActions(): array
+    {
+        return array_filter($this->actions(), function (Action|ActionGroup $action) {
+            if ($action->isActionGroup) {
+                $action->actions = array_filter($action->actions, fn (Action $action) => $action->visible);
+
+                return $action->visible && count($action->actions) > 0;
+            }
+
+            return $action->visible;
+        });
+    }
+
+    /**
+     * Get the colspan for the columns.
+     */
+    protected function getColspanForColumns(array $columns, array $actions): int
+    {
+        $colspan = count(array_filter($columns, fn (Column $column) => $column->visible));
+
+        // Add one for the actions column
+        if (count($actions) > 0) {
+            $colspan++;
+        }
+
+        return $colspan;
+    }
+
+    /**
+     * Get eloquent query builder.
+     */
+    protected function getQueryBuilder(array $columns, array $filters): Builder
+    {
+        $query = $this->query();
+
+        $this->applyFilters($query, $filters);
+        $this->applyGlobalSearch($query, $columns);
+        $this->applySorting($query);
+
+        return $query;
+    }
+
+    /**
+     * Apply filters to the query.
+     */
+    protected function applyFilters(Builder $query, array $filters): Builder
+    {
+        $query->where(function ($query) use ($filters) {
+            foreach ($filters as $filter) {
+                $value = $this->filtered[$filter->index] ?? null;
+
+                if ($value) {
+                    $filter->apply($query, $value);
+                }
+            }
+        });
+
+        return $query;
+    }
+
+    /**
+     * Apply global search to the query.
+     */
+    protected function applyGlobalSearch(Builder $query, array $columns): void
+    {
+        if (! $this->search) {
             return;
         }
 
-        $query->where(function ($query) {
-            foreach ($this->columns() as $column) {
-                if ($column->searchable === true && $column->field !== null) {
-                    if (!is_callable($column->where)) {
-                        if (strpos($column->field, '.') !== false) {
-                            $this->searchWithRelation($query, $column);
-                        } else {
-                            $query->orWhere($column->field, 'like', '%' . $this->search . '%');
-                        }
+        $query->where(function ($query) use ($columns) {
+            foreach ($columns as $column) {
+                if (! $column->searchable) {
+                    continue;
+                }
 
-                        continue;
-                    }
+                if (is_callable($column->searcher)) {
+                    call_user_func($column->searcher, $query, $this->search);
 
-                    $callable = $column->where;
-                    $callable($query, $this->search);
+                    continue;
+                }
+
+                if ($column->relationship) {
+                    $this->searchWithinRelation($query, $column->name);
+                } else {
+                    $query->orWhere($column->name, 'like', '%' . $this->search . '%');
                 }
             }
         });
     }
 
     /**
-     * Search with relation.
+     * Search within relation.
      */
-    protected function searchWithRelation(Builder $query, Column $column): void
+    protected function searchWithinRelation(Builder $query, string $column): void
     {
-        [$relation, $field] = explode('.', $column->field, 2);
+        $relations = explode('.', $column);
+        $column = array_pop($relations);
 
-        $query->orWhereHas($relation, function ($query) use ($field) {
-            $query->where($field, 'like', '%' . $this->search . '%');
-        });
+        foreach ($relations as $relation) {
+            $query->orWhereHas($relation, function ($query) use ($column) {
+                $query->where($column, 'like', '%' . $this->search . '%');
+            });
+        }
     }
 
     /**
-     * Sort the query.
+     * Apply sorting to the query.
      */
-    public function applySort(Builder $query): void
+    protected function applySorting(Builder $query): void
     {
-        if ($this->sortField === '') {
+        if (! $this->sortColumn) {
             return;
         }
 
-        if (strpos($this->sortField, '.') !== false) {
-            $this->sortWithRelation($query);
+        // Find the column to sort by
+        $column = Arr::first($this->columns(), function ($column) {
+            return $column->sortable && $column->name === $this->sortColumn;
+        });
+
+        if (! $column) {
+            throw new Exceptions\InvalidColumnException(sprintf('Could not find column with name "%s"', $this->sortColumn));
+        }
+
+        if ($column->sorter) {
+            call_user_func($column->sorter, $query, $this->sortDirection);
+
+            return;
+        }
+
+        if ($column->relationship) {
+            $this->sortWithinRelation($query, $column->name);
         } else {
-            $query->orderBy($this->sortField, $this->sortDirection);
+            $query->orderBy($column->name, $this->sortDirection);
         }
     }
 
     /**
-     * Sort with relation.
+     * Sort within relation.
      */
-    protected function sortWithRelation(Builder $query): void
+    protected function sortWithinRelation(Builder $query, string $column): void
     {
-        $relations = explode('.', $this->sortField);
+        $relations = explode('.', $column);
         $field = array_pop($relations);
 
         $query->withAggregate($relations, $field);
         $query->orderBy(implode('_', $relations) . '_' . $field, $this->sortDirection);
-    }
-
-    /**
-     * Toggle sort direction.
-     */
-    public function sort(string $field): void
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'desc';
-        }
-    }
-
-    /**
-     * Build the component params.
-     */
-    public function params(): array
-    {
-        $params['columns'] = $this->columns();
-        $params['actions'] = array_filter($this->actions(), fn ($action) => $action->allowed);
-        $params['headerButtons'] = array_filter($this->headerButtons(), fn ($button) => $button->allowed);
-
-        $query = $this->query();
-
-        $this->applyTrashed($query);
-        $this->applySearch($query);
-        $this->applySort($query);
-
-        $params['rows'] = $query->paginate($this->perPage);
-
-        $searchables = array_filter($this->columns(), fn ($column) => $column->searchable === true);
-        $params['searchable'] = count($searchables) > 0;
-
-        // If there is a title, subtitle, search or header buttons, then the header is visible.
-        $params['headerable'] = $this->title || $this->subtitle || $params['searchable'] || count($params['headerButtons']) > 0;
-
-        return $params;
-    }
-
-    /**
-     * Render the component.
-     */
-    public function render()
-    {
-        return View::make($this->template(), $this->params());
     }
 }
