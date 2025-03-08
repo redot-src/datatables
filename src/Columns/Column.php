@@ -124,8 +124,6 @@ class Column
         if ($label) {
             $this->label($label);
         }
-
-        $this->init();
     }
 
     /**
@@ -134,14 +132,6 @@ class Column
     public static function make(?string $name = null, ?string $label = null): Column
     {
         return new static($name, $label);
-    }
-
-    /**
-     * Initialize the column.
-     */
-    protected function init(): void
-    {
-        //
     }
 
     /**

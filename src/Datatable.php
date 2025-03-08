@@ -94,14 +94,14 @@ abstract class Datatable extends Component
     public ?string $emptyMessage = null;
 
     /**
-     * JavaScript assets version hash.
+     * JavaScript assets url.
      */
-    public string $jsAssetsVersionHash;
+    public string $jsAssetsUrl;
 
     /**
-     * CSS assets version hash.
+     * CSS assets url.
      */
-    public string $cssAssetsVersionHash;
+    public string $cssAssetsUrl;
 
     /**
      * PDF adaptor class.
@@ -126,10 +126,11 @@ abstract class Datatable extends Component
         $this->id ??= uniqid('datatable-');
         $this->emptyMessage ??= __('datatables::datatable.pagination.empty');
 
-        $path = __DIR__ . '/../resources';
+        $css = config('datatables.assets.css');
+        $js = config('datatables.assets.js');
 
-        $this->jsAssetsVersionHash = md5(filemtime($path . '/js/datatables.js'));
-        $this->cssAssetsVersionHash = md5(filemtime($path . '/css/datatables.css'));
+        $this->cssAssetsUrl = route($css['name'], ['v' => md5(filemtime($css['path']))]);
+        $this->jsAssetsUrl = route($js['name'], ['v' => md5(filemtime($js['path']))]);
     }
 
     /**

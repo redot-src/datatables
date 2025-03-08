@@ -11,14 +11,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/__datatables/datatables.css', function () {
-    $path = __DIR__ . '/../resources/css/datatables.css';
+$css = config('datatables.assets.css');
+$js = config('datatables.assets.js');
 
-    return response()->file($path, ['Content-Type' => 'text/css']);
-})->name('__datatables.css');
-
-Route::get('/__datatables/datatables.js', function () {
-    $path = __DIR__ . '/../resources/js/datatables.js';
-
-    return response()->file($path, ['Content-Type' => 'text/javascript']);
-})->name('__datatables.js');
+Route::get($css['route'], fn () => response()->file($css['path'], ['Content-Type' => 'text/css']))->name($css['name']);
+Route::get($js['route'], fn () => response()->file($js['path'], ['Content-Type' => 'text/javascript']))->name($js['name']);
