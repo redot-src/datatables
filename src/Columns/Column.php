@@ -40,7 +40,7 @@ class Column
     /**
      * The column's width.
      */
-    public string $width = 'auto';
+    public string $width = 'fit-content';
 
     /**
      * The column's max width.
@@ -65,7 +65,7 @@ class Column
     /**
      * Determine if the column whitespace should be nowrap.
      */
-    public bool $nowrap = false;
+    public bool $nowrap = true;
 
     /**
      * Determine if the column content is HTML.

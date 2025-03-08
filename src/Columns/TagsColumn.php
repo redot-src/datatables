@@ -12,6 +12,11 @@ class TagsColumn extends Column
     public ?string $type = 'tags';
 
     /**
+     * Determine if the column content is HTML.
+     */
+    public bool $html = true;
+
+    /**
      * Tags limit per row.
      */
     public int $limit = 3;

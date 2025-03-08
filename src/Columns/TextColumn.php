@@ -48,11 +48,6 @@ class TextColumn extends Column
     public bool $external = false;
 
     /**
-     * Determine if the text is an icon.
-     */
-    public bool $icon = false;
-
-    /**
      * Truncate text based on character count.
      */
     public ?int $truncate = null;
@@ -75,7 +70,7 @@ class TextColumn extends Column
     /**
      * Padding direction.
      */
-    public string $padDir = STR_PAD_RIGHT;
+    public int $padDir = STR_PAD_RIGHT;
 
     /**
      * Set the column's prefix.
@@ -128,9 +123,13 @@ class TextColumn extends Column
     /**
      * Set the column's as a URL.
      */
-    public function url(bool $url = true): Column
+    public function url(bool $url = true, string|Closure|null $text = null): Column
     {
         $this->url = $url;
+
+        if ($text) {
+            $this->urlText($text);
+        }
 
         if ($this->html === false && $url) {
             $this->html = true;
@@ -155,20 +154,6 @@ class TextColumn extends Column
     public function external(bool $external = true): Column
     {
         $this->external = $external;
-
-        return $this;
-    }
-
-    /**
-     * Set the column's as an icon.
-     */
-    public function icon(bool $icon = true): Column
-    {
-        $this->icon = $icon;
-
-        if ($this->html === false && $icon) {
-            $this->html = true;
-        }
 
         return $this;
     }
@@ -230,10 +215,6 @@ class TextColumn extends Column
             $text = $this->urlText instanceof Closure ? call_user_func($this->urlText, $value, $row) : $this->urlText;
 
             return sprintf('<a href="%s" target="%s">%s</a>', $value, $this->external ? '_blank' : '_self', $text ?: $value);
-        }
-
-        if ($this->icon) {
-            return sprintf('<i class="%s"></i>', $value);
         }
 
         if ($this->truncate !== null) {
