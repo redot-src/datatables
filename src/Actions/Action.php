@@ -87,7 +87,7 @@ class Action
     /**
      * A flag to indicate that the class is not an action group.
      */
-    final public $isActionGroup = false;
+    public $isActionGroup = false;
 
     /**
      * Create a new action instance.

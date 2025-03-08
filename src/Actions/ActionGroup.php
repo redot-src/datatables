@@ -40,7 +40,7 @@ class ActionGroup
     /**
      * A flag to indicate that the class is an action group.
      */
-    final public $isActionGroup = true;
+    public $isActionGroup = true;
 
     /**
      * Create a new action group instance.
