@@ -349,14 +349,9 @@ class Action
         }
 
         if ($this->route) {
-            $parameters = Request::route()->parameters();
-            $parameters = array_merge($parameters, $this->parameters);
-
-            foreach ($parameters as $key => $value) {
-                if (is_callable($value)) {
-                    $parameters[$key] = call_user_func($value, $row);
-                }
-            }
+            $parameters = collect($this->parameters)->mapWithKeys(function ($value, $key) use ($row) {
+                return is_callable($value) ? [$key => call_user_func($value, $row)] : [$key => $value];
+            })->all();
 
             $this->attributes([
                 'href' => route($this->route, array_merge([$row], $parameters)),
