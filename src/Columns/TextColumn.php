@@ -2,6 +2,7 @@
 
 namespace Redot\Datatables\Columns;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 
 class TextColumn extends Column
@@ -35,6 +36,11 @@ class TextColumn extends Column
      * Determine if the text is URL.
      */
     public bool $url = false;
+
+    /**
+     * The url text.
+     */
+    public string|Closure $urlText = '';
 
     /**
      * Determine if the URL is external.
@@ -178,7 +184,9 @@ class TextColumn extends Column
         }
 
         if ($this->url) {
-            return sprintf('<a href="%s" target="%s">%s</a>', $value, $this->external ? '_blank' : '_self', $value);
+            $text = $this->urlText instanceof Closure ? call_user_func($this->urlText, $value, $row) : $this->urlText;
+
+            return sprintf('<a href="%s" target="%s">%s</a>', $value, $this->external ? '_blank' : '_self', $text ?: $value);
         }
 
         if ($this->icon) {
