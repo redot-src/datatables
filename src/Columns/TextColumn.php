@@ -63,6 +63,21 @@ class TextColumn extends Column
     public ?int $wordCount = null;
 
     /**
+     * Pad the column's value.
+     */
+    public ?int $pad = null;
+
+    /**
+     * Padding character.
+     */
+    public string $padChar = ' ';
+
+    /**
+     * Padding direction.
+     */
+    public string $padDir = STR_PAD_RIGHT;
+
+    /**
      * Set the column's prefix.
      */
     public function prefix(string $prefix): Column
@@ -179,6 +194,18 @@ class TextColumn extends Column
     }
 
     /**
+     * Set the column's padding.
+     */
+    public function pad(int $length, string $char = ' ', int $dir = STR_PAD_RIGHT): Column
+    {
+        $this->pad = $length;
+        $this->padChar = $char;
+        $this->padDir = $dir;
+
+        return $this;
+    }
+
+    /**
      * Default getter for the column.
      */
     protected function defaultGetter(mixed $value, Model $row): mixed
@@ -215,6 +242,10 @@ class TextColumn extends Column
 
         if ($this->wordCount !== null) {
             return \Illuminate\Support\Str::words($value, $this->wordCount);
+        }
+
+        if ($this->pad !== null) {
+            return str_pad($value, $this->pad, $this->padChar, $this->padDir);
         }
 
         return $value;
