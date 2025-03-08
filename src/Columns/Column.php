@@ -178,9 +178,17 @@ class Column
     /**
      * Set the column's width.
      */
-    public function width(string $width): Column
+    public function width(string $width, ?string $min = null, ?string $max = null): Column
     {
         $this->width = $width;
+
+        if ($min) {
+            $this->minWidth($min);
+        }
+
+        if ($max) {
+            $this->maxWidth($max);
+        }
 
         return $this;
     }
