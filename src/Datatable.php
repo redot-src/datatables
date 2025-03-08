@@ -210,14 +210,14 @@ abstract class Datatable extends Component
      */
     public function toXlsx(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        if (! class_exists(\Maatwebsite\Excel\Excel::class)) {
+        if (! class_exists('Maatwebsite\Excel\Excel')) {
             throw new Exceptions\MissingDependencyException('Please install the "maatwebsite/excel" package to use the toXlsx method.');
         }
 
         [$headings, $rows] = $this->getExportData();
 
         $filename = sprintf('export-%s.xlsx', now()->format('Y-m-d_H-i-s'));
-        $rows->prepend($headings)->storeExcel($filename, null, \Maatwebsite\Excel\Excel::XLSX);
+        $rows->prepend($headings)->storeExcel($filename, null, 'Xlsx');
 
         return response()->download(storage_path('app/' . $filename))->deleteFileAfterSend(true);
     }
@@ -227,14 +227,14 @@ abstract class Datatable extends Component
      */
     public function toCsv(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        if (! class_exists(\Maatwebsite\Excel\Excel::class)) {
+        if (! class_exists('Maatwebsite\Excel\Excel')) {
             throw new Exceptions\MissingDependencyException('Please install the "maatwebsite/excel" package to use the toCsv method.');
         }
 
         [$headings, $rows] = $this->getExportData();
 
         $filename = sprintf('export-%s.csv', now()->format('Y-m-d_H-i-s'));
-        $rows->prepend($headings)->storeExcel($filename, null, \Maatwebsite\Excel\Excel::CSV);
+        $rows->prepend($headings)->storeExcel($filename, null, 'Csv');
 
         return response()->download(storage_path('app/' . $filename))->deleteFileAfterSend(true);
     }

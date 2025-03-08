@@ -28,9 +28,7 @@
         "livewire/livewire": "^3.0"
     },
     "require-dev": {
-        "laravel/pint": "^1.21",
-        "orchestra/testbench": "^10.0",
-        "pestphp/pest": "^3.7"
+        "laravel/pint": "^1.21"
     },
     "suggest": {
         "maatwebsite/excel": "Allow exporting data to multiple formats",
@@ -38,14 +36,10 @@
         "barryvdh/laravel-dompdf": "A DOMPDF Wrapper for Laravel, used to generate PDFs"
     },
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
+        "sort-packages": true
     },
     "scripts": {
-        "lint": "vendor/bin/pint",
-        "test": "vendor/bin/pest"
+        "lint": "vendor/bin/pint"
     },
     "extra": {
         "laravel": {

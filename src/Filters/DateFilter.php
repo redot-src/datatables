@@ -18,9 +18,9 @@ class DateFilter extends Filter
             $from = $value['from'] ?? null;
             $to = $value['to'] ?? null;
 
-            if ($from && !$to) {
+            if ($from && ! $to) {
                 $query->whereDate($this->column, '>=', $from);
-            } elseif (!$from && $to) {
+            } elseif (! $from && $to) {
                 $query->whereDate($this->column, '<=', $to);
             } elseif ($from && $to) {
                 $query->whereBetween($this->column, [$from, $to]);
