@@ -310,12 +310,12 @@ class Action
     /**
      * Set the action to be confirmable.
      */
-    public function confirmable(bool $confirmable = true, ?string $confirmMessage = null): self
+    public function confirmable(bool $confirmable = true, ?string $message = null): self
     {
         $this->confirmable = $confirmable;
 
-        if ($confirmMessage) {
-            $this->confirmMessage($confirmMessage);
+        if ($message) {
+            $this->confirmMessage($message);
         }
 
         return $this;
@@ -351,6 +351,12 @@ class Action
         if ($this->route) {
             $parameters = Request::route()->parameters();
             $parameters = array_merge($parameters, $this->parameters);
+
+            foreach ($parameters as $key => $value) {
+                if (is_callable($value)) {
+                    $parameters[$key] = call_user_func($value, $row);
+                }
+            }
 
             $this->attributes([
                 'href' => route($this->route, array_merge([$row], $parameters)),

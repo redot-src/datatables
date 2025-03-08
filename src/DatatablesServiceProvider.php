@@ -58,7 +58,7 @@ class DatatablesServiceProvider extends ServiceProvider
         );
 
         $this->publishes([
-            __DIR__ . '/../lang' => resource_path('lang/vendor/datatables'),
+            __DIR__ . '/../lang' => lang_path('vendor/datatables'),
         ], 'lang');
     }
 
