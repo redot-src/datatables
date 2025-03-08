@@ -1,13 +1,13 @@
 <?php
 
-namespace Redot\Datatables\Adaptors\PDF;
+namespace Redot\Datatables\Adapters\PDF;
 
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class DomPdf extends Adabtor
+class DomPdf extends Adabter
 {
     /**
      * Download the PDF file.
@@ -31,7 +31,7 @@ class DomPdf extends Adabtor
     }
 
     /**
-     * Check if the adaptor is supported.
+     * Check if the adapter is supported.
      */
     public function supported(): bool
     {

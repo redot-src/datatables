@@ -1,13 +1,13 @@
 <?php
 
-namespace Redot\Datatables\Adaptors\PDF;
+namespace Redot\Datatables\Adapters\PDF;
 
 use Illuminate\Support\Collection;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf as PDF;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class LaravelMpdf extends Adabtor
+class LaravelMpdf extends Adabter
 {
     /**
      * Download the PDF file.
@@ -28,7 +28,7 @@ class LaravelMpdf extends Adabtor
     }
 
     /**
-     * Check if the adaptor is supported.
+     * Check if the adapter is supported.
      */
     public function supported(): bool
     {

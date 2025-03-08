@@ -11,8 +11,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Redot\Datatables\Actions\Action;
 use Redot\Datatables\Actions\ActionGroup;
-use Redot\Datatables\Adaptors\PDF\Adabtor;
-use Redot\Datatables\Adaptors\PDF\LaravelMpdf;
+use Redot\Datatables\Adapters\PDF\Adabter;
 use Redot\Datatables\Columns\Column;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -104,12 +103,12 @@ abstract class Datatable extends Component
     public string $cssAssetsUrl;
 
     /**
-     * PDF adaptor class.
+     * PDF adapter class.
      */
-    public string $pdfAdaptor = LaravelMpdf::class;
+    public string $pdfAdapter;
 
     /**
-     * PDF adaptor options.
+     * PDF adapter options.
      */
     public array $pdfOptions = [];
 
@@ -126,11 +125,13 @@ abstract class Datatable extends Component
         $this->id ??= uniqid('datatable-');
         $this->emptyMessage ??= __('datatables::datatable.pagination.empty');
 
-        $css = config('datatables.assets.css');
-        $js = config('datatables.assets.js');
+        // Set the PDF adapter and options
+        $this->pdfAdapter = config('datatables.export.pdf.adapter');
+        $this->pdfOptions = array_merge(config('datatables.export.pdf.options'), $this->pdfOptions);
 
-        $this->cssAssetsUrl = route($css['name'], ['v' => md5(filemtime($css['path']))]);
-        $this->jsAssetsUrl = route($js['name'], ['v' => md5(filemtime($js['path']))]);
+        // Set the assets urls
+        $this->cssAssetsUrl = route(config('datatables.assets.css.route'), ['v' => md5(filemtime(config('datatables.assets.css.file')))]);
+        $this->jsAssetsUrl = route(config('datatables.assets.js.route'), ['v' => md5(filemtime(config('datatables.assets.js.file')))]);
     }
 
     /**
@@ -199,14 +200,6 @@ abstract class Datatable extends Component
     }
 
     /**
-     * Get the pagination simple view.
-     */
-    public function paginationSimpleView(): string
-    {
-        return 'datatables::pagination.simple';
-    }
-
-    /**
      * Export the datatable to a XLSX file.
      */
     public function toXlsx(): \Symfony\Component\HttpFoundation\BinaryFileResponse
@@ -264,15 +257,15 @@ abstract class Datatable extends Component
      */
     public function toPdf(): StreamedResponse|Response
     {
-        $pdfAdaptor = new $this->pdfAdaptor;
+        $pdfAdapter = new $this->pdfAdapter;
 
-        if (! $pdfAdaptor instanceof Adabtor || ! $pdfAdaptor->supported()) {
-            throw new Exceptions\MissingDependencyException(sprintf('The PDF adaptor "%s" is not supported.', $this->pdfAdaptor));
+        if (! $pdfAdapter instanceof Adabter || ! $pdfAdapter->supported()) {
+            throw new Exceptions\MissingDependencyException(sprintf('The PDF adapter "%s" is not supported.', $this->pdfAdapter));
         }
 
         [$headings, $rows] = $this->getExportData();
 
-        return $pdfAdaptor->download($this->pdfTemplate, $headings, $rows, $this->pdfOptions);
+        return $pdfAdapter->download($this->pdfTemplate, $headings, $rows, $this->pdfOptions);
     }
 
     /**

@@ -11,8 +11,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-$css = config('datatables.assets.css');
-$js = config('datatables.assets.js');
+foreach (config('datatables.assets') as $asset) {
+    Route::get($asset['uri'], function () use ($asset) {
+        $path = $asset['file'];
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
 
-Route::get($css['route'], fn () => response()->file($css['path'], ['Content-Type' => 'text/css']))->name($css['name']);
-Route::get($js['route'], fn () => response()->file($js['path'], ['Content-Type' => 'text/javascript']))->name($js['name']);
+        return response()->file($path, ['Content-Type' => 'text/' . $extension]);
+    })->name($asset['route']);
+}

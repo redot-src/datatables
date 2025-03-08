@@ -1,6 +1,7 @@
 <?php
 
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Redot Datatables config
@@ -12,14 +13,24 @@ return [
 
     'assets' => [
         'css' => [
-            'path' => base_path('vendor/redot/datatables/resources/css/datatables.css'),
-            'route' => '/__datatables/datatables.css',
-            'name' => 'datatables.css',
+            'file' => base_path('vendor/redot/datatables/resources/css/datatables.css'),
+            'uri' => 'datatables/datatables.css',
+            'route' => 'datatables.css',
         ],
         'js' => [
-            'path' => base_path('vendor/redot/datatables/resources/js/datatables.js'),
-            'route' => '/__datatables/datatables.js',
-            'name' => 'datatables.js',
+            'file' => base_path('vendor/redot/datatables/resources/js/datatables.js'),
+            'uri' => 'datatables/datatables.js',
+            'route' => 'datatables.js',
+        ],
+    ],
+
+    'export' => [
+        'pdf' => [
+            'adapter' => \Redot\Datatables\Adapters\PDF\LaravelMpdf::class,
+            'options' => [
+                'format' => 'A4',
+                'orientation' => 'P',
+            ],
         ],
     ],
 ];

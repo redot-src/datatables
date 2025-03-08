@@ -1,12 +1,12 @@
 <?php
 
-namespace Redot\Datatables\Adaptors\PDF;
+namespace Redot\Datatables\Adapters\PDF;
 
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-abstract class Adabtor
+abstract class Adabter
 {
     /**
      * Download the PDF file.
@@ -14,7 +14,7 @@ abstract class Adabtor
     abstract public function download(string $template, array $headings, Collection $rows, array $options = []): StreamedResponse|Response;
 
     /**
-     * Check if the adaptor is supported.
+     * Check if the adapter is supported.
      */
     public function supported(): bool
     {
