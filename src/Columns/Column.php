@@ -334,11 +334,12 @@ class Column
     public function get(Model $row): mixed
     {
         $value = $this->name ? data_get($row, $this->name) : $this->default;
-        $value = $this->defaultGetter($value, $row);
 
         if ($this->getter) {
             $value = call_user_func($this->getter, $value, $row);
         }
+
+        $value = $this->defaultGetter($value, $row);
 
         if (is_null($value)) {
             $value = is_callable($this->empty) ? call_user_func($this->empty, $row) : $this->empty;
