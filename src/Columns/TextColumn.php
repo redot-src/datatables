@@ -125,6 +125,16 @@ class TextColumn extends Column
     }
 
     /**
+     * Set the column's URL text.
+     */
+    public function urlText(string|Closure $text): Column
+    {
+        $this->urlText = $text;
+
+        return $this;
+    }
+
+    /**
      * Set the column's URL as external.
      */
     public function external(bool $external = true): Column
@@ -173,7 +183,13 @@ class TextColumn extends Column
      */
     protected function defaultGetter(mixed $value, Model $row): mixed
     {
-        $value = $this->prefix . $value . $this->suffix;
+        if ($this->prefix) {
+            $value = $this->prefix . $value;
+        }
+
+        if ($this->suffix) {
+            $value = $value . $this->suffix;
+        }
 
         if ($this->email) {
             return sprintf('<a href="mailto:%s">%s</a>', $value, $value);
