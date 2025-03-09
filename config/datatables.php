@@ -25,7 +25,20 @@ return [
     ],
 
     'export' => [
+        'xlsx' => [
+            'enabled' => true,
+        ],
+
+        'csv' => [
+            'enabled' => true,
+        ],
+
+        'json' => [
+            'enabled' => true,
+        ],
+
         'pdf' => [
+            'enabled' => true,
             'adapter' => \Redot\Datatables\Adapters\PDF\LaravelMpdf::class,
             'options' => [
                 'format' => 'A4',

@@ -45,25 +45,25 @@ abstract class Datatable extends Component
     /**
      * Search term for the datatable.
      */
-    #[Url]
+    #[Url(as: 'q')]
     public string $search = '';
 
     /**
      * Sort column for the datatable.
      */
-    #[Url]
+    #[Url(as: 'sort')]
     public string $sortColumn = '';
 
     /**
      * Sort direction for the datatable.
      */
-    #[Url]
+    #[Url(as: 'direction')]
     public string $sortDirection = 'asc';
 
     /**
      * Filters values for the datatable.
      */
-    #[Url]
+    #[Url(as: 'f')]
     public array $filtered = [];
 
     /**
@@ -93,16 +93,6 @@ abstract class Datatable extends Component
     public ?string $emptyMessage = null;
 
     /**
-     * JavaScript assets url.
-     */
-    public string $jsAssetsUrl;
-
-    /**
-     * CSS assets url.
-     */
-    public string $cssAssetsUrl;
-
-    /**
      * PDF adapter class.
      */
     public string $pdfAdapter;
@@ -116,6 +106,21 @@ abstract class Datatable extends Component
      * PDF view template.
      */
     public string $pdfTemplate = 'datatables::pdf.default';
+
+    /**
+     * JavaScript assets url.
+     */
+    public string $jsAssetsUrl;
+
+    /**
+     * CSS assets url.
+     */
+    public string $cssAssetsUrl;
+
+    /**
+     * Allowed export formats.
+     */
+    public array $allowedExports;
 
     /**
      * Create a new datatable instance.
@@ -132,6 +137,9 @@ abstract class Datatable extends Component
         // Set the assets urls
         $this->cssAssetsUrl = route(config('datatables.assets.css.route'), ['v' => md5(filemtime(config('datatables.assets.css.file')))]);
         $this->jsAssetsUrl = route(config('datatables.assets.js.route'), ['v' => md5(filemtime(config('datatables.assets.js.file')))]);
+
+        // Set the allowed export formats
+        $this->allowedExports = array_keys(array_filter(config('datatables.export'), fn ($export) => $export['enabled']));
     }
 
     /**
@@ -320,7 +328,7 @@ abstract class Datatable extends Component
 
             'filterable' => count($filters) > 0,
             'searchable' => count(array_filter($columns, fn (Column $column) => $column->searchable)) > 0,
-            'exportable' => count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
+            'exportable' => count($this->allowedExports) > 0 && count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
 
             'rows' => $rows,
         ];
