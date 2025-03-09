@@ -1,0 +1,45 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Database\Eloquent\Builder;
+use Redot\Datatables\Datatable;
+
+class {{ class }} extends Datatable
+{
+    /**
+     * Get the query source of the datatable.
+     */
+    public function query(): Builder
+    {
+        return {{ model }}::query();
+    }
+
+    /**
+     * Get the columns for the datatable.
+     */
+    public function columns(): array
+    {
+        return [
+            // ...
+        ];
+    }
+
+    /**
+     * Get the actions for the datatable.
+     */
+    public function actions(): array
+    {
+        return Datatable::defaultActionGroup([
+            // ...
+        ]);
+    }
+
+    /**
+     * Get the filters for the datatable.
+     */
+    public function filters(): array
+    {
+        return [];
+    }
+}
