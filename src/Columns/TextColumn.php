@@ -38,14 +38,15 @@ class TextColumn extends Column
     public bool $url = false;
 
     /**
-     * The url text.
+     * Url text column options.
      */
-    public string|Closure $urlText = '';
-
-    /**
-     * Determine if the URL is external.
-     */
-    public bool $external = false;
+    public array $urlOptions = [
+        'text' => null,
+        'fancybox' => false,
+        'target' => '_self',
+        'route' => null,
+        'parameters' => [],
+    ];
 
     /**
      * Truncate text based on character count.
@@ -123,13 +124,12 @@ class TextColumn extends Column
     /**
      * Set the column's as a URL.
      */
-    public function url(bool $url = true, string|Closure|null $text = null): Column
+    public function url(bool $url = true, string|Closure|null $text = null, bool $fancybox = false, string $target = '_self'): Column
     {
         $this->url = $url;
-
-        if ($text) {
-            $this->urlText($text);
-        }
+        $this->urlOptions['text'] = $text;
+        $this->urlOptions['fancybox'] = $fancybox;
+        $this->urlOptions['target'] = $target;
 
         if ($this->html === false && $url) {
             $this->html = true;
@@ -139,23 +139,14 @@ class TextColumn extends Column
     }
 
     /**
-     * Set the column's URL text.
+     * Set the column's URL route.
      */
-    public function urlText(string|Closure $text): Column
+    public function route(string $route, array $parameters = [], string|Closure|null $text = null, bool $fancybox = false, string $target = '_self'): Column
     {
-        $this->urlText = $text;
+        $this->urlOptions['route'] = $route;
+        $this->urlOptions['parameters'] = $parameters;
 
-        return $this;
-    }
-
-    /**
-     * Set the column's URL as external.
-     */
-    public function external(bool $external = true): Column
-    {
-        $this->external = $external;
-
-        return $this;
+        return $this->url(true, $text, $fancybox, $target);
     }
 
     /**
@@ -212,9 +203,25 @@ class TextColumn extends Column
         }
 
         if ($this->url) {
-            $text = $this->urlText instanceof Closure ? call_user_func($this->urlText, $value, $row) : $this->urlText;
+            $urlOptions = $this->urlOptions;
 
-            return sprintf('<a href="%s" target="%s">%s</a>', $value, $this->external ? '_blank' : '_self', $text ?: $value);
+            if ($urlOptions['route']) {
+                $parameters = $urlOptions['parameters'];
+                foreach ($parameters as $key => $parameter) {
+                    $parameters[$key] = $this->evaluate($parameter, $value, $row);
+                }
+
+                $url = route($urlOptions['route'], array_merge([$row], $parameters));
+            } else {
+                $url = $value;
+            }
+
+            return sprintf('<a href="%s" target="%s"%s>%s</a>',
+                $url,
+                $urlOptions['target'],
+                $urlOptions['fancybox'] ? ' data-fancybox' : '',
+                $this->evaluate($urlOptions['text'], $value, $row) ?? $value,
+            );
         }
 
         if ($this->truncate !== null) {

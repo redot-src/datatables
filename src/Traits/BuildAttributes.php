@@ -113,13 +113,13 @@ trait BuildAttributes
     /**
      * Evaluate the value.
      */
-    protected function evaluate(mixed $value, ?Model $row = null)
+    protected function evaluate(mixed $value, ...$args)
     {
         // Early return if the value is a string
         if (is_string($value)) {
             return $value;
         }
 
-        return is_callable($value) ? $value($row) : $value;
+        return is_callable($value) ? call_user_func($value, ...$args) : $value;
     }
 }

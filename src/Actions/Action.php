@@ -349,9 +349,10 @@ class Action
         }
 
         if ($this->route) {
-            $parameters = collect($this->parameters)->mapWithKeys(function ($value, $key) use ($row) {
-                return is_callable($value) ? [$key => call_user_func($value, $row)] : [$key => $value];
-            })->all();
+            $parameters = $this->parameters;
+            foreach ($parameters as $key => $value) {
+                $parameters[$key] = $this->evaluate($value, $row);
+            }
 
             $this->attributes([
                 'href' => route($this->route, array_merge([$row], $parameters)),
@@ -361,7 +362,7 @@ class Action
         }
 
         if ($this->href) {
-            $this->attribute('href', is_callable($this->href) ? call_user_func($this->href, $row) : $this->href);
+            $this->attribute('href', $this->evaluate($this->href, $row));
         }
 
         if ($this->newTab) {

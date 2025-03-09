@@ -344,13 +344,13 @@ class Column
         $value = $this->name ? data_get($row, $this->name) : $this->default;
 
         if ($this->getter) {
-            $value = call_user_func($this->getter, $value, $row);
+            $value = $this->evaluate($this->getter, $value, $row);
         }
 
         $value = $this->defaultGetter($value, $row);
 
         if (is_null($value)) {
-            $value = is_callable($this->empty) ? call_user_func($this->empty, $row) : $this->empty;
+            $value = $this->evaluate($this->empty, $row);
         }
 
         return $this->html ? $value : e($value);
