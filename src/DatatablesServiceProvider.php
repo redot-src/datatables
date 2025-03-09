@@ -3,6 +3,7 @@
 namespace Redot\Datatables;
 
 use Illuminate\Support\ServiceProvider;
+use Redot\Datatables\Commands\DatatableMakeCommand;
 
 class DatatablesServiceProvider extends ServiceProvider
 {
@@ -15,6 +16,10 @@ class DatatablesServiceProvider extends ServiceProvider
         $this->views();
         $this->lang();
         $this->routes();
+
+        $this->commands([
+            DatatableMakeCommand::class,
+        ]);
     }
 
     /**
@@ -29,7 +34,7 @@ class DatatablesServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../config/datatables.php' => config_path('datatables.php'),
-        ], 'config');
+        ], 'datatables::config');
     }
 
     /**
@@ -44,7 +49,7 @@ class DatatablesServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../resources/views' => resource_path('views/vendor/datatables'),
-        ], 'views');
+        ], 'datatables::views');
     }
 
     /**
@@ -59,7 +64,7 @@ class DatatablesServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../lang' => lang_path('vendor/datatables'),
-        ], 'lang');
+        ], 'datatables::lang');
     }
 
     /**
