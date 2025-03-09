@@ -25,9 +25,18 @@ $(document).on('click', '.datatable-action[method]:not([method="get"])', (event)
         $form.appendTo('body').submit();
     };
 
-    if ($action.hasAttr('confirm')) {
-        warnBeforeAction(callback, { content: $action.attr('confirm') });
-    } else {
+    // Early return if no confirmation is required
+    if ($action.hasAttr('confirm') === false) {
+        return callback();
+    }
+
+    // Use warnBeforeAction if available
+    if (typeof warnBeforeAction !== 'undefined') {
+        return warnBeforeAction(callback, { content: $action.attr('confirm') });
+    }
+
+    // Fallback to native confirm
+    if (confirm($action.attr('confirm'))) {
         callback();
     }
 });
