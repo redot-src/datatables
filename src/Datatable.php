@@ -3,6 +3,7 @@
 namespace Redot\Datatables;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Js;
 use Illuminate\Support\Traits\Macroable;
@@ -13,6 +14,8 @@ use Redot\Datatables\Actions\Action;
 use Redot\Datatables\Actions\ActionGroup;
 use Redot\Datatables\Adapters\PDF\Adabter;
 use Redot\Datatables\Columns\Column;
+use Redot\Datatables\Filters\Filter;
+use Redot\Datatables\Filters\TrashedFilter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -63,7 +66,7 @@ abstract class Datatable extends Component
     /**
      * Filters values for the datatable.
      */
-    #[Url(as: 'f')]
+    #[Url(as: 'filter')]
     public array $filtered = [];
 
     /**
@@ -390,17 +393,39 @@ abstract class Datatable extends Component
     /**
      * Apply filters to the query.
      */
-    protected function applyFilters(Builder $query, array $filters): Builder
+    protected function applyFilters(Builder $query, array $filters): void
     {
-        foreach ($filters as $filter) {
-            $value = $this->filtered[$filter->index] ?? null;
+        $trashedFilters = [];
+        $nonTrashedFilters = [];
 
-            if ($value) {
-                $filter->apply($query, $value);
+        foreach ($filters as $filter) {
+            if ($filter instanceof TrashedFilter) {
+                $trashedFilters[] = $filter;
+            } else {
+                $nonTrashedFilters[] = $filter;
             }
         }
 
-        return $query;
+        if (count($trashedFilters) > 0) {
+            foreach ($trashedFilters as $filter) {
+                $this->applyFilter($query, $filter);
+            }
+        }
+
+        $query->where(function ($query) use ($nonTrashedFilters) {
+            foreach ($nonTrashedFilters as $filter) {
+                $this->applyFilter($query, $filter);
+            }
+        });
+    }
+
+    protected function applyFilter(Builder $query, Filter $filter): void
+    {
+        $value = $this->filtered[$filter->index] ?? null;
+
+        if ($value) {
+            $filter->apply($query, $value);
+        }
     }
 
     /**
