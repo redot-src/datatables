@@ -68,5 +68,13 @@ return [
             'with' => 'With deleted records',
             'only' => 'Only deleted records',
         ],
+
+        'ternary' => [
+            'placeholder' => 'Select an option',
+
+            'yes' => 'Yes',
+            'no' => 'No',
+            'empty' => 'Empty',
+        ],
     ],
 ];
