@@ -1,5 +1,8 @@
 <div class="table-responsive border-top">
-    <table @class(['table card-table table-vcenter datatable', 'bordered' => $bordered])>
+    <table @class([
+        'table card-table table-vcenter datatable',
+        'bordered' => $bordered,
+    ])>
         <thead @class(['sticky-top' => $stickyHeader])>
             <tr>
                 @foreach ($columns as $column)
@@ -46,14 +49,12 @@
                         <td class="fixed-end datatable-cell datatable-actions">
                             <div class="d-flex gap-1">
                                 @foreach ($actions as $action)
-                                    @if ($action->shouldRender($row) === false)
-                                        @continue
-                                    @endif
-
-                                    @if ($action->isActionGroup)
-                                        @include('datatables::partials.action-group')
-                                    @else
-                                        @include('datatables::partials.action')
+                                    @if ($action->shouldRender($row))
+                                        @if ($action->isActionGroup)
+                                            @include('datatables::partials.action-group')
+                                        @else
+                                            @include('datatables::partials.action')
+                                        @endif
                                     @endif
                                 @endforeach
                             </div>
