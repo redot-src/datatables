@@ -2,29 +2,29 @@
 
 namespace Redot\Datatables\Filters;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class DateFilter extends Filter
 {
     /**
      * The filter's view.
      */
-    public ?string $view = 'datatables::filters.date';
+    public string $view = 'datatables::filters.date';
 
     /**
-     * Initialize the filter.
+     * Apply the filter to the given query.
      */
-    protected function init(): void
+    public function apply(Builder $query, mixed $value): void
     {
-        $this->queryCallback = function ($query, $value) {
-            $from = $value['from'] ?? null;
-            $to = $value['to'] ?? null;
+        $from = $value['from'] ?? null;
+        $to = $value['to'] ?? null;
 
-            if ($from && ! $to) {
-                $query->whereDate($this->column, '>=', $from);
-            } elseif (! $from && $to) {
-                $query->whereDate($this->column, '<=', $to);
-            } elseif ($from && $to) {
-                $query->whereBetween($this->column, [$from, $to]);
-            }
-        };
+        if ($from && ! $to) {
+            $query->whereDate($this->column, '>=', $from);
+        } elseif (! $from && $to) {
+            $query->whereDate($this->column, '<=', $to);
+        } elseif ($from && $to) {
+            $query->whereBetween($this->column, [$from, $to]);
+        }
     }
 }

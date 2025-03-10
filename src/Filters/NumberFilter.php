@@ -2,6 +2,8 @@
 
 namespace Redot\Datatables\Filters;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class NumberFilter extends Filter
 {
     /**
@@ -12,7 +14,7 @@ class NumberFilter extends Filter
     /**
      * The filter's view.
      */
-    public ?string $view = 'datatables::filters.number';
+    public string $view = 'datatables::filters.number';
 
     /**
      * Initialize the filter.
@@ -27,24 +29,28 @@ class NumberFilter extends Filter
             'less_than' => __('datatables::datatable.filters.number.less_than'),
             'less_than_or_equals' => __('datatables::datatable.filters.number.less_than_or_equals'),
         ];
+    }
 
-        $this->queryCallback = function ($query, $value) {
-            $operator = isset($value['operator']) ? $value['operator'] : 'equals';
-            $value = isset($value['value']) ? $value['value'] : '';
+    /**
+     * Apply the filter to the given query.
+     */
+    public function apply(Builder $query, mixed $value): void
+    {
+        $operator = isset($value['operator']) ? $value['operator'] : 'equals';
+        $value = isset($value['value']) ? $value['value'] : '';
 
-            // Early return if the value is empty.
-            if (empty($value)) {
-                return;
-            }
+        // Early return if the value is empty.
+        if (empty($value)) {
+            return;
+        }
 
-            match ($operator) {
-                'equals' => $query->where($this->column, $value),
-                'not_equals' => $query->where($this->column, '!=', $value),
-                'greater_than' => $query->where($this->column, '>', $value),
-                'greater_than_or_equals' => $query->where($this->column, '>=', $value),
-                'less_than' => $query->where($this->column, '<', $value),
-                'less_than_or_equals' => $query->where($this->column, '<=', $value),
-            };
+        match ($operator) {
+            'equals' => $query->where($this->column, $value),
+            'not_equals' => $query->where($this->column, '!=', $value),
+            'greater_than' => $query->where($this->column, '>', $value),
+            'greater_than_or_equals' => $query->where($this->column, '>=', $value),
+            'less_than' => $query->where($this->column, '<', $value),
+            'less_than_or_equals' => $query->where($this->column, '<=', $value),
         };
     }
 }

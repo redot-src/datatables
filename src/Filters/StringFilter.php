@@ -12,7 +12,7 @@ class StringFilter extends Filter
     /**
      * The filter's view.
      */
-    public ?string $view = 'datatables::filters.string';
+    public string $view = 'datatables::filters.string';
 
     /**
      * Initialize the filter.
@@ -29,26 +29,30 @@ class StringFilter extends Filter
             'ends_with' => __('datatables::datatable.filters.string.ends_with'),
             'not_ends_with' => __('datatables::datatable.filters.string.not_ends_with'),
         ];
+    }
 
-        $this->queryCallback = function ($query, $value) {
-            $operator = isset($value['operator']) ? $value['operator'] : 'equals';
-            $value = isset($value['value']) ? $value['value'] : '';
+    /**
+     * Apply the filter to the given query.
+     */
+    public function apply($query, $value): void
+    {
+        $operator = isset($value['operator']) ? $value['operator'] : 'equals';
+        $value = isset($value['value']) ? $value['value'] : '';
 
-            // Early return if the value is empty.
-            if (empty($value)) {
-                return;
-            }
+        // Early return if the value is empty.
+        if (empty($value)) {
+            return;
+        }
 
-            match ($operator) {
-                'equals' => $query->where($this->column, $value),
-                'not_equals' => $query->where($this->column, '!=', $value),
-                'contains' => $query->where($this->column, 'like', "%$value%"),
-                'not_contains' => $query->where($this->column, 'not like', "%$value%"),
-                'starts_with' => $query->where($this->column, 'like', "$value%"),
-                'not_starts_with' => $query->where($this->column, 'not like', "$value%"),
-                'ends_with' => $query->where($this->column, 'like', "%$value"),
-                'not_ends_with' => $query->where($this->column, 'not like', "%$value"),
-            };
+        match ($operator) {
+            'equals' => $query->where($this->column, $value),
+            'not_equals' => $query->where($this->column, '!=', $value),
+            'contains' => $query->where($this->column, 'like', "%$value%"),
+            'not_contains' => $query->where($this->column, 'not like', "%$value%"),
+            'starts_with' => $query->where($this->column, 'like', "$value%"),
+            'not_starts_with' => $query->where($this->column, 'not like', "$value%"),
+            'ends_with' => $query->where($this->column, 'like', "%$value"),
+            'not_ends_with' => $query->where($this->column, 'not like', "%$value"),
         };
     }
 }

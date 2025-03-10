@@ -2,24 +2,25 @@
 
 namespace Redot\Datatables\Filters;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class SelectFilter extends Filter
 {
-    /**
-     * The filter's options.
-     */
-    public array|Collection $options = [];
-
     /**
      * The select placeholder.
      */
     public ?string $placeholder = null;
 
     /**
+     * The filter's options.
+     */
+    public array|Collection $options = [];
+
+    /**
      * The filter's view.
      */
-    public ?string $view = 'datatables::filters.select';
+    public string $view = 'datatables::filters.select';
 
     /**
      * Initialize the filter.
@@ -27,10 +28,16 @@ class SelectFilter extends Filter
     protected function init(): void
     {
         $this->placeholder = __('datatables::datatable.filters.select.placeholder');
+    }
 
-        $this->queryCallback = function ($query, $value) {
-            $query->where($this->column, $value);
-        };
+    /**
+     * Set the filter's placeholder.
+     */
+    public function placeholder(string $placeholder): self
+    {
+        $this->placeholder = $placeholder;
+
+        return $this;
     }
 
     /**
@@ -41,5 +48,13 @@ class SelectFilter extends Filter
         $this->options = $options;
 
         return $this;
+    }
+
+    /**
+     * Apply the filter to the given query.
+     */
+    public function apply(Builder $query, $value): void
+    {
+        $query->where($this->column, $value);
     }
 }

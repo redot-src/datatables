@@ -2,12 +2,11 @@
 
 namespace Redot\Datatables\Filters;
 
-use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Traits\Macroable;
 use Redot\Datatables\Traits\BuildAttributes;
 
-class Filter
+abstract class Filter
 {
     use BuildAttributes;
     use Macroable;
@@ -40,27 +39,22 @@ class Filter
     /**
      * The filter's view.
      */
-    public ?string $view = null;
-
-    /**
-     * The filter's query callback.
-     */
-    public ?Closure $queryCallback = null;
+    public string $view;
 
     /**
      * Create a new filter instance.
      */
-    public function __construct(?string $label = null, ?string $column = null)
+    public function __construct(?string $column = null, ?string $label = null,)
     {
         $this->index = ++static::$counter;
         $this->wireKey ??= sprintf('filtered.%s', $this->index);
 
-        if ($label) {
-            $this->label($label);
-        }
-
         if ($column) {
             $this->column($column);
+        }
+
+        if ($label) {
+            $this->label($label);
         }
 
         $this->init();
@@ -77,9 +71,9 @@ class Filter
     /**
      * Make a new filter instance.
      */
-    public static function make(?string $label = null, ?string $column = null): Filter
+    public static function make(?string $column = null, ?string $label = null): Filter
     {
-        return new static($label, $column);
+        return new static($column, $label);
     }
 
     /**
@@ -103,16 +97,6 @@ class Filter
     }
 
     /**
-     * Modify the base query.
-     */
-    public function query(Closure $callback): Filter
-    {
-        $this->queryCallback = $callback;
-
-        return $this;
-    }
-
-    /**
      * Render the filter view.
      */
     public function render(): \Illuminate\Contracts\View\View
@@ -123,10 +107,5 @@ class Filter
     /**
      * Apply the filter to the given query.
      */
-    public function apply(Builder $query, mixed $value): void
-    {
-        if ($this->queryCallback) {
-            call_user_func($this->queryCallback, $query, $value);
-        }
-    }
+    abstract public function apply(Builder $query, mixed $value): void;
 }
