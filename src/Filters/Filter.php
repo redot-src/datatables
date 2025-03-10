@@ -44,7 +44,7 @@ abstract class Filter
     /**
      * Create a new filter instance.
      */
-    public function __construct(?string $column = null, ?string $label = null,)
+    public function __construct(?string $column = null, ?string $label = null)
     {
         $this->index = ++static::$counter;
         $this->wireKey ??= sprintf('filtered.%s', $this->index);

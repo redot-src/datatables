@@ -4,7 +4,6 @@ namespace Redot\Datatables\Actions;
 
 use Closure;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Traits\Macroable;
 use InvalidArgumentException;
 use Redot\Datatables\Traits\BuildAttributes;

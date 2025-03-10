@@ -35,7 +35,7 @@ class DatatableMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__.'/stubs/datatable.stub';
+        return __DIR__ . '/stubs/datatable.stub';
     }
 
     /**
@@ -46,7 +46,7 @@ class DatatableMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace.'\Livewire\Datatables';
+        return $rootNamespace . '\Livewire\Datatables';
     }
 
     /**
@@ -95,7 +95,7 @@ class DatatableMakeCommand extends GeneratorCommand
         }
 
         if (! class_exists($model)) {
-            $model = $this->rootNamespace().'Models\\'.$model;
+            $model = $this->rootNamespace() . 'Models\\' . $model;
         }
 
         if (! class_exists($model)) {
@@ -108,7 +108,7 @@ class DatatableMakeCommand extends GeneratorCommand
         }
 
         $model = trim($model, '\\');
-        $stub = str_replace(['{{ model }}', '{{model}}'], '\\'.$model, $stub);
+        $stub = str_replace(['{{ model }}', '{{model}}'], '\\' . $model, $stub);
 
         return $this;
     }

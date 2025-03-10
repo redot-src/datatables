@@ -3,7 +3,6 @@
 namespace Redot\Datatables;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Js;
 use Illuminate\Support\Traits\Macroable;
