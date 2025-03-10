@@ -394,25 +394,25 @@ abstract class Datatable extends Component
      */
     protected function applyFilters(Builder $query, array $filters): void
     {
-        $trashedFilters = [];
-        $nonTrashedFilters = [];
+        $globalFilters = [];
+        $nestedFilters = [];
 
         foreach ($filters as $filter) {
-            if ($filter instanceof TrashedFilter) {
-                $trashedFilters[] = $filter;
+            if ($filter->global) {
+                $globalFilters[] = $filter;
             } else {
-                $nonTrashedFilters[] = $filter;
+                $nestedFilters[] = $filter;
             }
         }
 
-        if (count($trashedFilters) > 0) {
-            foreach ($trashedFilters as $filter) {
+        if (count($globalFilters) > 0) {
+            foreach ($globalFilters as $filter) {
                 $this->applyFilter($query, $filter);
             }
         }
 
-        $query->where(function ($query) use ($nonTrashedFilters) {
-            foreach ($nonTrashedFilters as $filter) {
+        $query->where(function ($query) use ($nestedFilters) {
+            foreach ($nestedFilters as $filter) {
                 $this->applyFilter($query, $filter);
             }
         });
@@ -422,7 +422,14 @@ abstract class Datatable extends Component
     {
         $value = $this->filtered[$filter->index] ?? null;
 
-        if ($value) {
+        // Early return if the filter value is empty
+        if (is_null($value) || $value === '') {
+            return;
+        }
+
+        if ($filter->query) {
+            call_user_func($filter->query, $query, $value);
+        } else {
             $filter->apply($query, $value);
         }
     }

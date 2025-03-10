@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Builder;
 class TrashedFilter extends Filter
 {
     /**
+     * Determine if the filter should be applied globally.
+     */
+    public bool $global = true;
+
+    /**
      * The filter's view.
      */
     public string $view = 'datatables::filters.trashed';

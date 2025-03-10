@@ -2,6 +2,7 @@
 
 namespace Redot\Datatables\Filters;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Traits\Macroable;
 use Redot\Datatables\Traits\BuildAttributes;
@@ -35,6 +36,16 @@ abstract class Filter
      * The filter's column.
      */
     public ?string $column = null;
+
+    /**
+     * Override the filter's query.
+     */
+    public ?Closure $query = null;
+
+    /**
+     * Determine if the filter should be applied globally.
+     */
+    public bool $global = false;
 
     /**
      * The filter's view.
@@ -92,6 +103,16 @@ abstract class Filter
     public function column(string $column): Filter
     {
         $this->column = $column;
+
+        return $this;
+    }
+
+    /**
+     * Set the filter's query.
+     */
+    public function query(Closure $query): Filter
+    {
+        $this->query = $query;
 
         return $this;
     }
