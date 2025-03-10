@@ -60,5 +60,13 @@ return [
             'ends_with' => 'Ends with',
             'not_ends_with' => 'Not end with',
         ],
+
+        'trashed' => [
+            'label' => 'Deleted Records',
+
+            'without' => 'Without deleted records',
+            'with' => 'With deleted records',
+            'only' => 'Only deleted records',
+        ],
     ],
 ];

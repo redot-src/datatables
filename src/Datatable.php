@@ -392,15 +392,13 @@ abstract class Datatable extends Component
      */
     protected function applyFilters(Builder $query, array $filters): Builder
     {
-        $query->where(function ($query) use ($filters) {
-            foreach ($filters as $filter) {
-                $value = $this->filtered[$filter->index] ?? null;
+        foreach ($filters as $filter) {
+            $value = $this->filtered[$filter->index] ?? null;
 
-                if ($value) {
-                    $filter->apply($query, $value);
-                }
+            if ($value) {
+                $filter->apply($query, $value);
             }
-        });
+        }
 
         return $query;
     }
