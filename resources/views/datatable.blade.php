@@ -3,7 +3,7 @@
     <script src="{{ $jsAssetsUrl }}" defer></script>
 @endassets
 
-<div class="card datatable" @style(['max-height: ' . $height]) id="{{ $id }}" wire:ignore.self>
+<div class="card datatable" @style(['max-height: ' . $height]) id="{{ $id }}" wire:ignore.self x-data="{ filtersOpen: {{ $filtersOpen ? 'true' : 'false' }} }">
     <div class="card-body d-flex align-items-center gap-1">
         <div class="w-auto me-auto" wire:ignore>
             @include('datatables::partials.per-page')
@@ -32,8 +32,8 @@
         </div>
     </div>
 
-    @if ($filterable && $showFilters)
-        <div class="card-body" wire:ignore>
+    @if ($filterable)
+        <div class="card-body" wire:ignore x-show="filtersOpen">
             @include('datatables::partials.filters')
         </div>
     @endif

@@ -69,12 +69,6 @@ abstract class Datatable extends Component
     public array $filtered = [];
 
     /**
-     * Toggle filters visibility.
-     */
-    #[Url]
-    public bool $showFilters = false;
-
-    /**
      * Set the datatable maximum height.
      */
     public string $height = 'auto';
@@ -327,6 +321,7 @@ abstract class Datatable extends Component
             'actions' => $actions,
 
             'colspan' => $this->getColspanForColumns($columns, $actions),
+            'filtersOpen' => count($this->filtered) > 0,
 
             'filterable' => count($filters) > 0,
             'searchable' => count(array_filter($columns, fn (Column $column) => $column->searchable)) > 0,

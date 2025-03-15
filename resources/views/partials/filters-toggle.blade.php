@@ -1,4 +1,4 @@
-<button type="button" @class(['btn btn-icon', 'active' => $showFilters]) wire:click="$toggle('showFilters')">
+<button type="button" :class="{ 'active': filtersOpen }" class="btn btn-icon" x-on:click="filtersOpen = !filtersOpen">
     <i class="fas fa-filter"></i>
 </button>
 
