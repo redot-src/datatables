@@ -33,7 +33,7 @@
     </div>
 
     @if ($filterable)
-        <div class="card-body" wire:ignore x-show="filtersOpen">
+        <div class="card-body" wire:ignore x-show="filtersOpen" x-cloak>
             @include('datatables::partials.filters')
         </div>
     @endif
