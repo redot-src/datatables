@@ -21,6 +21,8 @@ return [
         'showing' => 'Showing :first to :last of :total entries',
     ],
 
+    'empty' => 'No entries found',
+
     'exports' => [
         'excel' => 'Export Excel',
         'csv' => 'Export CSV',

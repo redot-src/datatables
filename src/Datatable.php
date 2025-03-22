@@ -124,7 +124,7 @@ abstract class Datatable extends Component
     public function __construct()
     {
         $this->id ??= uniqid('datatable-');
-        $this->emptyMessage ??= __('datatables::datatable.pagination.empty');
+        $this->emptyMessage ??= __('datatables::datatable.empty');
 
         // Set the PDF adapter and options
         $this->pdfAdapter = config('datatables.export.pdf.adapter');

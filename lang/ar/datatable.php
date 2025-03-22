@@ -21,6 +21,8 @@ return [
         'showing' => 'عرض :first إلى :last من :total نتيجة',
     ],
 
+    'empty' => 'لم يتم العثور على أي بيانات',
+
     'exports' => [
         'excel' => 'تصدير Excel',
         'csv' => 'تصدير CSV',

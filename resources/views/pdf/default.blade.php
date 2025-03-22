@@ -92,13 +92,17 @@
             </thead>
 
             <tbody>
-                @foreach ($rows as $row)
+                @forelse ($rows as $row)
                     <tr>
                         @foreach ($row as $cell)
                             <td>{!! $cell !!}</td>
                         @endforeach
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="{{ count($headings) }}">@lang('datatables::datatable.empty')</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </main>
