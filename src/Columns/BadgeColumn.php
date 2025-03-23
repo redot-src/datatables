@@ -7,11 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class BadgeColumn extends Column
 {
     /**
-     * Determine if the column content is HTML.
-     */
-    public bool $html = true;
-
-    /**
      * Class list for the element.
      */
     public array $class = ['text-center'];
@@ -52,13 +47,36 @@ class BadgeColumn extends Column
     }
 
     /**
+     * Initialize the column.
+     */
+    public function init(): void
+    {
+        $this->true ??= __('datatables::datatable.yes');
+        $this->false ??= __('datatables::datatable.no');
+    }
+
+    /**
      * Default getter for the column.
      */
     protected function defaultGetter(mixed $value, Model $row): mixed
     {
-        $true = $this->true ?: __('datatables::datatable.yes');
-        $false = $this->false ?: __('datatables::datatable.no');
+        return $value ? $this->true : $this->false;
+    }
 
-        return sprintf('<span class="badge %s">%s</span>', $value ? 'bg-success-lt' : 'bg-danger-lt', $value ? $true : $false);
+    /**
+     * Prepare the attributes before building.
+     */
+    protected function prepareAttributes(?Model $row = null): void
+    {
+        parent::prepareAttributes($row);
+
+        // Get the value of the column.
+        $value = $this->get($row, true);
+
+        if ($value === $this->true) {
+            $this->class('bg-success-lt');
+        } else {
+            $this->class('bg-danger-lt');
+        }
     }
 }

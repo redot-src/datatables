@@ -119,6 +119,16 @@ class Column
         if ($label) {
             $this->label($label);
         }
+
+        $this->init();
+    }
+
+    /**
+     * Initialize the column.
+     */
+    public function init(): void
+    {
+        //
     }
 
     /**
@@ -324,7 +334,7 @@ class Column
     /**
      * Get the value of the column.
      */
-    public function get(Model $row): mixed
+    public function get(Model $row, bool $returnActualValue = false): mixed
     {
         $value = $this->name ? data_get($row, $this->name) : $this->default;
 
@@ -333,6 +343,10 @@ class Column
         }
 
         $value = $this->defaultGetter($value, $row);
+
+        if ($returnActualValue) {
+            return $value;
+        }
 
         if (is_null($value)) {
             $value = $this->evaluate($this->empty, $row);
