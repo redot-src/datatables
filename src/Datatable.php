@@ -307,6 +307,9 @@ abstract class Datatable extends Component
      */
     public function viewData(): array
     {
+        // Reset filters counter for each render
+        Filter::$counter = 0;
+
         $columns = $this->getVisibleColumns();
         $actions = $this->getVisibleActions();
         $filters = $this->filters();
