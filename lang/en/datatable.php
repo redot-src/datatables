@@ -23,6 +23,9 @@ return [
 
     'empty' => 'No entries found',
 
+    'yes' => 'Yes',
+    'no' => 'No',
+
     'exports' => [
         'excel' => 'Export Excel',
         'csv' => 'Export CSV',
