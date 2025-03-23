@@ -13,11 +13,6 @@ class Column
     use Macroable;
 
     /**
-     * The column's type.
-     */
-    public ?string $type = null;
-
-    /**
      * The column's name.
      */
     public ?string $name = null;
@@ -132,16 +127,6 @@ class Column
     public static function make(?string $name = null, ?string $label = null): Column
     {
         return new static($name, $label);
-    }
-
-    /**
-     * Set the column's type.
-     */
-    public function type(string $type): Column
-    {
-        $this->type = $type;
-
-        return $this;
     }
 
     /**

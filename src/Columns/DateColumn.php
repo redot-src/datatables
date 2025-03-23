@@ -8,11 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class DateColumn extends Column
 {
     /**
-     * The column's type.
-     */
-    public ?string $type = 'date';
-
-    /**
      * Datetime format.
      */
     public const DATETIME_FORMAT = 'Y-m-d H:i:s';

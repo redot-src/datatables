@@ -7,11 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class IconColumn extends Column
 {
     /**
-     * The column's type.
-     */
-    public ?string $type = 'icon';
-
-    /**
      * Determine if the column content is HTML.
      */
     public bool $html = true;

@@ -7,11 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class NumericColumn extends Column
 {
     /**
-     * The column's type.
-     */
-    public ?string $type = 'numeric';
-
-    /**
      * The column's precision.
      */
     public ?int $precision = null;

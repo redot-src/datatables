@@ -7,11 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class TagsColumn extends Column
 {
     /**
-     * The column's type.
-     */
-    public ?string $type = 'tags';
-
-    /**
      * Determine if the column content is HTML.
      */
     public bool $html = true;

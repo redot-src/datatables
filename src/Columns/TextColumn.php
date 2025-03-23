@@ -8,11 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class TextColumn extends Column
 {
     /**
-     * The column's type.
-     */
-    public ?string $type = 'text';
-
-    /**
      * Text prefix for the column.
      */
     public string $prefix = '';
