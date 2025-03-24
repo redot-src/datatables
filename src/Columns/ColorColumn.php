@@ -12,6 +12,11 @@ class ColorColumn extends Column
     public string $width = '50px';
 
     /**
+     * Determine if the column is exportable.
+     */
+    public bool $exportable = false;
+
+    /**
      * Prepare the attributes before building.
      */
     protected function prepareAttributes(?Model $row = null): void

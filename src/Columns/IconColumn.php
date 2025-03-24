@@ -12,6 +12,11 @@ class IconColumn extends Column
     public bool $html = true;
 
     /**
+     * Determine if the column is exportable.
+     */
+    public bool $exportable = false;
+
+    /**
      * Class list for the element.
      */
     public array $class = ['text-center'];
