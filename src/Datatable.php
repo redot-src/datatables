@@ -14,7 +14,6 @@ use Redot\Datatables\Actions\ActionGroup;
 use Redot\Datatables\Adapters\PDF\Adabter;
 use Redot\Datatables\Columns\Column;
 use Redot\Datatables\Filters\Filter;
-use Redot\Datatables\Filters\TrashedFilter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -84,9 +83,14 @@ abstract class Datatable extends Component
     public bool $bordered = true;
 
     /**
-     * Set the datatable empty message.
+     * Allowed export formats.
      */
-    public ?string $emptyMessage = null;
+    public array $allowedExports;
+
+    /**
+     * PDF view template.
+     */
+    public string $pdfTemplate;
 
     /**
      * PDF adapter class.
@@ -99,9 +103,9 @@ abstract class Datatable extends Component
     public array $pdfOptions = [];
 
     /**
-     * PDF view template.
+     * Set the datatable empty message.
      */
-    public string $pdfTemplate = 'datatables::pdf.default';
+    public ?string $emptyMessage = null;
 
     /**
      * JavaScript assets url.
@@ -114,11 +118,6 @@ abstract class Datatable extends Component
     public string $cssAssetsUrl;
 
     /**
-     * Allowed export formats.
-     */
-    public array $allowedExports;
-
-    /**
      * Create a new datatable instance.
      */
     public function __construct()
@@ -127,7 +126,8 @@ abstract class Datatable extends Component
         $this->emptyMessage ??= __('datatables::datatable.empty');
 
         // Set the PDF adapter and options
-        $this->pdfAdapter = config('datatables.export.pdf.adapter');
+        $this->pdfTemplate ??= config('datatables.export.pdf.template');
+        $this->pdfAdapter ??= config('datatables.export.pdf.adapter');
         $this->pdfOptions = array_merge(config('datatables.export.pdf.options'), $this->pdfOptions);
 
         // Set the assets urls

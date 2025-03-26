@@ -39,6 +39,7 @@ return [
 
         'pdf' => [
             'enabled' => true,
+            'template' => 'datatables::pdf.default',
             'adapter' => \Redot\Datatables\Adapters\PDF\LaravelMpdf::class,
             'options' => [
                 'format' => 'A4',
