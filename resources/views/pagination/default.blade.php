@@ -4,11 +4,11 @@
             <ul class="pagination m-0">
                 {{-- Previous Page Link --}}
                 @if ($paginator->onFirstPage())
-                    <li class="page-item disabled" aria-disabled="true" aria-label="@lang('datatables::datatable.pagination.previous')">
+                    <li class="page-item d-none d-md-block disabled" aria-disabled="true" aria-label="@lang('datatables::datatable.pagination.previous')">
                         <span class="page-link" aria-hidden="true">&lsaquo;</span>
                     </li>
                 @else
-                    <li class="page-item">
+                    <li class="page-item d-none d-md-block">
                         <button type="button"
                             dusk="previousPage{{ $paginator->getPageName() == 'page' ? '' : '.' . $paginator->getPageName() }}"
                             class="page-link" wire:click="previousPage('{{ $paginator->getPageName() }}')"
@@ -44,14 +44,14 @@
 
                 {{-- Next Page Link --}}
                 @if ($paginator->hasMorePages())
-                    <li class="page-item">
+                    <li class="page-item d-none d-md-block">
                         <button type="button"
                             dusk="nextPage{{ $paginator->getPageName() == 'page' ? '' : '.' . $paginator->getPageName() }}"
                             class="page-link" wire:click="nextPage('{{ $paginator->getPageName() }}')"
                             wire:loading.attr="disabled" rel="next" aria-label="@lang('datatables::datatable.pagination.next')">&rsaquo;</button>
                     </li>
                 @else
-                    <li class="page-item disabled" aria-disabled="true" aria-label="@lang('datatables::datatable.pagination.next')">
+                    <li class="page-item d-none d-md-block disabled" aria-disabled="true" aria-label="@lang('datatables::datatable.pagination.next')">
                         <span class="page-link" aria-hidden="true">&rsaquo;</span>
                     </li>
                 @endif
