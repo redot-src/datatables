@@ -516,7 +516,10 @@ abstract class Datatable extends Component
         $relations = explode('.', $column);
         $field = array_pop($relations);
 
+        // The name of the aggregate column
+        $name = \Illuminate\Support\Str::snake(implode('', $relations)) . '_' . $field;
+
         $query->withAggregate($relations, $field);
-        $query->orderBy(implode('_', $relations) . '_' . $field, $this->sortDirection);
+        $query->orderBy($name, $this->sortDirection);
     }
 }
