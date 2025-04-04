@@ -22,6 +22,22 @@ $(document).on('click', '.datatable-action[method]:not([method="get"])', (event)
         $form.append(`<input type="hidden" name="_method" value="${$action.attr('method')}">`);
         $form.append(`<input type="hidden" name="_token" value="${$action.attr('token')}">`);
 
+        // Get request body
+        let body = JSON.parse(atob($action.attr('request-body')));
+
+        // Append request body to the form
+        if (body && typeof body === 'object') {
+            Object.entries(body).forEach(([key, value]) => {
+                if (Array.isArray(value)) {
+                    value.forEach((item) => {
+                        $form.append(`<input type="hidden" name="${key}[]" value="${item}">`);
+                    });
+                } else {
+                    $form.append(`<input type="hidden" name="${key}" value="${value}">`);
+                }
+            });
+        }
+
         $form.appendTo('body').submit();
     };
 

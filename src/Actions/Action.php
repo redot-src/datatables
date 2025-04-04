@@ -39,6 +39,16 @@ class Action
     public array $parameters = [];
 
     /**
+     * Determine if row should be pushed to parameters for SubstituteBindings middleware.
+     */
+    public bool $bounded = true;
+
+    /**
+     * Form data to be sent with the action.
+     */
+    public array $body = [];
+
+    /**
      * The method of the action.
      */
     public string $method = 'get';
@@ -189,13 +199,17 @@ class Action
     /**
      * Set the route of the action.
      */
-    public function route(string $route, array $parameters = [], ?string $method = null): self
+    public function route(string $route, array $parameters = [], ?string $method = null, ?bool $bounded = null): self
     {
         $this->route = $route;
-        $this->parameters = $parameters;
+        $this->parameters = array_merge($this->parameters, $parameters);
 
         if ($method) {
             $this->method($method);
+        }
+
+        if ($bounded !== null) {
+            $this->bounded($bounded);
         }
 
         return $this;
@@ -217,6 +231,26 @@ class Action
     public function parameters(array $parameters): self
     {
         $this->parameters = $parameters;
+
+        return $this;
+    }
+
+    /**
+     * Set the bounded flag of the action.
+     */
+    public function bounded(bool $bounded = true): self
+    {
+        $this->bounded = $bounded;
+
+        return $this;
+    }
+
+    /**
+     * Set the body of the form request.
+     */
+    public function body(array $body = []): self
+    {
+        $this->body = array_merge($this->body, $body);
 
         return $this;
     }
@@ -353,8 +387,24 @@ class Action
                 $parameters[$key] = $this->evaluate($value, $row);
             }
 
+            if ($this->bounded) {
+                array_unshift($parameters, $row);
+            }
+
+            $body = $this->body;
+            foreach ($body as $key => $value) {
+                $body[$key] = $this->evaluate($value, $row);
+            }
+
+            // If the method is GET, we need to append the body to query string
+            if ($this->method === 'get') {
+                $parameters = array_merge($parameters, $body);
+            } else {
+                $this->attribute('request-body', base64_encode(json_encode($body, JSON_UNESCAPED_UNICODE)));
+            }
+
             $this->attributes([
-                'href' => route($this->route, array_merge([$row], $parameters)),
+                'href' => route($this->route, $parameters),
                 'method' => $this->method,
                 'token' => csrf_token(),
             ]);
