@@ -467,14 +467,12 @@ abstract class Datatable extends Component
      */
     protected function searchWithinRelation(Builder $query, string $column): void
     {
-        $relations = explode('.', $column);
-        $column = array_pop($relations);
+        $relation = \Illuminate\Support\Str::beforeLast($column, '.');
+        $column = \Illuminate\Support\Str::afterLast($column, '.');
 
-        foreach ($relations as $relation) {
-            $query->orWhereHas($relation, function ($query) use ($column) {
-                $query->where($column, 'like', '%' . $this->search . '%');
-            });
-        }
+        $query->orWhereHas($relation, function ($query) use ($column) {
+            $query->where($column, 'like', '%' . $this->search . '%');
+        });
     }
 
     /**
