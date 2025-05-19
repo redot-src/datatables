@@ -141,7 +141,9 @@ class ActionGroup
      */
     public function shouldRender(Model $row): bool
     {
-        return $this->visible && ($this->condition ? call_user_func($this->condition, $row) : true);
+        $hasChildren = ! empty(array_filter($this->actions, fn (Action $action) => $action->shouldRender($row)));
+
+        return $this->visible && ($this->condition ? call_user_func($this->condition, $row) : true) && $hasChildren;
     }
 
     /**
