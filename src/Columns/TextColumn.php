@@ -181,6 +181,10 @@ class TextColumn extends Column
      */
     protected function defaultGetter(mixed $value, Model $row): mixed
     {
+        if (is_null($value)) {
+            return null;
+        }
+
         if ($this->prefix) {
             $value = $this->prefix . $value;
         }

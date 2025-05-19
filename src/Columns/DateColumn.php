@@ -87,6 +87,10 @@ class DateColumn extends Column
      */
     protected function defaultGetter(mixed $value, Model $row): mixed
     {
+        if (is_null($value)) {
+            return null;
+        }
+
         if (! $value instanceof Carbon) {
             $value = Carbon::parse($value);
         }
