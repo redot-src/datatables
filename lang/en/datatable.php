@@ -41,6 +41,18 @@ return [
         'confirm' => 'Are you sure you want to perform this action?',
     ],
 
+    'bulk_actions' => [
+        'delete' => 'Bulk Delete',
+        'export' => 'Bulk Export',
+        'update' => 'Bulk Update',
+        'confirm' => 'Are you sure you want to perform this action on the selected items?',
+        'select_all' => 'Select All',
+        'deselect_all' => 'Deselect All',
+        'selected_count' => ':count item(s) selected',
+        'no_items_selected' => 'No items selected',
+        'clear_selection' => 'Clear Selection',
+    ],
+
     'filters' => [
         'select' => [
             'placeholder' => 'Select an option',

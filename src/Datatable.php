@@ -11,6 +11,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Redot\Datatables\Actions\Action;
 use Redot\Datatables\Actions\ActionGroup;
+use Redot\Datatables\Actions\BulkAction;
 use Redot\Datatables\Adapters\PDF\Adabter;
 use Redot\Datatables\Columns\Column;
 use Redot\Datatables\Filters\Filter;
@@ -66,6 +67,16 @@ abstract class Datatable extends Component
      */
     #[Url(as: 'filter')]
     public array $filtered = [];
+
+    /**
+     * Selected items for bulk actions.
+     */
+    public array $selected = [];
+
+    /**
+     * Select all items flag.
+     */
+    public bool $selectAll = false;
 
     /**
      * Set the datatable maximum height.
@@ -164,6 +175,14 @@ abstract class Datatable extends Component
     }
 
     /**
+     * Get the bulk actions for the datatable.
+     */
+    public function bulkActions(): array
+    {
+        return [];
+    }
+
+    /**
      * Get the default action group for the datatable.
      */
     public static function defaultActionGroup(array $actions, ?string $label = null, ?string $icon = null): array
@@ -193,6 +212,59 @@ abstract class Datatable extends Component
             $this->sortColumn = $column;
             $this->sortDirection = 'asc';
         }
+    }
+
+    /**
+     * Toggle selection of all items.
+     */
+    public function toggleSelectAll(): void
+    {
+        if ($this->selectAll) {
+            $this->selected = [];
+            $this->selectAll = false;
+        } else {
+            // Get all current page IDs
+            $columns = $this->getVisibleColumns();
+            $filters = $this->filters();
+            $query = $this->getQueryBuilder($columns, $filters);
+            $rows = $query->paginate($this->perPage);
+            
+            $this->selected = $rows->pluck($rows->first()?->getKeyName() ?? 'id')->toArray();
+            $this->selectAll = true;
+        }
+    }
+
+    /**
+     * Toggle selection of a specific item.
+     */
+    public function toggleSelect($id): void
+    {
+        if (in_array($id, $this->selected)) {
+            $this->selected = array_filter($this->selected, fn($item) => $item != $id);
+            $this->selectAll = false;
+        } else {
+            $this->selected[] = $id;
+            
+            // Check if all items on current page are selected
+            $columns = $this->getVisibleColumns();
+            $filters = $this->filters();
+            $query = $this->getQueryBuilder($columns, $filters);
+            $rows = $query->paginate($this->perPage);
+            $allIds = $rows->pluck($rows->first()?->getKeyName() ?? 'id')->toArray();
+            
+            if (count(array_intersect($this->selected, $allIds)) === count($allIds)) {
+                $this->selectAll = true;
+            }
+        }
+    }
+
+    /**
+     * Clear all selections.
+     */
+    public function clearSelection(): void
+    {
+        $this->selected = [];
+        $this->selectAll = false;
     }
 
     /**
@@ -312,6 +384,7 @@ abstract class Datatable extends Component
 
         $columns = $this->getVisibleColumns();
         $actions = $this->getVisibleActions();
+        $bulkActions = $this->getVisibleBulkActions();
         $filters = $this->filters();
 
         // Build the query and get the rows
@@ -322,13 +395,15 @@ abstract class Datatable extends Component
             'columns' => $columns,
             'filters' => $filters,
             'actions' => $actions,
+            'bulkActions' => $bulkActions,
 
-            'colspan' => $this->getColspanForColumns($columns, $actions),
+            'colspan' => $this->getColspanForColumns($columns, $actions, $bulkActions),
             'filtersOpen' => count($this->filtered) > 0,
 
             'filterable' => count($filters) > 0,
             'searchable' => count(array_filter($columns, fn (Column $column) => $column->searchable)) > 0,
             'exportable' => count($this->allowedExports) > 0 && count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
+            'bulkActionable' => count($bulkActions) > 0,
 
             'rows' => $rows,
         ];
@@ -359,11 +434,24 @@ abstract class Datatable extends Component
     }
 
     /**
+     * Get the visible bulk actions.
+     */
+    protected function getVisibleBulkActions(): array
+    {
+        return array_filter($this->bulkActions(), fn (BulkAction $action) => $action->shouldRender());
+    }
+
+    /**
      * Get the colspan for the columns.
      */
-    protected function getColspanForColumns(array $columns, array $actions): int
+    protected function getColspanForColumns(array $columns, array $actions, array $bulkActions = []): int
     {
         $colspan = count(array_filter($columns, fn (Column $column) => $column->visible));
+
+        // Add one for the bulk selection column
+        if (count($bulkActions) > 0) {
+            $colspan++;
+        }
 
         // Add one for the actions column
         if (count($actions) > 0) {

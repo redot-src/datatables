@@ -38,6 +38,8 @@
         </div>
     @endif
 
+    @include('datatables::partials.bulk-actions-bar')
+
     @include('datatables::partials.table')
 
     <div class="card-footer">

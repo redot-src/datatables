@@ -41,6 +41,18 @@ return [
         'confirm' => 'هل أنت متأكد أنك تريد تنفيذ هذا الإجراء؟',
     ],
 
+    'bulk_actions' => [
+        'delete' => 'حذف جماعي',
+        'export' => 'تصدير جماعي',
+        'update' => 'تحديث جماعي',
+        'confirm' => 'هل أنت متأكد أنك تريد تنفيذ هذا الإجراء على العناصر المحددة؟',
+        'select_all' => 'تحديد الكل',
+        'deselect_all' => 'إلغاء تحديد الكل',
+        'selected_count' => ':count عنصر محدد',
+        'no_items_selected' => 'لم يتم تحديد أي عناصر',
+        'clear_selection' => 'إلغاء التحديد',
+    ],
+
     'filters' => [
         'select' => [
             'placeholder' => 'اختر خيارًا',
