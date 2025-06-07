@@ -41,6 +41,11 @@ return [
         'confirm' => 'Are you sure you want to perform this action?',
     ],
 
+    'bulk_actions' => [
+        'select_none' => 'Deselect all',
+        'select_all' => 'Select all',
+    ],
+
     'filters' => [
         'select' => [
             'placeholder' => 'Select an option',

@@ -30,6 +30,12 @@
         <div wire:ignore>
             @include('datatables::partials.refresh')
         </div>
+
+        @if (count($bulkActions) > 0)
+            <div>
+                @include('datatables::partials.bulk-actions')
+            </div>
+        @endif
     </div>
 
     @if ($filterable)

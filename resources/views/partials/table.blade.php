@@ -6,6 +6,11 @@
         @if ($rows->isEmpty() === false)
             <thead @class(['sticky-top' => $stickyHeader])>
                 <tr>
+                    @if (count($bulkActions) > 0)
+                        <th class="w-1 datatable-select">
+                            <input type="checkbox" wire:model.live="selectPage">
+                        </th>
+                    @endif
                     @foreach ($columns as $column)
                         <th @class(['fixed-' . $column->fixedDirection => $column->fixed])>
                             @if ($column->sortable && $column->name)
@@ -41,6 +46,12 @@
         <tbody wire:loading.class="opacity-50">
             @forelse($rows as $row)
                 <tr>
+                    @if (count($bulkActions) > 0)
+                        <td class="datatable-cell datatable-select">
+                            <input type="checkbox" value="{{ $row->getKey() }}" wire:model.live="selected">
+                        </td>
+                    @endif
+
                     @foreach ($columns as $column)
                         <td {{ $column->buildAttributes($row) }}>
                             {!! $column->get($row) !!}

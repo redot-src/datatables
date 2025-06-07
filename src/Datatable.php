@@ -68,6 +68,16 @@ abstract class Datatable extends Component
     public array $filtered = [];
 
     /**
+     * Selected row keys.
+     */
+    public array $selected = [];
+
+    /**
+     * Determine if all rows on the current page are selected.
+     */
+    public bool $selectPage = false;
+
+    /**
      * Set the datatable maximum height.
      */
     public string $height = 'auto';
@@ -159,6 +169,14 @@ abstract class Datatable extends Component
      * Get the actions for the datatable.
      */
     public function actions(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get the bulk actions for the datatable.
+     */
+    public function bulkActions(): array
     {
         return [];
     }
@@ -295,6 +313,20 @@ abstract class Datatable extends Component
     }
 
     /**
+     * Toggle selection for the current page.
+     */
+    public function updatedSelectPage(bool $value): void
+    {
+        $rows = $this->getCurrentRows()->getCollection()->pluck($this->getKeyName())->all();
+
+        if ($value) {
+            $this->selected = array_unique(array_merge($this->selected, $rows));
+        } else {
+            $this->selected = array_values(array_diff($this->selected, $rows));
+        }
+    }
+
+    /**
      * Render the component.
      */
     public function render(): \Illuminate\View\View
@@ -312,6 +344,7 @@ abstract class Datatable extends Component
 
         $columns = $this->getVisibleColumns();
         $actions = $this->getVisibleActions();
+        $bulkActions = $this->getVisibleBulkActions();
         $filters = $this->filters();
 
         // Build the query and get the rows
@@ -322,6 +355,7 @@ abstract class Datatable extends Component
             'columns' => $columns,
             'filters' => $filters,
             'actions' => $actions,
+            'bulkActions' => $bulkActions,
 
             'colspan' => $this->getColspanForColumns($columns, $actions),
             'filtersOpen' => count($this->filtered) > 0,
@@ -331,6 +365,7 @@ abstract class Datatable extends Component
             'exportable' => count($this->allowedExports) > 0 && count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
 
             'rows' => $rows,
+            'selected' => $this->selected,
         ];
     }
 
@@ -359,11 +394,37 @@ abstract class Datatable extends Component
     }
 
     /**
+     * Get the visible bulk actions.
+     */
+    protected function getVisibleBulkActions(): array
+    {
+        return array_filter($this->bulkActions(), function (Action|ActionGroup $action) {
+            if ($action->isActionGroup) {
+                $action->actions = array_filter($action->actions, fn (Action $action) => $action->visible);
+
+                foreach ($action->actions as $child) {
+                    $child->body(['selected' => fn ($row = null) => $this->selected]);
+                }
+
+                return $action->visible && count($action->actions) > 0;
+            }
+
+            $action->body(['selected' => fn ($row = null) => $this->selected]);
+
+            return $action->visible;
+        });
+    }
+
+    /**
      * Get the colspan for the columns.
      */
     protected function getColspanForColumns(array $columns, array $actions): int
     {
         $colspan = count(array_filter($columns, fn (Column $column) => $column->visible));
+
+        if (count($this->getVisibleBulkActions()) > 0) {
+            $colspan++;
+        }
 
         // Add one for the actions column
         if (count($actions) > 0) {
@@ -519,5 +580,25 @@ abstract class Datatable extends Component
 
         $query->withAggregate($relations, $field);
         $query->orderBy($name, $this->sortDirection);
+    }
+
+    /**
+     * Get the key name for the underlying model.
+     */
+    protected function getKeyName(): string
+    {
+        return app($this->model)->getKeyName();
+    }
+
+    /**
+     * Get rows for the current page.
+     */
+    protected function getCurrentRows()
+    {
+        $columns = $this->getVisibleColumns();
+        $filters = $this->filters();
+        $builder = $this->getQueryBuilder($columns, $filters);
+
+        return $builder->paginate($this->perPage, ['*'], 'page', $this->page);
     }
 }

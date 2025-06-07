@@ -41,6 +41,11 @@ return [
         'confirm' => 'هل أنت متأكد أنك تريد تنفيذ هذا الإجراء؟',
     ],
 
+    'bulk_actions' => [
+        'select_none' => 'إلغاء التحديد',
+        'select_all' => 'تحديد الكل',
+    ],
+
     'filters' => [
         'select' => [
             'placeholder' => 'اختر خيارًا',
