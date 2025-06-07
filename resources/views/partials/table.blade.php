@@ -6,6 +6,9 @@
         @if ($rows->isEmpty() === false)
             <thead @class(['sticky-top' => $stickyHeader])>
                 <tr>
+                    <th style="width: 1%;" class="text-center align-middle">
+                        <input class="form-check-input" type="checkbox" wire:model.live="selectPage" title="Select/Deselect all on this page">
+                    </th>
                     @foreach ($columns as $column)
                         <th @class(['fixed-' . $column->fixedDirection => $column->fixed])>
                             @if ($column->sortable && $column->name)
@@ -40,7 +43,10 @@
 
         <tbody wire:loading.class="opacity-50">
             @forelse($rows as $row)
-                <tr>
+                <tr wire:key="row-{{ $row->{$primaryKey} }}">
+                    <td class="text-center align-middle">
+                        <input class="form-check-input" type="checkbox" wire:model.live="selectedRows" value="{{ strval($row->{$primaryKey}) }}">
+                    </td>
                     @foreach ($columns as $column)
                         <td {{ $column->buildAttributes($row) }}>
                             {!! $column->get($row) !!}

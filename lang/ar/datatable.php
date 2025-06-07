@@ -1,85 +1,43 @@
 <?php
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Datatable Language Lines
-    |--------------------------------------------------------------------------
-    |
-    | The following language lines are used during datatable rendering.
-    |
-    |
-    */
-
+    'empty' => 'لا توجد نتائج.',
     'search' => 'بحث...',
-
-    'pagination' => [
-        'next' => 'التالي',
-        'previous' => 'السابق',
-        'empty' => 'لم يتم العثور على أي بيانات',
-        'showing' => 'عرض :first إلى :last من :total نتيجة',
-    ],
-
-    'empty' => 'لم يتم العثور على أي بيانات',
-
-    'yes' => 'نعم',
-    'no' => 'لا',
-
-    'exports' => [
-        'excel' => 'تصدير Excel',
-        'csv' => 'تصدير CSV',
-        'pdf' => 'تصدير PDF',
-        'json' => 'تصدير JSON',
-    ],
-
+    'show' => 'عرض',
+    'entries' => 'إدخالات',
     'actions' => [
         'view' => 'عرض',
         'edit' => 'تعديل',
         'delete' => 'حذف',
         'export' => 'تصدير',
-        'confirm' => 'هل أنت متأكد أنك تريد تنفيذ هذا الإجراء؟',
+        'confirm' => 'هل أنت متأكد؟',
+        'bulk_confirm' => 'هل أنت متأكد أنك تريد تنفيذ هذا الإجراء على العناصر المحددة؟',
+        'bulk_confirm_default' => 'هل أنت متأكد أنك تريد تنفيذ هذا الإجراء على العناصر المحددة؟',
     ],
-
+    'pagination' => [
+        'previous' => 'السابق',
+        'next' => 'التالي',
+        'showing' => 'عرض',
+        'to' => 'إلى',
+        'of' => 'من',
+        'results' => 'نتائج',
+    ],
     'filters' => [
-        'select' => [
-            'placeholder' => 'اختر خيارًا',
-        ],
-
-        'number' => [
-            'equals' => 'يساوي',
-            'not_equals' => 'لا يساوي',
-            'greater_than' => 'أكبر من',
-            'greater_than_or_equals' => 'أكبر من أو يساوي',
-            'less_than' => 'أقل من',
-            'less_than_or_equals' => 'أقل من أو يساوي',
-        ],
-
-        'string' => [
-            'equals' => 'يساوي',
-            'not_equals' => 'لا يساوي',
-            'contains' => 'يحتوي على',
-            'not_contains' => 'لا يحتوي على',
-            'starts_with' => 'يبدأ بـ',
-            'not_starts_with' => 'لا يبدأ بـ',
-            'ends_with' => 'ينتهي بـ',
-            'not_ends_with' => 'لا ينتهي بـ',
-        ],
-
+        'all' => 'الكل',
+        'yes' => 'نعم',
+        'no' => 'لا',
         'trashed' => [
-            'label' => 'السجلات المحذوفة',
-
-            'without' => 'بدون السجلات المحذوفة',
-            'with' => 'مع السجلات المحذوفة',
-            'only' => 'فقط السجلات المحذوفة',
+            'title' => 'المحذوفة',
+            'all' => 'جميع السجلات',
+            'withTrashed' => 'مع المحذوفة',
+            'onlyTrashed' => 'المحذوفة فقط',
         ],
-
-        'ternary' => [
-            'placeholder' => 'اختر خيارًا',
-
-            'yes' => 'نعم',
-            'no' => 'لا',
-            'empty' => 'فارغ',
-        ],
+    ],
+    'buttons' => [
+        'refresh' => 'تحديث',
+        'export' => 'تصدير',
+        'filters' => 'عوامل التصفية',
+        'filter' => 'تصفية',
+        'clear' => 'مسح',
     ],
 ];

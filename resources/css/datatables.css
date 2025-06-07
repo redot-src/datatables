@@ -1,64 +1,19 @@
-/* ---------------------------------
- * Bordered Table
- * --------------------------------- */
+/* Datatables Custom CSS */
 
-.datatable table.bordered {
-    border-collapse: separate;
-    border-spacing: 0;
+/* Center checkboxes within their cells if not perfectly aligned by framework utility classes */
+/* td.text-center .form-check-input, th.text-center .form-check-input {
+    margin-left: auto;
+    margin-right: auto;
+    display: block; // If they are inline by default and need centering
+} */
+
+/* Ensure action buttons in the bulk action dropdown are full width for better clickability on mobile */
+.dropdown-menu .dropdown-item.datatable-bulk-action {
+    width: auto; /* Or override to 100% if Bootstrap's default isn't full width in this context */
+    box-sizing: border-box;
 }
 
-.datatable table.bordered th:not(:has(+ .datatable-actions)),
-.datatable table.bordered td:not(:has(+ .datatable-actions)) {
-    border-inline-end: 1px solid var(--tblr-border-color);
-}
-
-.datatable table.bordered th:last-child,
-.datatable table.bordered td:last-child {
-    border-inline-end: 0;
-}
-
-/* ---------------------------------
- * Fixed Column
- * --------------------------------- */
-
-.datatable table .fixed-start,
-.datatable table .fixed-end {
-    position: sticky;
-    z-index: 1;
-}
-
-.datatable table .fixed-start {
-    inset-inline-start: 0;
-    border-inline-end: 1px solid var(--tblr-border-color);
-}
-
-.datatable table .fixed-end {
-    inset-inline-end: 0;
-    border-inline-start: 1px solid var(--tblr-border-color);
-}
-
-.datatable .datatable-cell.fixed-start,
-.datatable .datatable-cell.fixed-end {
-    background: var(--tblr-bg-surface);
-}
-
-/* ---------------------------------
- * Datatable Actions
- * --------------------------------- */
-
-.datatable td.datatable-actions {
-    padding: 5px !important;
-}
-
-/* ---------------------------------
- * Overrides
- * --------------------------------- */
-
-
-.datatable .datatable-per-page {
-    min-width: max-content;
-}
-
-.datatable .dropdown-menu {
-    z-index: 9999;
-}
+/* Minor spacing adjustment for the "X items selected" text and the "Select all" button */
+/* div.d-flex > div.text-muted > span + button.btn-sm {
+    margin-left: 0.5rem; // Bootstrap's ms-2 is 0.5rem, so this might be redundant if ms-2 is used
+} */

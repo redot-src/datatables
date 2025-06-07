@@ -11,6 +11,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Redot\Datatables\Actions\Action;
 use Redot\Datatables\Actions\ActionGroup;
+use Redot\Datatables\Actions\BulkAction;
 use Redot\Datatables\Adapters\PDF\Adabter;
 use Redot\Datatables\Columns\Column;
 use Redot\Datatables\Filters\Filter;
@@ -118,6 +119,27 @@ abstract class Datatable extends Component
     public string $cssAssetsUrl;
 
     /**
+     * Stores the IDs of selected rows.
+     */
+    #[Url]
+    public array $selectedRows = [];
+
+    /**
+     * Tracks if all items on the current page are selected.
+     */
+    public bool $selectPage = false;
+
+    /**
+     * Tracks if all items across all pages are selected based on the current query.
+     */
+    public bool $selectAll = false;
+
+    /**
+     * Name of the primary key column for the model.
+     */
+    public string $primaryKey;
+
+    /**
      * Create a new datatable instance.
      */
     public function __construct()
@@ -136,6 +158,16 @@ abstract class Datatable extends Component
 
         // Set the allowed export formats
         $this->allowedExports = array_keys(array_filter(config('datatables.export'), fn ($export) => $export['enabled']));
+
+        // Initialize primary key
+        if (!empty($this->model)) { // Check if model property is set
+            $this->primaryKey = app($this->model)->getKeyName();
+        } else {
+            // Fallback or ensure model is set by child class.
+            // query() method already throws an exception if model is not set.
+            // For safety, we can default it, but it's better if model is always defined.
+            $this->primaryKey = 'id';
+        }
     }
 
     /**
@@ -161,6 +193,29 @@ abstract class Datatable extends Component
     public function actions(): array
     {
         return [];
+    }
+
+    /**
+     * Get the bulk actions for the datatable.
+     * Users should override this method to define their bulk actions.
+     * @return \Redot\Datatables\Actions\BulkAction[]
+     */
+    public function bulkActions(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get the visible bulk actions.
+     * @return \Redot\Datatables\Actions\BulkAction[]
+     */
+    protected function getVisibleBulkActions(): array
+    {
+        return array_filter($this->bulkActions(), function (BulkAction $action) {
+            // Ensure selectedRows are passed as an array of strings for consistency
+            $stringSelectedIds = array_map('strval', $this->selectedRows);
+            return $action->shouldRender($stringSelectedIds);
+        });
     }
 
     /**
@@ -310,8 +365,12 @@ abstract class Datatable extends Component
         // Reset filters counter for each render
         Filter::$counter = 0;
 
+        // Reset filters counter for each render
+        Filter::$counter = 0;
+
         $columns = $this->getVisibleColumns();
         $actions = $this->getVisibleActions();
+        $bulkActions = $this->getVisibleBulkActions();
         $filters = $this->filters();
 
         // Build the query and get the rows
@@ -322,6 +381,7 @@ abstract class Datatable extends Component
             'columns' => $columns,
             'filters' => $filters,
             'actions' => $actions,
+            'bulkActions' => $bulkActions,
 
             'colspan' => $this->getColspanForColumns($columns, $actions),
             'filtersOpen' => count($this->filtered) > 0,
@@ -331,6 +391,10 @@ abstract class Datatable extends Component
             'exportable' => count($this->allowedExports) > 0 && count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
 
             'rows' => $rows,
+            'primaryKey' => $this->primaryKey,
+            'selectedRows' => array_map('strval', $this->selectedRows), // Ensure string IDs in view
+            'selectPage' => $this->selectPage,
+            'selectAll' => $this->selectAll,
         ];
     }
 
@@ -364,6 +428,7 @@ abstract class Datatable extends Component
     protected function getColspanForColumns(array $columns, array $actions): int
     {
         $colspan = count(array_filter($columns, fn (Column $column) => $column->visible));
+        $colspan++; // For the selection checkbox column
 
         // Add one for the actions column
         if (count($actions) > 0) {
@@ -519,5 +584,168 @@ abstract class Datatable extends Component
 
         $query->withAggregate($relations, $field);
         $query->orderBy($name, $this->sortDirection);
+    }
+
+    /**
+     * Hook for when the selectPage property is updated.
+     */
+    public function updatedSelectPage(bool $value): void
+    {
+        $query = $this->getQueryBuilder($this->getVisibleColumns(), $this->filters());
+        $currentPageItemIds = $query->paginate($this->perPage)
+                                     ->getCollection()
+                                     ->pluck($this->primaryKey)
+                                     ->map(strval)
+                                     ->toArray();
+
+        $currentSelectedRows = array_map('strval', $this->selectedRows);
+
+        if ($value) {
+            $this->selectedRows = array_values(array_unique(array_merge($currentSelectedRows, $currentPageItemIds)));
+        } else {
+            $this->selectedRows = array_values(array_diff($currentSelectedRows, $currentPageItemIds));
+            $this->selectAll = false;
+        }
+    }
+
+    /**
+     * Hook for when the selectedRows property is updated.
+     */
+    public function updatedSelectedRows(): void
+    {
+        $this->selectedRows = array_values(array_unique(array_map('strval', $this->selectedRows)));
+
+        $query = $this->getQueryBuilder($this->getVisibleColumns(), $this->filters());
+        $currentPageItemIds = $query->paginate($this->perPage)
+                                     ->getCollection()
+                                     ->pluck($this->primaryKey)
+                                     ->map(strval)
+                                     ->toArray();
+
+        if (empty($currentPageItemIds)) {
+            $this->selectPage = false;
+        } else {
+            $allOnPageSelected = !array_diff($currentPageItemIds, $this->selectedRows);
+            $this->selectPage = $allOnPageSelected;
+        }
+
+        if (!$this->selectPage) {
+            $this->selectAll = false;
+        }
+    }
+
+    /**
+     * Method to handle "Select All" (across current query results).
+     */
+    public function toggleSelectAll(): void
+    {
+        $this->selectAll = !$this->selectAll;
+
+        if ($this->selectAll) {
+            $allItemIds = $this->getQueryBuilder($this->getVisibleColumns(), $this->filters())
+                               ->pluck($this->primaryKey)
+                               ->map(strval)
+                               ->toArray();
+            $this->selectedRows = $allItemIds;
+        } else {
+            $this->selectedRows = [];
+        }
+        // After selectAll changes, selectedRows is updated, which will trigger updatedSelectedRows,
+        // which in turn will update selectPage.
+        // Manually trigger to update selectPage status based on the new selectedRows state
+        $this->updatedSelectedRows();
+    }
+
+    /**
+     * Resets all selection properties.
+     */
+    public function resetSelection(): void
+    {
+        $this->selectedRows = [];
+        $this->selectPage = false;
+        $this->selectAll = false;
+    }
+
+    /**
+     * Execute a defined bulk action.
+     *
+     * @param string $actionName The name of the bulk action to execute.
+     */
+    public function executeBulkAction(string $actionName): void
+    {
+        $stringSelectedIds = array_map('strval', $this->selectedRows);
+
+        if (empty($stringSelectedIds)) {
+            return;
+        }
+
+        $actionToExecute = null;
+        foreach ($this->bulkActions() as $bulkAction) {
+            if ($bulkAction instanceof BulkAction && $bulkAction->name === $actionName) {
+                $actionToExecute = $bulkAction;
+                break;
+            }
+        }
+
+        if (!$actionToExecute) {
+            // Optionally, dispatch a notification:
+            // $this->dispatch('notify', ['message' => 'Bulk action not found: ' . $actionName, 'type' => 'error']);
+            return;
+        }
+
+        if (!$actionToExecute->shouldRender($stringSelectedIds)) {
+            // $this->dispatch('notify', ['message' => 'Bulk action cannot be performed.', 'type' => 'error']);
+            return;
+        }
+
+        $route = $actionToExecute->route;
+        $method = strtolower($actionToExecute->method);
+        $parameters = $actionToExecute->parameters;
+        $body = $actionToExecute->body; // User-defined base body
+
+        // Add selected IDs to the request body
+        $requestBody = array_merge($body, ['selected_ids' => $stringSelectedIds]);
+
+        $url = route($route, $parameters);
+
+        $confirmMessage = $actionToExecute->confirmable ? ($actionToExecute->confirmMessage ?? __('datatables::datatable.actions.bulk_confirm_default')) : null;
+
+        if ($method === 'get') {
+            $queryString = http_build_query($requestBody); // Includes selected_ids and other body params
+            $finalUrl = $url . (strpos($url, '?') === false ? '?' : '&') . $queryString;
+
+            if ($actionToExecute->newTab) {
+                 $this->dispatch('open-new-tab', url: $finalUrl, confirmMessage: $confirmMessage);
+            } else {
+                if ($confirmMessage) {
+                    // For GET requests with confirmation, it's better to handle via JS event
+                    // to show confirm dialog before redirecting.
+                     $this->dispatch('bulk-action-execute', [
+                        'url' => $finalUrl, // Already includes query params
+                        'method' => 'get', // Explicitly state method
+                        'body' => [], // Body is in URL for GET
+                        'token' => csrf_token(),
+                        'confirmMessage' => $confirmMessage,
+                        'newTab' => $actionToExecute->newTab, // Should be false if we are here
+                    ]);
+                } else {
+                    $this->redirect($finalUrl);
+                }
+            }
+        } else {
+            // For non-GET methods (POST, PUT, PATCH, DELETE)
+            $this->dispatch('bulk-action-execute', [
+                'url' => $url,
+                'method' => $method,
+                'body' => $requestBody, // Contains selected_ids and original body
+                'token' => csrf_token(),
+                'confirmMessage' => $confirmMessage,
+                'newTab' => $actionToExecute->newTab, // Usually false for these methods
+            ]);
+        }
+
+        // Consider resetting selection after an action is dispatched/executed.
+        // For now, manual reset via resetSelection() or by user deselecting.
+        // $this->resetSelection();
     }
 }
