@@ -4,7 +4,7 @@ namespace Redot\Datatables\Columns;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BadgeColumn extends Column
+class TernaryColumn extends Column
 {
     /**
      * Class list for the element.

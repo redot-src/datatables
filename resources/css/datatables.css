@@ -62,3 +62,17 @@
 .datatable .dropdown-menu {
     z-index: 9999;
 }
+
+.datatable .card-table thead th {
+    user-select: none;
+}
+
+.datatable .card-table thead th,
+.datatable .card-table tbody td {
+    padding-block: 5px;
+}
+
+.datatable .card-table tr td:first-child,
+.datatable .card-table tr th:first-child {
+    padding-inline: 0.75rem;
+}

@@ -135,7 +135,7 @@ abstract class Datatable extends Component
         $this->jsAssetsUrl = route(config('datatables.assets.js.route'), ['v' => md5(filemtime(config('datatables.assets.js.file')))]);
 
         // Set the allowed export formats
-        $this->allowedExports = array_keys(array_filter(config('datatables.export'), fn ($export) => $export['enabled']));
+        $this->allowedExports = array_keys(array_filter(config('datatables.export'), fn($export) => $export['enabled']));
     }
 
     /**
@@ -168,10 +168,20 @@ abstract class Datatable extends Component
      */
     public static function defaultActionGroup(array $actions, ?string $label = null, ?string $icon = null): array
     {
-        return [
-            ActionGroup::make($label, $icon ?? 'fas fa-ellipsis-v')
-                ->actions($actions),
-        ];
+        // Display first two actions directly, group the rest if there are more than 3 total
+        $mainActions = array_slice($actions, 0, 2);
+        $remainingActions = array_slice($actions, 2);
+
+        // If we have 3 actions total, just show all of them directly
+        if (count($actions) <= 3) {
+            return $actions;
+        }
+
+        // Otherwise, show first two and group the rest
+        return array_merge(
+            $mainActions,
+            [ActionGroup::make($label, $icon ?? 'fas fa-ellipsis-v')->actions($remainingActions)]
+        );
     }
 
     /**
@@ -185,8 +195,15 @@ abstract class Datatable extends Component
     /**
      * Sort the datatable by the given column.
      */
-    public function sort(string $column): void
+    public function sort(?string $column = null): void
     {
+        if ($column === null) {
+            $this->sortColumn = '';
+            $this->sortDirection = 'asc';
+
+            return;
+        }
+
         if ($this->sortColumn === $column) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
@@ -244,7 +261,7 @@ abstract class Datatable extends Component
     {
         [$headings, $rows] = $this->getExportData();
 
-        $items = $rows->map(fn ($row) => array_combine($headings, $row))->toArray();
+        $items = $rows->map(fn($row) => array_combine($headings, $row))->toArray();
         $filename = sprintf('export-%s.json', now()->format('Y-m-d_H-i-s'));
         $flags = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
 
@@ -253,7 +270,7 @@ abstract class Datatable extends Component
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
 
-        return response()->streamDownload(fn () => print Js::encode($items, $flags), $filename, $headers);
+        return response()->streamDownload(fn() => print Js::encode($items, $flags), $filename, $headers);
     }
 
     /**
@@ -277,11 +294,11 @@ abstract class Datatable extends Component
      */
     protected function getExportData(): array
     {
-        $columns = array_filter($this->columns(), fn (Column $column) => $column->exportable && $column->visible);
+        $columns = array_filter($this->columns(), fn(Column $column) => $column->exportable && $column->visible);
         $headings = array_column($columns, 'label');
 
         $rows = $this->getQueryBuilder($columns, $this->filters())->get();
-        $rows = $rows->map(fn ($row) => array_map(fn (Column $column) => $column->get($row), $columns));
+        $rows = $rows->map(fn($row) => array_map(fn(Column $column) => $column->get($row), $columns));
 
         return [$headings, $rows];
     }
@@ -327,8 +344,8 @@ abstract class Datatable extends Component
             'filtersOpen' => count($this->filtered) > 0,
 
             'filterable' => count($filters) > 0,
-            'searchable' => count(array_filter($columns, fn (Column $column) => $column->searchable)) > 0,
-            'exportable' => count($this->allowedExports) > 0 && count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
+            'searchable' => count(array_filter($columns, fn(Column $column) => $column->searchable)) > 0,
+            'exportable' => count($this->allowedExports) > 0 && count(array_filter($columns, fn(Column $column) => $column->exportable)) > 0,
 
             'rows' => $rows,
         ];
@@ -339,7 +356,7 @@ abstract class Datatable extends Component
      */
     protected function getVisibleColumns(): array
     {
-        return array_filter($this->columns(), fn (Column $column) => $column->visible);
+        return array_filter($this->columns(), fn(Column $column) => $column->visible);
     }
 
     /**
@@ -349,7 +366,7 @@ abstract class Datatable extends Component
     {
         return array_filter($this->actions(), function (Action|ActionGroup $action) {
             if ($action->isActionGroup) {
-                $action->actions = array_filter($action->actions, fn (Action $action) => $action->visible);
+                $action->actions = array_filter($action->actions, fn(Action $action) => $action->visible);
 
                 return $action->visible && count($action->actions) > 0;
             }
@@ -363,7 +380,7 @@ abstract class Datatable extends Component
      */
     protected function getColspanForColumns(array $columns, array $actions): int
     {
-        $colspan = count(array_filter($columns, fn (Column $column) => $column->visible));
+        $colspan = count(array_filter($columns, fn(Column $column) => $column->visible));
 
         // Add one for the actions column
         if (count($actions) > 0) {
