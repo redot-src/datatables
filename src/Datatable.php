@@ -59,7 +59,7 @@ abstract class Datatable extends Component
      * Sort direction for the datatable.
      */
     #[Url(as: 'direction')]
-    public string $sortDirection = 'asc';
+    public string $sortDirection = 'desc';
 
     /**
      * Filters values for the datatable.
@@ -498,7 +498,7 @@ abstract class Datatable extends Component
     protected function applySorting(Builder $query): void
     {
         if (! $this->sortColumn) {
-            return;
+            $this->sortColumn = $this->query()->getModel()->getKeyName();
         }
 
         // Find the column to sort by
