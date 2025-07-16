@@ -498,7 +498,10 @@ abstract class Datatable extends Component
     protected function applySorting(Builder $query): void
     {
         if (! $this->sortColumn) {
-            $this->sortColumn = $this->query()->getModel()->getKeyName();
+            $primaryKey = $this->query()->getModel()->getKeyName();
+            $query->orderBy($primaryKey, $this->sortDirection);
+
+            return;
         }
 
         // Find the column to sort by
