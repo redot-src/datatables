@@ -332,7 +332,7 @@ abstract class Datatable extends Component
         $filters = $this->filters();
 
         // Build the query and get the rows
-        $query = $this->getQueryBuilder($columns, $filters);
+        $query = $this->getQueryBuilder($filters);
         $rows = $query->paginate($this->perPage);
 
         return [
@@ -393,12 +393,12 @@ abstract class Datatable extends Component
     /**
      * Get eloquent query builder.
      */
-    protected function getQueryBuilder(array $columns, array $filters): Builder
+    protected function getQueryBuilder(array $filters): Builder
     {
         $query = $this->query();
 
         $this->applyFilters($query, $filters);
-        $this->applyGlobalSearch($query, $columns);
+        $this->applyGlobalSearch($query);
         $this->applySorting($query);
 
         return $query;
@@ -452,14 +452,14 @@ abstract class Datatable extends Component
     /**
      * Apply global search to the query.
      */
-    protected function applyGlobalSearch(Builder $query, array $columns): void
+    protected function applyGlobalSearch(Builder $query): void
     {
         if (! $this->search) {
             return;
         }
 
-        $query->where(function ($query) use ($columns) {
-            foreach ($columns as $column) {
+        $query->where(function ($query) {
+            foreach ($this->columns() as $column) {
                 if (! $column->searchable) {
                     continue;
                 }
