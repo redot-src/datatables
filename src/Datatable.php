@@ -229,7 +229,7 @@ abstract class Datatable extends Component
             throw new Exceptions\MissingDependencyException('Please install the "maatwebsite/excel" package to use the toXlsx method.');
         }
 
-        [$headings, $rows] = $this->getExportData();
+        [$headings, $rows] = $this->getExportData(sanitize: true);
 
         $filename = sprintf('export-%s.xlsx', now()->format('Y-m-d_H-i-s'));
         $rows->prepend($headings)->storeExcel($filename, null, 'Xlsx');
@@ -246,7 +246,7 @@ abstract class Datatable extends Component
             throw new Exceptions\MissingDependencyException('Please install the "maatwebsite/excel" package to use the toCsv method.');
         }
 
-        [$headings, $rows] = $this->getExportData();
+        [$headings, $rows] = $this->getExportData(sanitize: true);
 
         $filename = sprintf('export-%s.csv', now()->format('Y-m-d_H-i-s'));
         $rows->prepend($headings)->storeExcel($filename, null, 'Csv');
@@ -259,7 +259,7 @@ abstract class Datatable extends Component
      */
     public function toJson(): StreamedResponse
     {
-        [$headings, $rows] = $this->getExportData();
+        [$headings, $rows] = $this->getExportData(sanitize: true);
 
         $items = $rows->map(fn($row) => array_combine($headings, $row))->toArray();
         $filename = sprintf('export-%s.json', now()->format('Y-m-d_H-i-s'));
@@ -284,7 +284,7 @@ abstract class Datatable extends Component
             throw new Exceptions\MissingDependencyException(sprintf('The PDF adapter "%s" is not supported.', $this->pdfAdapter));
         }
 
-        [$headings, $rows] = $this->getExportData();
+        [$headings, $rows] = $this->getExportData(sanitize: false);
 
         return $pdfAdapter->download($this->pdfTemplate, $headings, $rows, $this->pdfOptions);
     }
@@ -292,13 +292,13 @@ abstract class Datatable extends Component
     /**
      * Get export data.
      */
-    protected function getExportData(): array
+    protected function getExportData(bool $sanitize = false): array
     {
         $columns = array_filter($this->columns(), fn(Column $column) => $column->exportable && $column->visible);
         $headings = array_column($columns, 'label');
 
         $rows = $this->getQueryBuilder($columns, $this->filters())->get();
-        $rows = $rows->map(fn($row) => array_map(fn(Column $column) => $column->get($row), $columns));
+        $rows = $rows->map(fn($row) => array_map(fn(Column $column) => $sanitize ? strip_tags($column->get($row)) : $column->get($row), $columns));
 
         return [$headings, $rows];
     }
