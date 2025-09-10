@@ -44,13 +44,16 @@ class NumberFilter extends Filter
             return;
         }
 
-        match ($operator) {
-            'equals' => $query->where($this->column, $value),
-            'not_equals' => $query->where($this->column, '!=', $value),
-            'greater_than' => $query->where($this->column, '>', $value),
-            'greater_than_or_equals' => $query->where($this->column, '>=', $value),
-            'less_than' => $query->where($this->column, '<', $value),
-            'less_than_or_equals' => $query->where($this->column, '<=', $value),
-        };
+        // Apply the filter to the query.
+        $this->withRelation($this->column, $query, function (Builder $query) use ($operator, $value) {
+            match ($operator) {
+                'equals' => $query->where($this->column, $value),
+                'not_equals' => $query->where($this->column, '!=', $value),
+                'greater_than' => $query->where($this->column, '>', $value),
+                'greater_than_or_equals' => $query->where($this->column, '>=', $value),
+                'less_than' => $query->where($this->column, '<', $value),
+                'less_than_or_equals' => $query->where($this->column, '<=', $value),
+            };
+        });
     }
 }

@@ -121,6 +121,9 @@ class TernaryFilter extends Filter
             return;
         }
 
-        call_user_func($this->queries[$value], $query);
+        // Apply the filter to the query.
+        $this->withRelation($this->column, $query, function (Builder $query) use ($value) {
+            call_user_func($this->queries[$value], $query);
+        });
     }
 }

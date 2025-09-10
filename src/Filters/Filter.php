@@ -6,10 +6,12 @@ use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Traits\Macroable;
 use Redot\Datatables\Traits\BuildAttributes;
+use Redot\Datatables\Traits\InteractsWithRelations;
 
 abstract class Filter
 {
     use BuildAttributes;
+    use InteractsWithRelations;
     use Macroable;
 
     /**

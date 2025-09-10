@@ -30,10 +30,13 @@ class TrashedFilter extends Filter
      */
     public function apply(Builder $query, $value): void
     {
-        match ($value) {
-            'with' => $query->withTrashed(),
-            'only' => $query->onlyTrashed(),
-            default => $query->withoutTrashed(),
-        };
+        // Apply the filter to the query.
+        $this->withRelation($this->column, $query, function (Builder $query) use ($value) {
+            match ($value) {
+                'with' => $query->withTrashed(),
+                'only' => $query->onlyTrashed(),
+                default => $query->withoutTrashed(),
+            };
+        });
     }
 }
