@@ -25,13 +25,13 @@ class DateFilter extends Filter
         }
 
         // Apply the filter to the query.
-        $this->withRelation($this->column, $query, function (Builder $query) use ($from, $to) {
+        $this->withRelation($this->column, $query, function (Builder $query, string $column) use ($from, $to) {
             if ($from && ! $to) {
-                $query->whereDate($this->column, '>=', $from);
+                $query->whereDate($column, '>=', $from);
             } elseif (! $from && $to) {
-                $query->whereDate($this->column, '<=', $to);
+                $query->whereDate($column, '<=', $to);
             } elseif ($from && $to) {
-                $query->whereBetween($this->column, [$from, $to]);
+                $query->whereBetween($column, [$from, $to]);
             }
         });
     }

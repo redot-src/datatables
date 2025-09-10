@@ -63,8 +63,6 @@ class CustomFilter extends Filter
         }
 
         // Apply the filter to the query.
-        $this->withRelation($this->column, $query, function (Builder $query) use ($value) {
-            call_user_func($this->callback, $query, $value);
-        });
+        call_user_func($this->callback, $query, $value);
     }
 }

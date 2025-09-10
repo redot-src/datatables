@@ -38,9 +38,9 @@ class TernaryFilter extends Filter
     protected function init(): void
     {
         $this->queries = [
-            'yes' => fn (Builder $query) => $query->where($this->column, true),
-            'no' => fn (Builder $query) => $query->where($this->column, false),
-            'empty' => fn (Builder $query) => $query->whereNull($this->column),
+            'yes' => fn (Builder $query) => $this->withRelation($this->column, $query, fn (Builder $query, string $column) => $query->where($column, true)),
+            'no' => fn (Builder $query) => $this->withRelation($this->column, $query, fn (Builder $query, string $column) => $query->where($column, false)),
+            'empty' => fn (Builder $query) => $this->withRelation($this->column, $query, fn (Builder $query, string $column) => $query->whereNull($column)),
         ];
 
         $this->labels = [
@@ -122,8 +122,6 @@ class TernaryFilter extends Filter
         }
 
         // Apply the filter to the query.
-        $this->withRelation($this->column, $query, function (Builder $query) use ($value) {
-            call_user_func($this->queries[$value], $query);
-        });
+        call_user_func($this->queries[$value], $query);
     }
 }
