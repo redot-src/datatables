@@ -36,7 +36,7 @@ class StringFilter extends Filter
     /**
      * Apply the filter to the given query.
      */
-    public function apply($query, $value): void
+    public function apply(Builder $query, $value): void
     {
         $operator = isset($value['operator']) ? $value['operator'] : 'equals';
         $value = isset($value['value']) ? $value['value'] : '';
