@@ -487,7 +487,7 @@ abstract class Datatable extends Component
     protected function searchWithinRelation(Builder $query, string $column): void
     {
         $this->orWithRelation($column, $query, function (Builder $query, string $field) {
-            $query->orWhere($field, 'like', '%' . $this->search . '%');
+            $query->where($field, 'like', '%' . $this->search . '%');
         });
     }
 
