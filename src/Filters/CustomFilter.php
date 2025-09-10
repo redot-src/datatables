@@ -62,7 +62,7 @@ class CustomFilter extends Filter
     public function apply(Builder $query, $value): void
     {
         // Early return if the callback is not set.
-        if (! $this->callback) {
+        if (! isset($this->callback)) {
             return;
         }
 
