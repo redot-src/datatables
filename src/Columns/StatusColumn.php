@@ -62,4 +62,4 @@ class StatusColumn extends Column
             $this->class($this->classes[$value]);
         }
     }
-} 
+}

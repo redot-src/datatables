@@ -14,11 +14,13 @@ use Redot\Datatables\Actions\ActionGroup;
 use Redot\Datatables\Adapters\PDF\Adabter;
 use Redot\Datatables\Columns\Column;
 use Redot\Datatables\Filters\Filter;
+use Redot\Datatables\Traits\InteractsWithRelations;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 abstract class Datatable extends Component
 {
+    use InteractsWithRelations;
     use Macroable;
     use WithPagination;
 
@@ -135,7 +137,7 @@ abstract class Datatable extends Component
         $this->jsAssetsUrl = route(config('datatables.assets.js.route'), ['v' => md5(filemtime(config('datatables.assets.js.file')))]);
 
         // Set the allowed export formats
-        $this->allowedExports = array_keys(array_filter(config('datatables.export'), fn($export) => $export['enabled']));
+        $this->allowedExports = array_keys(array_filter(config('datatables.export'), fn ($export) => $export['enabled']));
     }
 
     /**
@@ -261,7 +263,7 @@ abstract class Datatable extends Component
     {
         [$headings, $rows] = $this->getExportData(sanitize: true);
 
-        $items = $rows->map(fn($row) => array_combine($headings, $row))->toArray();
+        $items = $rows->map(fn ($row) => array_combine($headings, $row))->toArray();
         $filename = sprintf('export-%s.json', now()->format('Y-m-d_H-i-s'));
         $flags = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
 
@@ -270,7 +272,7 @@ abstract class Datatable extends Component
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
 
-        return response()->streamDownload(fn() => print Js::encode($items, $flags), $filename, $headers);
+        return response()->streamDownload(fn () => print Js::encode($items, $flags), $filename, $headers);
     }
 
     /**
@@ -294,11 +296,11 @@ abstract class Datatable extends Component
      */
     protected function getExportData(bool $sanitize = false): array
     {
-        $columns = array_filter($this->columns(), fn(Column $column) => $column->exportable && $column->visible);
+        $columns = array_filter($this->columns(), fn (Column $column) => $column->exportable && $column->visible);
         $headings = array_column($columns, 'label');
 
         $rows = $this->getQueryBuilder($columns, $this->filters())->get();
-        $rows = $rows->map(fn($row) => array_map(fn(Column $column) => $sanitize ? strip_tags($column->get($row)) : $column->get($row), $columns));
+        $rows = $rows->map(fn ($row) => array_map(fn (Column $column) => $sanitize ? strip_tags($column->get($row)) : $column->get($row), $columns));
 
         return [$headings, $rows];
     }
@@ -344,8 +346,8 @@ abstract class Datatable extends Component
             'filtersOpen' => count($this->filtered) > 0,
 
             'filterable' => count($filters) > 0,
-            'searchable' => count(array_filter($columns, fn(Column $column) => $column->searchable)) > 0,
-            'exportable' => count($this->allowedExports) > 0 && count(array_filter($columns, fn(Column $column) => $column->exportable)) > 0,
+            'searchable' => count(array_filter($columns, fn (Column $column) => $column->searchable)) > 0,
+            'exportable' => count($this->allowedExports) > 0 && count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
 
             'rows' => $rows,
         ];
@@ -356,7 +358,7 @@ abstract class Datatable extends Component
      */
     protected function getVisibleColumns(): array
     {
-        return array_filter($this->columns(), fn(Column $column) => $column->visible);
+        return array_filter($this->columns(), fn (Column $column) => $column->visible);
     }
 
     /**
@@ -366,7 +368,7 @@ abstract class Datatable extends Component
     {
         return array_filter($this->actions(), function (Action|ActionGroup $action) {
             if ($action->isActionGroup) {
-                $action->actions = array_filter($action->actions, fn(Action $action) => $action->visible);
+                $action->actions = array_filter($action->actions, fn (Action $action) => $action->visible);
 
                 return $action->visible && count($action->actions) > 0;
             }
@@ -380,7 +382,7 @@ abstract class Datatable extends Component
      */
     protected function getColspanForColumns(array $columns, array $actions): int
     {
-        $colspan = count(array_filter($columns, fn(Column $column) => $column->visible));
+        $colspan = count(array_filter($columns, fn (Column $column) => $column->visible));
 
         // Add one for the actions column
         if (count($actions) > 0) {
@@ -484,11 +486,8 @@ abstract class Datatable extends Component
      */
     protected function searchWithinRelation(Builder $query, string $column): void
     {
-        $relation = \Illuminate\Support\Str::beforeLast($column, '.');
-        $column = \Illuminate\Support\Str::afterLast($column, '.');
-
-        $query->orWhereHas($relation, function ($query) use ($column) {
-            $query->where($column, 'like', '%' . $this->search . '%');
+        $this->orWithRelation($column, $query, function (Builder $query, string $field) {
+            $query->orWhere($field, 'like', '%' . $this->search . '%');
         });
     }
 
