@@ -47,6 +47,10 @@ class CustomFilter extends Filter
      */
     public function render(): \Illuminate\Contracts\View\View
     {
+        if (! isset($this->base) || empty($this->base)) {
+            throw new InvalidArgumentException('The base must be set.');
+        }
+
         $base = new $this->base;
 
         return view($base->view, ['filter' => $this]);
