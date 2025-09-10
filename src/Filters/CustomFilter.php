@@ -9,7 +9,7 @@ use InvalidArgumentException;
 class CustomFilter extends Filter
 {
     /**
-     * The base to apply the filter to the query.
+     * The base filter class to inherit behavior from.
      */
     public string $base;
 
