@@ -19,12 +19,20 @@ class DateFilter extends Filter
         $from = $value['from'] ?? null;
         $to = $value['to'] ?? null;
 
-        if ($from && ! $to) {
-            $query->whereDate($this->column, '>=', $from);
-        } elseif (! $from && $to) {
-            $query->whereDate($this->column, '<=', $to);
-        } elseif ($from && $to) {
-            $query->whereBetween($this->column, [$from, $to]);
+        // Early return if the from and to are empty.
+        if (! $from && ! $to) {
+            return;
         }
+
+        // Apply the filter to the query.
+        $this->withRelation($this->column, $query, function (Builder $query, string $column) use ($from, $to) {
+            if ($from && ! $to) {
+                $query->whereDate($column, '>=', $from);
+            } elseif (! $from && $to) {
+                $query->whereDate($column, '<=', $to);
+            } elseif ($from && $to) {
+                $query->whereBetween($column, [$from, $to]);
+            }
+        });
     }
 }

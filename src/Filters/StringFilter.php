@@ -2,6 +2,8 @@
 
 namespace Redot\Datatables\Filters;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class StringFilter extends Filter
 {
     /**
@@ -34,7 +36,7 @@ class StringFilter extends Filter
     /**
      * Apply the filter to the given query.
      */
-    public function apply($query, $value): void
+    public function apply(Builder $query, $value): void
     {
         $operator = isset($value['operator']) ? $value['operator'] : 'equals';
         $value = isset($value['value']) ? $value['value'] : '';
@@ -44,15 +46,18 @@ class StringFilter extends Filter
             return;
         }
 
-        match ($operator) {
-            'equals' => $query->where($this->column, $value),
-            'not_equals' => $query->where($this->column, '!=', $value),
-            'contains' => $query->where($this->column, 'like', "%$value%"),
-            'not_contains' => $query->where($this->column, 'not like', "%$value%"),
-            'starts_with' => $query->where($this->column, 'like', "$value%"),
-            'not_starts_with' => $query->where($this->column, 'not like', "$value%"),
-            'ends_with' => $query->where($this->column, 'like', "%$value"),
-            'not_ends_with' => $query->where($this->column, 'not like', "%$value"),
-        };
+        // Apply the filter to the query.
+        $this->withRelation($this->column, $query, function (Builder $query, string $column) use ($operator, $value) {
+            match ($operator) {
+                'equals' => $query->where($column, $value),
+                'not_equals' => $query->where($column, '!=', $value),
+                'contains' => $query->where($column, 'like', "%$value%"),
+                'not_contains' => $query->where($column, 'not like', "%$value%"),
+                'starts_with' => $query->where($column, 'like', "$value%"),
+                'not_starts_with' => $query->where($column, 'not like', "$value%"),
+                'ends_with' => $query->where($column, 'like', "%$value"),
+                'not_ends_with' => $query->where($column, 'not like', "%$value"),
+            };
+        });
     }
 }
