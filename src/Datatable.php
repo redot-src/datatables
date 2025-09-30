@@ -299,7 +299,7 @@ abstract class Datatable extends Component
         $columns = array_filter($this->columns(), fn (Column $column) => $column->exportable && $column->visible);
         $headings = array_column($columns, 'label');
 
-        $rows = $this->getQueryBuilder($columns, $this->filters())->get();
+        $rows = $this->getQueryBuilder($this->filters())->get();
         $rows = $rows->map(fn ($row) => array_map(fn (Column $column) => $sanitize ? strip_tags($column->get($row)) : $column->get($row), $columns));
 
         return [$headings, $rows];
