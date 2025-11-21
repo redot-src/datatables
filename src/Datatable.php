@@ -142,7 +142,9 @@ abstract class Datatable extends Component
         $this->jsAssetsUrl = route(config('datatables.assets.js.route'), ['v' => md5(filemtime(config('datatables.assets.js.file')))]);
 
         // Set the allowed export formats
-        $this->allowedExports = array_keys(array_filter(config('datatables.export'), fn ($export) => $export['enabled']));
+        if (! isset($this->allowedExports)) {
+            $this->allowedExports = array_keys(array_filter(config('datatables.export'), fn ($export) => $export['enabled']));
+        }
     }
 
     /**
