@@ -90,6 +90,11 @@ abstract class Datatable extends Component
     public array $allowedExports;
 
     /**
+     * Determine if the datatable is exportable.
+     */
+    public bool $exportable = true;
+
+    /**
      * PDF view template.
      */
     public string $pdfTemplate;
@@ -347,7 +352,7 @@ abstract class Datatable extends Component
 
             'filterable' => count($filters) > 0,
             'searchable' => count(array_filter($columns, fn (Column $column) => $column->searchable)) > 0,
-            'exportable' => count($this->allowedExports) > 0 && count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
+            'exportable' => $this->exportable && count($this->allowedExports) > 0 && count(array_filter($columns, fn (Column $column) => $column->exportable)) > 0,
 
             'rows' => $rows,
         ];
