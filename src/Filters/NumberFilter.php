@@ -44,8 +44,8 @@ class NumberFilter extends Filter
             return;
         }
 
-        // Apply the filter to the query.
-        $this->withRelation($this->column, $query, function (Builder $query, string $column) use ($operator, $value) {
+        // Apply the filter to all columns with OR logic.
+        $this->applyToColumns($query, function (Builder $query, string $column) use ($operator, $value) {
             match ($operator) {
                 'equals' => $query->where($column, $value),
                 'not_equals' => $query->where($column, '!=', $value),

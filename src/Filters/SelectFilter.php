@@ -55,8 +55,8 @@ class SelectFilter extends Filter
      */
     public function apply(Builder $query, $value): void
     {
-        // Apply the filter to the query.
-        $this->withRelation($this->column, $query, function (Builder $query, string $column) use ($value) {
+        // Apply the filter to all columns with OR logic.
+        $this->applyToColumns($query, function (Builder $query, string $column) use ($value) {
             $query->where($column, $value);
         });
     }

@@ -24,8 +24,8 @@ class DateFilter extends Filter
             return;
         }
 
-        // Apply the filter to the query.
-        $this->withRelation($this->column, $query, function (Builder $query, string $column) use ($from, $to) {
+        // Apply the filter to all columns with OR logic.
+        $this->applyToColumns($query, function (Builder $query, string $column) use ($from, $to) {
             if ($from && ! $to) {
                 $query->whereDate($column, '>=', $from);
             } elseif (! $from && $to) {

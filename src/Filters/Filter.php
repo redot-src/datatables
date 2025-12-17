@@ -35,9 +35,14 @@ abstract class Filter
     public ?string $label = null;
 
     /**
-     * The filter's column.
+     * The filter's column(s).
      */
-    public ?string $column = null;
+    public string|array|null $column = null;
+
+    /**
+     * Determine if the filter columns should be applied with OR logic.
+     */
+    public bool $or = true;
 
     /**
      * Override the filter's query.
@@ -57,7 +62,7 @@ abstract class Filter
     /**
      * Create a new filter instance.
      */
-    public function __construct(?string $column = null, ?string $label = null)
+    public function __construct(string|array|null $column = null, ?string $label = null)
     {
         $this->index = ++static::$counter;
         $this->wireKey ??= sprintf('filtered.%s', $this->index);
@@ -84,7 +89,7 @@ abstract class Filter
     /**
      * Make a new filter instance.
      */
-    public static function make(?string $column = null, ?string $label = null): Filter
+    public static function make(string|array|null $column = null, ?string $label = null): Filter
     {
         return new static($column, $label);
     }
@@ -100,11 +105,31 @@ abstract class Filter
     }
 
     /**
-     * Set the filter's column.
+     * Set the filter's column(s).
      */
-    public function column(string $column): Filter
+    public function column(string|array $column): Filter
     {
         $this->column = $column;
+
+        return $this;
+    }
+
+    /**
+     * Set the filter's columns (alias for column with array).
+     */
+    public function columns(array $columns): Filter
+    {
+        $this->column = $columns;
+
+        return $this;
+    }
+
+    /**
+     * Set the filter's columns to be applied with OR logic.
+     */
+    public function or(bool $or = true): Filter
+    {
+        $this->or = $or;
 
         return $this;
     }
@@ -125,6 +150,41 @@ abstract class Filter
     public function render(): \Illuminate\Contracts\View\View
     {
         return view($this->view, ['filter' => $this]);
+    }
+
+    /**
+     * Get the columns as an array.
+     */
+    protected function getColumns(): array
+    {
+        if (is_array($this->column)) {
+            return $this->column;
+        }
+
+        return $this->column ? [$this->column] : [];
+    }
+
+    /**
+     * Apply the filter callback to all columns using OR logic.
+     */
+    protected function applyToColumns(Builder $query, Closure $callback): void
+    {
+        $columns = $this->getColumns();
+
+        if (empty($columns)) {
+            return;
+        }
+
+        // Wrap in where to group OR conditions
+        $query->where(function (Builder $query) use ($columns, $callback) {
+            foreach ($columns as $index => $column) {
+                if ($index === 0 || ! $this->or) {
+                    $this->withRelation($column, $query, $callback);
+                } else {
+                    $this->orWithRelation($column, $query, $callback);
+                }
+            }
+        });
     }
 
     /**
