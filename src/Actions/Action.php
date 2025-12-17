@@ -163,6 +163,20 @@ class Action
     }
 
     /**
+     * Create a new restore action instance.
+     */
+    public static function restore(?string $route = null, array $parameters = []): Action
+    {
+        $action = static::make(__('datatables::datatable.actions.restore'), 'fas fa-trash-restore')->method('post')->confirmable();
+
+        if ($route) {
+            $action->route($route, $parameters);
+        }
+
+        return $action;
+    }
+
+    /**
      * Create a new export action instance.
      */
     public static function export(?string $route = null, array $parameters = []): Action
