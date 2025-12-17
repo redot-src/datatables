@@ -30,7 +30,11 @@ trait InteractsWithRelations
     private function handleRelation(string $column, Builder $query, Closure $callback, bool $useOr): Builder
     {
         if (! Str::contains($column, '.')) {
-            $callback($query, $column);
+            if ($useOr) {
+                $query->orWhere(fn (Builder $query) => $callback($query, $column));
+            } else {
+                $callback($query, $column);
+            }
 
             return $query;
         }
