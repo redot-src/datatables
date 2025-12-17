@@ -37,6 +37,7 @@ return [
         'view' => 'View',
         'edit' => 'Edit',
         'delete' => 'Delete',
+        'restore' => 'Restore',
         'export' => 'Export',
         'confirm' => 'Are you sure you want to perform this action?',
     ],
