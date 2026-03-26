@@ -243,7 +243,10 @@ abstract class Datatable extends Component
         $filename = sprintf('export-%s.xlsx', now()->format('Y-m-d_H-i-s'));
         $rows->prepend($headings)->storeExcel($filename, null, 'Xlsx');
 
-        return response()->download(storage_path('app/' . $filename))->deleteFileAfterSend(true);
+        $disk = config('filesystems.default');
+        $root = config("filesystems.disks.$disk.root");
+
+        return response()->download($root . '/' . $filename)->deleteFileAfterSend(true);
     }
 
     /**
@@ -260,7 +263,10 @@ abstract class Datatable extends Component
         $filename = sprintf('export-%s.csv', now()->format('Y-m-d_H-i-s'));
         $rows->prepend($headings)->storeExcel($filename, null, 'Csv');
 
-        return response()->download(storage_path('app/' . $filename))->deleteFileAfterSend(true);
+        $disk = config('filesystems.default');
+        $root = config("filesystems.disks.$disk.root");
+
+        return response()->download($root . '/' . $filename)->deleteFileAfterSend(true);
     }
 
     /**
