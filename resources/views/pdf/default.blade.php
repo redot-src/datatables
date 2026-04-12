@@ -93,6 +93,7 @@
 
             <tbody>
                 @forelse ($rows as $row)
+                    <!-- chunk -->
                     <tr>
                         @foreach ($row as $cell)
                             <td>{!! $cell !!}</td>

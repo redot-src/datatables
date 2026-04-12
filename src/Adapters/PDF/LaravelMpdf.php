@@ -16,8 +16,7 @@ class LaravelMpdf extends Adabter
     {
         $filename = sprintf('export-%s.pdf', now()->format('Y-m-d_H-i-s'));
 
-        // Generate the PDF file.
-        $pdf = PDF::loadView($template, compact('headings', 'rows'), [], $options);
+        $pdf = PDF::chunkLoadView('<!-- chunk -->', $template, compact('headings', 'rows'), [], $options);
 
         return response()->stream(function () use ($pdf) {
             echo $pdf->output();
